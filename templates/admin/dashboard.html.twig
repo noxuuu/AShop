@@ -1,0 +1,340 @@
+{% extends 'frontend/admin/base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h5 class="txt-light">Panel kontrolny</h5>
+            </div>
+        </div>
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-green">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-diamond txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <span class="txt-light counter">- zł</span>
+                                        <h6 class="txt-light">Miesięczny zysk</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-red">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-rocket txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <span class="txt-light counter">-</span>
+                                        <h6 class="txt-light">Zakupionych usług w miesiącu</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service info -->
+            <div class="col-lg-9 col-md-6">
+                <div class="panel panel-default card-view">
+                    <div class="panel-wrapper collapse in">
+                        <div  class="panel-body">
+                            <!-- START carousel-->
+                            <div id="testimonial_slider" data-ride="carousel" class="carousel slide testimonial-slider-wrap text-slider">
+                                <ol class="carousel-indicators">
+                                    <li data-target="#testimonial_slider" data-slide-to="0" class="active"></li>
+                                    <li data-target="#testimonial_slider" data-slide-to="1"></li>
+                                    <li data-target="#testimonial_slider" data-slide-to="2"></li>
+                                </ol>
+                                <div role="listbox" class="carousel-inner mb-50">
+                                    <div class="item active">
+                                        <div class="testimonial-wrap text-center  pl-30 pr-30">
+                                            <h2>Slider pobierany ze strony AShop ...</h2>
+                                            <span class="testi-text block capitalize-font">Linia #1</span>
+                                            <span class="testi-text block capitalize-font">Linia #2</span>
+                                            <span class="testi-text block capitalize-font">Linia #3</span>
+                                            <span class="testi-text block capitalize-font">Linia #4</span>
+                                            <span class="testi-text block capitalize-font">Linia #5</span>
+                                            <span class="testi-text block capitalize-font">Linia #6</span>
+                                            <span class="testi-text block capitalize-font">Linia #7</span>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="testimonial-wrap text-center  pl-30 pr-30">
+                                            <h2>Slider pobierany ze strony AShop ...</h2>
+                                            <span class="testi-text block capitalize-font">Linia #1</span>
+                                            <span class="testi-text block capitalize-font">Linia #2</span>
+                                            <span class="testi-text block capitalize-font">Linia #3</span>
+                                            <span class="testi-text block capitalize-font">Linia #4</span>
+                                            <span class="testi-text block capitalize-font">Linia #5</span>
+                                            <span class="testi-text block capitalize-font">Linia #6</span>
+                                            <span class="testi-text block capitalize-font">Linia #7</span>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="testimonial-wrap text-center  pl-30 pr-30">
+                                            <h2>Slider pobierany ze strony AShop ...</h2>
+                                            <span class="testi-text block capitalize-font">Linia #1</span>
+                                            <span class="testi-text block capitalize-font">Linia #2</span>
+                                            <span class="testi-text block capitalize-font">Linia #3</span>
+                                            <span class="testi-text block capitalize-font">Linia #4</span>
+                                            <span class="testi-text block capitalize-font">Linia #5</span>
+                                            <span class="testi-text block capitalize-font">Linia #6</span>
+                                            <span class="testi-text block capitalize-font">Linia #7</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading mb-20">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark"><i class="icon-user mr-10"></i>Ostatnio zarejestrowani</h6>
+                        </div>
+                        <div class="pull-right">
+                            <a class="txt-light" href="javascript:void(0);"><i class="ti-plus"></i></a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <ul class="chat-list-wrap">
+                                <li class="chat-list">
+                                    <div class="chat-body">
+                                        <a class="" href="#">
+                                            <div class="chat-data">
+                                                <div class="user-data">
+                                                    <span class="name block capitalize-font"><span style="">Login</span></span>
+                                                    <span class="time block txt-grey">STEAM_0:1:2345678 - 11/01/2019</span>
+                                                </div>
+                                                <div class="status away"></div>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark"><i class="icon-support mr-10"></i>Najczęściej kupowane</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <canvas id="chart_7" height="447"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-blue">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-diamond txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <span class="txt-light counter">- zł</span>
+                                        <h6 class="txt-light">Całkowity zysk</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-red">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-rocket txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <span class="txt-light counter">-</span>
+                                        <h6 class="txt-light">Zakupione usługi</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-green">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-rocket txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <span class="txt-light counter">-</span>
+                                        <h6 class="txt-light">Wysłane sms-y</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Row -->
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-red">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-user txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <h6 class="txt-light">Użytkowników</h6>
+                                        <span class="txt-light counter">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default card-view pa-0">
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body pa-0">
+                            <div class="sm-data-box bg-blue">
+                                <div class="row ma-0">
+                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
+                                        <i class="icon-rocket txt-light"></i>
+                                    </div>
+                                    <div class="col-xs-7 text-center data-wrap-right">
+                                        <h6 class="txt-light">Serwerów</h6>
+                                        <span class="txt-light counter">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Activity -->
+            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Ostatnia aktywność</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="streamline">
+                                <div class="sl-item sl-primary">';
+                                    <div class="sl-item sl-success">
+                                        <div class="sl-content">
+    													<span class="font-12 mb-5">
+    														<span style="">'.$row2['login'].'</span>
+    															- date 'd/m/Y H:i:s'
+    														?>
+    													</span>
+                                            <p class="txt-dark">content</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function(){
+            $('#support_table').DataTable({
+                "bFilter": false,
+                "bLengthChange": false,
+                "bPaginate": false,
+                "bInfo": false,
+            });
+            if( $('#chart_7').length > 0 ){
+                var ctx7 = document.getElementById("chart_7").getContext("2d");
+
+
+                var data7 = {
+                    labels: [],
+                datasets: [
+                    {
+                        data: [],
+                backgroundColor: [],
+                hoverBackgroundColor: []
+            }]
+            };
+
+                var doughnutChart = new Chart(ctx7, {
+                    type: 'doughnut',
+                    data: data7,
+                    options: {
+                        animation: {
+                            duration:	2000
+                        },
+                        responsive: true,
+                        maintainAspectRatio:false,
+                        legend: {
+                            labels: {
+                                fontFamily: "Varela Round",
+                                fontColor:"#2f2c2c"
+                            }
+                        },
+                        tooltips: {
+                            backgroundColor:'rgba(47,44,44,.9)',
+                            cornerRadius:0,
+                            footerFontFamily:"'Varela Round'"
+                        }
+                    }
+                });
+            }
+        })
+    </script>
+{% endblock %}

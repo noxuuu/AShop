@@ -1,0 +1,208 @@
+{% extends 'frontend/admin/base.html.twig' %}
+ 
+{% block title %}Taryfy{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h5 class="txt-light">Taryfy</h5>
+            </div>
+        </div>
+        <!-- /Title -->
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Taryfy</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p>W tym miejscu możesz zarządzać taryfami w sklepie.</p>
+                                </div>
+                                <div class="col-md-2 col-md-offset-2">
+                                    <?php if(CheckAccess('can_add_tariffs')) {?>
+                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ TARYFE</button>
+
+                                    {% for method in payment_methods %}
+                                        <div class="modal fade" id="add{{ method.getId() }}" tabindex="-1" role="dialog" aria-labelledby="add{{ method.getId() }}">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="add{{ method.getId() }}">Dodaj taryfe <b>{{ method.getName() }}</b></h4>
+                                                    </div>
+                                                    {% set add_form = form_add.createView %}
+                                                    {{ form_start(add_form, { 'method' : 'post', 'action': path('add_tariff', { 'pm' : method.GetId() })}) }}
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label>Cena </label>
+                                                                {{ form_row(add_form.brutto) }}
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Wartość <?php if($row['type'] != 3) echo '(Netto)'?></label>
+                                                                {{ form_row(add_form.netto) }}
+                                                            </div>
+
+                                                            <div class="form-group" {% if method.getType() != 1 %} style="display: none;" {% endif %}>
+                                                                <label>Numer SMS</label>
+                                                                {{ form_row(add_form.smsNumber) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                            <button type="submit" name="tariff_add" class="btn btn-primary">Dodaj</button>
+                                                        </div>
+                                                    {{ form_end(add_form) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+
+                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="add1">Dodaj taryfe</h4>
+                                                </div>
+                                                <form action="" method="post">
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Metoda Płatności:</label>
+                                                            <select name="payment_method" class="form-control round-input" onChange="$('#add').modal('hide'); $('#add'+this.options[this.selectedIndex].value).modal('toggle');" required>
+                                                                <option selected disabled>-||-</option>
+                                                                {% for method in payment_methods %}
+                                                                    <option value="{{ method.getId() }}">{{ method.getName() }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                        <button type="submit" name="tariff_add" class="btn btn-primary">Dodaj</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <div class="table-responsive">
+                                    <table class="table display product-overview mb-30" id="support_table">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Metoda Płatności</th>
+                                            <th>Cena</th>
+                                            <th>Wartość</th>
+                                            <?php if(CheckAccess('can_edit_tariffs') || CheckAccess('can_delete_tariffs')) {?><th>AKCJE</th><?php } ?>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tariff in pagination %}
+                                                <tr>
+                                                    <td>{{ tariff.getId() }}</td>
+                                                    <td>
+                                                       <span class="label label-success">{{ tariff.getPaymentMethodId().getName() }}</span>
+                                                    </td>
+                                                    <td><span class="label label-warning">{{ tariff.getBrutto() }}</span></td>
+                                                    <td><span class="label label-danger">{{ tariff.getNetto() }}</span></td>
+                                                    <td>
+                                                        <?php if(CheckAccess('can_edit_tariffs')) { ?><a href="#" data-toggle="modal" data-target="#edit-{{ tariff.getId() }}" class=""><i class="fa fa-check"></i></a>
+                                                        <?php } if(CheckAccess('can_delete_tariffs')) {?><a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ tariff.getId() }}"><i class="fa fa-trash"></i></a>
+                                                    </td>
+
+                                                    <!-- Modal -->
+                                                    <?php if(CheckAccess('can_edit_tariffs')) { ?>
+                                                    <div class="modal fade" id="edit-{{ tariff.getId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ tariff.getId() }}">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="editlabel{{ tariff.getId() }}">Edytuj dane serwera</h4>
+                                                                </div>
+                                                                {% set edit_form = form_edit.createView %}
+                                                                {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_tariff', { 'tariff' : tariff.GetId() })}) }}
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <label>Cena (Brutto)</label>
+                                                                            {{ form_row(edit_form.brutto, {'value' : tariff.getBrutto()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Wartość (Netto)</label>
+                                                                            {{ form_row(edit_form.netto, {'value' : tariff.getNetto()}) }}
+                                                                        </div>
+                                                                        <div class="form-group" {% if tariff.getPaymentMethodId().getType() != 1 %} style="display: none;"{% endif %}>
+                                                                            <label>Numer SMS</label>
+                                                                            {{ form_row(edit_form.smsNumber, {'value' : tariff.getSmsNumber()}) }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="submit" name="tariff_edit" class="btn btn-primary" >Zapisz</button>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    </div>
+                                                                {{ form_end(edit_form) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php } if(CheckAccess('can_delete_tariffs')) { ?>
+                                                    <div class="modal fade" id="delete-{{ tariff.getId() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ tariff.getId() }}">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="deletelabel{{ tariff.getId() }}">Usuń taryfe</h4>
+                                                                </div>
+                                                                <form action="" method="post">
+                                                                    <div class="modal-body">
+                                                                        Czy jesteś pewny, że chcesz usunąć tą taryfe ? <br />
+                                                                        <b>Uwaga, zmian nie da się cofnąć!</b>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-primary" href="{{ path('delete_tariff', {'id': tariff.GetId()}) }}" role="button">Usuń !</a>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php } ?>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
+                            <div class="col col-xs-8">
+                                <ul class="pagination hidden-xs pull-right">
+                                    <div class="navigation">
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}

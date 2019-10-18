@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} :: ASHOP system sklepu automatycznego</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ asset('/font/iconsmind/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/font/simple-line-icons/css/simple-line-icons.css') }}" />
+
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_link_tags('dore') }}
+    {{ encore_entry_link_tags('mousetrap') }}
+    {{ encore_entry_link_tags('nouislider') }}
+    {% block stylesheets %}{% endblock %}
+    {{ encore_entry_link_tags('scripts') }}
+</head>
+<body id="app-container" class="menu-default show-spinner">
+<div id="ajax_loader" class="ajax_loading" style="display: none;"></div>
+{% include('frontend/common/widgets/topbar.html.twig') %}
+{% include('frontend/common/widgets/navigation.html.twig') %}
+<main>
+    <div class="container-fluid">
+        {% include('frontend/common/widgets/pageTitle.html.twig') %}
+        {% block body %}{% endblock %}
+    </div>
+</main>
+{{ encore_entry_script_tags('app') }}
+{{ encore_entry_script_tags('mousetrap') }}
+{{ encore_entry_script_tags('nouislider') }}
+{{ encore_entry_script_tags('dore') }}
+{{ encore_entry_script_tags('scripts') }}
+<script src="https://dore-jquery.coloredstrategies.com/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="https://dore-jquery.coloredstrategies.com/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('/js/ajax.js') }}"></script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

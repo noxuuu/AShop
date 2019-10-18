@@ -1,0 +1,190 @@
+{% extends 'frontend/admin/base.html.twig' %}
+ 
+{% block title %}Serwery{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h5 class="txt-light">Serwery</h5>
+            </div>
+
+        </div>
+        <!-- /Title -->
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Serwery</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p>W tym miejscu możesz zarządzać serwerami w sklepie.</p>
+                                </div>
+                                <div class="col-md-2 col-md-offset-2">
+                                    <?php if(CheckAccess('can_add_servers')) {?>
+                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ SERWER</button>
+                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="add1">Dodaj serwer</h4>
+                                                </div>
+                                                {{ form_start(form_add) }}
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Nazwa:</label>
+                                                            {{ form_widget(form_add.name) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Adres IP:</label>
+                                                            {{ form_widget(form_add.ipAddress) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Port:</label>
+                                                            {{ form_widget(form_add.port) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Hasło RCON (Wymagane do usług bazujących na API):</label>
+                                                            {{ form_widget(form_add.rconPassword) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Typ serwera:</label>
+                                                            {{ form_widget(form_add.type) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
+                                                    </div>
+                                                {{ form_end(form_add) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <div class="table-responsive">
+                                    <table class="table display product-overview mb-30" id="support_table">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>NAZWA</th>
+                                            <th>IP:Port</th>
+                                            <th>MOD</th>
+                                            <th>STATUS</th>
+                                            <th>AKCJE</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for server in pagination %}
+                                                <tr>
+                                                    <td>{{ server.GetId() }}</td>
+                                                    <td>{{ server.GetName() }}</td>
+                                                    <td>{{ server.getIpAddress() }}:{{ server.getPort() }}</td>
+                                                    <td>{{ server.getType() }}</td>
+                                                    <td>
+                                                        {% if server.getConnected() %}
+                                                            <span class="label label-success">Połączony</span>
+                                                        {% else %}
+                                                            <span class="label label-danger">Offline</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td><?php if(CheckAccess('can_edit_servers')) { ?>
+                                                        <a href="#" data-toggle="modal" data-target="#edit-{{ server.GetId() }}" class=""><i class="fa fa-check"></i></a>
+                                                        <?php } if(CheckAccess('can_delete_servers')) {?><a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ server.GetId() }}"><i class="fa fa-trash"></i></a></td>
+
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="edit-{{ server.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ server.GetId() }}">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="editlabel{{ server.GetId() }}">Edytuj dane serwera</h4>
+                                                                </div>
+                                                                {% set edit_form = form_edit.createView %}
+                                                                {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_server', { 'server' : server.GetId() })}) }}
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <label>Nazwa:</label>
+                                                                            {{ form_row(edit_form.name, {'value' : server.GetName()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Adres IP:</label>
+                                                                            {{ form_row(edit_form.ipAddress, {'value' : server.getIpAddress()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Port:</label>
+                                                                            {{ form_row(edit_form.port, {'value' : server.GetPort()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Hasło RCON (Wymagane do usług bazujących na API):</label>
+                                                                            {{ form_row(edit_form.rconPassword, {'value' : server.GetRconPassword()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Typ serwera:</label>
+                                                                            {{ form_widget(edit_form.type, {'data' : server.GetType()}) }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="submit" class="btn btn-primary" >Zapisz</button>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    </div>
+                                                                {{ form_end(edit_form) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal fade" id="delete-{{ server.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ server.GetId() }}">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="deletelabel{{ server.GetId() }}">Usuń serwer</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Czy jesteś pewny, że chcesz usunąć ten serwer ze sklepu? <br />
+                                                                    <b>Uwaga, zmian nie da się cofnąć!</b>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <a class="btn btn-primary" href="{{ path('delete_server', {'id': server.GetId()}) }}" role="button">Usuń !</a>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
+                            <div class="col col-xs-8">
+                                <ul class="pagination hidden-xs pull-right">
+                                    <div class="navigation">
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}

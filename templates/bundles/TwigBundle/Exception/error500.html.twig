@@ -1,0 +1,25 @@
+{% extends 'common/base.html.twig' %}
+{% block title %}500 - Napotkano błąd{% endblock %}
+{% block bodyclass %}class="background show-spinner"{% endblock %}
+{% block body %}
+    <div class="fixed-background"></div>
+    <main>
+        <div class="container">
+            <div class="row h-100">
+                <div class="col-12 col-md-10 mx-auto my-auto">
+                    <div class="card auth-card">
+                        <div class="position-relative image-side "></div>
+                        <div class="form-side text-center">
+                            <a href="/">
+                                <span class="logo-single"></span>
+                            </a>
+                            <h3 class="mb-4">Coś nam się posypało <i class="iconsmind-Grave"></i> Pracujemy nad tym.. <i class="iconsmind-Flag-2"></i></h3>
+                            <p class="display-1 font-weight-bold mb-5">500.</p>
+                            <a href="{{ path('homePage') }}" class="btn btn-primary btn-lg btn-shadow">Wróć do domu!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

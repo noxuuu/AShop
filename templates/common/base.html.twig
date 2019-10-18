@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}:: ASHOP system sklepu automatycznego</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ asset('/font/iconsmind/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/font/simple-line-icons/css/simple-line-icons.css') }}" />
+
+    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_link_tags('dore') }}
+    {{ encore_entry_link_tags('mousetrap') }}
+    {{ encore_entry_link_tags('nouislider') }}
+    {{ encore_entry_link_tags('scripts') }}
+
+    {% block stylesheets %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('/css/main.css') }}" />
+</head>
+<body {% block bodyclass %}{% endblock %}>
+{% block body %}{% endblock %}
+
+{{ encore_entry_script_tags('app') }}
+{{ encore_entry_script_tags('dore') }}
+{{ encore_entry_script_tags('scripts') }}
+
+{% block javascripts %}{% endblock %}
+</body>

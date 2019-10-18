@@ -1,0 +1,120 @@
+{% extends 'common/base.html.twig' %}
+{% block title %}INSTALACJA SYSTEMU SKLEPU{% endblock %}
+{% block bodyclass %}class="background show-spinner"{% endblock %}
+{% block stylesheets %}
+
+{% endblock %}
+{% block body %}
+    <div class="fixed-background"></div>
+    <main>
+        <div class="container">
+            <div class="row h-100">
+                <div class="col-12 col-md-10 mx-auto my-auto">
+                    <div class="card auth-card">
+                        <div class="position-relative image-side ">
+
+                        </div>
+                        <div class="form-side">
+                            <a href="/">
+                                <span class="logo-single"></span>
+                            </a>
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    {% if db_error is defined and db_error.status == 'FAIL' %}
+                                        <div class="alert alert-danger">{{ db_error.message }}</div>
+                                    {% endif %}
+                                    {% if step == 1 %}
+                                        <h6 class="mb-4">Dostęp do bazy danych</h6>
+                                        {{ form_start(db_form) }}
+                                            <label class="form-group has-float-label mb-4">
+                                                {{ form_widget(db_form.host) }}
+                                                <span>Host bazy danych</span>
+                                            </label>
+                                            <label class="form-group has-float-label mb-4">
+                                                {{ form_widget(db_form.user) }}
+                                                <span>Użytkownik</span>
+                                            </label>
+                                            <label class="form-group has-float-label mb-4">
+                                                {{ form_widget(db_form.password) }}
+                                                <span>Hasło</span>
+                                            </label>
+                                            <label class="form-group has-float-label mb-4">
+                                                {{ form_widget(db_form.dbname) }}
+                                                <span>Baza danych</span>
+                                            </label>
+                                            <div class="row">
+                                                <div class="col-md-8"></div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary btn-lg btn-shadow" style="width: 100%; padding: .75rem 0;" type="submit">DALEJ</button>
+                                                </div>
+                                            </div>
+                                        {{ form_end(db_form) }}
+                                    {% elseif step == 2 %}
+                                        <h6 class="mb-4">Dane licencji</h6>
+                                        <form action="" method="post">
+                                            <label class="form-group has-float-label mb-4">
+                                                <input class="form-control" type="text" name="domain" />
+                                                <span>Domena sklepu</span>
+                                            </label>
+
+                                            <label class="form-group has-float-label mb-4">
+                                                <input class="form-control" type="text" name="steam_auth" />
+                                                <span>Klucz licencji</span>
+                                            </label>
+
+                                            <div class="row">
+                                                <div class="col-md-8"></div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary btn-lg btn-shadow" style="width: 100%; padding: .75rem 0;" type="submit">DALEJ</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    {% elseif step == 3 %}
+                                        <h6 class="mb-4">Dane administratora</h6>
+                                        <form action="" method="post">
+                                            <label class="form-group has-float-label mb-4">
+                                                <input class="form-control" type="text" name="login" />
+                                                <span>Login</span>
+                                            </label>
+                                            <label class="form-group has-float-label mb-4">
+                                                <input class="form-control" type="text" name="password" />
+                                                <span>Hasło</span>
+                                            </label>
+                                            <label class="form-group has-float-label mb-4">
+                                                <input class="form-control" type="text" name="password" />
+                                                <span>Powtórz hasło</span>
+                                            </label>
+                                            <label class="form-group has-float-label mb-4">
+                                                <input class="form-control" type="text" name="steamid" />
+                                                <span>Steam ID</span>
+                                            </label>
+
+                                            <div class="row">
+                                                <div class="col-md-8"></div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary btn-lg btn-shadow" style="width: 100%; padding: .75rem 0;" type="submit">INSTALUJ</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    {% elseif step == 4 %}
+                                        <h6 class="mb-4">Koniec instalacji</h6>
+                                        Tutaj rzucimy kodem {databases.cfg -> nox_ashop}
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 text-center" >
+                                    <div style="border-left: 1px #ccc solid; padding-left: 15px;">
+                                        <h4 style="font-size: 2em">Postęp instalacji</h4>
+                                        <h4>Krok</h4>
+                                        <h3><span style="color: #2b366e; font-size: 3em">{{ step }}</span> z 3</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

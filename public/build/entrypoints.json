@@ -1,0 +1,46 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.0aeca304.js",
+        "/build/0.c90fd7d1.js",
+        "/build/1.78d8937b.js",
+        "/build/app.0eb669be.js"
+      ]
+    },
+    "dore": {
+      "js": [
+        "/build/runtime.0aeca304.js",
+        "/build/0.c90fd7d1.js",
+        "/build/dore.fcf3f1c7.js"
+      ]
+    },
+    "mousetrap": {
+      "js": [
+        "/build/runtime.0aeca304.js",
+        "/build/0.c90fd7d1.js",
+        "/build/mousetrap.efc362c3.js"
+      ]
+    },
+    "nouislider": {
+      "js": [
+        "/build/runtime.0aeca304.js",
+        "/build/0.c90fd7d1.js",
+        "/build/nouislider.e3761ff0.js"
+      ],
+      "css": [
+        "/build/nouislider.8e00da5d.css"
+      ]
+    },
+    "scripts": {
+      "js": [
+        "/build/runtime.0aeca304.js",
+        "/build/0.c90fd7d1.js",
+        "/build/scripts.dd8e785a.js"
+      ],
+      "css": [
+        "/build/scripts.0bd1b2d3.css"
+      ]
+    }
+  }
+}

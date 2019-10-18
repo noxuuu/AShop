@@ -1,0 +1,115 @@
+<div class="sidebar">
+    <div class="main-menu">
+        <div class="scroll">
+            <ul class="list-unstyled">
+                <li {% if app.request.pathinfo == '/' or app.request.get('_route') == 'faq'   %}class="active"{% endif %}>
+                    <a href="#dashboard">
+                        <i class="iconsmind-Shop-4"></i>
+                        <span>Sklep</span>
+                    </a>
+                </li>
+                <li {% if app.request.get('_route') == 'service_info' %}class="active"{% endif %}>
+                    <a href="#services">
+                        <i class="iconsmind-Checkout"></i> Usługi
+                    </a>
+                </li>
+                <li>
+                    <a href="#servers">
+                        <i class="iconsmind-Cloud-Computer"></i> Serwery
+                    </a>
+                </li>
+                <li {% if app.request.get('_route') == 'voucher' %}class="active"{% endif %}>
+                    <a href="#vouchers">
+                        <i class="iconsmind-Billing"></i> Vouchery
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="sub-menu">
+        <div class="scroll">
+            <ul class="list-unstyled" data-link="dashboard">
+                <li>
+                    <a href="{{ path('homePage') }}">
+                        <i class="simple-icon-home"></i> Strona główna
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="simple-icon-docs"></i> Regulamin
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('faq') }}">
+                        <i class="simple-icon-question"></i>F.A.Q.
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="simple-icon-phone"></i> Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="simple-icon-social-steam"></i> Jak sprawdzić SteamID?
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="simple-icon-user-follow"></i> Jak się zarejestrować?
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="simple-icon-lock"></i> Jak zmienić hasło?
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="list-unstyled" data-link="services">
+                {% if services|length > 0 %}
+                    {% for service in services %}
+                        <li>
+                            <a href="{{ path('service_info', {'service': service.GetName()}) }}">
+                                <i class="simple-icon-star"></i> {{ service.GetName() }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>
+                        <i class="simple-icon-close"></i> Brak
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="list-unstyled" data-link="servers">
+                {% if servers|length > 0 %}
+                    {% for server in servers %}
+                        <li>
+                            <a href="">
+                                <i class="iconsmind-Cloud-Computer"></i> {{ server.GetName() }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li>
+                        <i class="simple-icon-close"></i> Brak
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="list-unstyled" data-link="vouchers">
+                <li>
+                    <a href="#">
+                        <i class="simple-icon-info"></i> Jak zdobyć voucher?
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('voucher') }}">
+                        <i class="simple-icon-wallet"></i> Zrealizuj kod
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

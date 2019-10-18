@@ -1,0 +1,242 @@
+{% extends 'frontend/admin//base.html.twig' %}
+ 
+{% block title %}Usługi{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h5 class="txt-light"><?php echo $info['title']; ?></h5>
+            </div>
+
+        </div>
+        <!-- /Title -->
+        <!-- Row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Usługi</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p>W tym miejscu możesz zarządzać usługami dodanymi do sklepu.</p>
+                                </div>
+                                <div class="col-md-2 col-md-offset-2">
+                                    <?php if(CheckAccess('can_add_services')) {?>
+                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ USŁUGĘ</button>
+                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="add1">Dodaj usługę</h4>
+                                                </div>
+                                                {{ form_start(form_add) }}
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>NAZWA:</label>
+                                                            {{ form_widget(form_add.name) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>
+                                                                OPIS (Strona)<br/>
+                                                                <span class="help-block">✔ HTML Enabled</span>
+                                                            </label>
+                                                            {{ form_widget(form_add.webDescription) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>
+                                                                OPIS (Serwer)<br/>
+                                                                <span class="help-block">✔ Menu Item</span>
+                                                            </label>
+                                                            {{ form_widget(form_add.serverDescription) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Obrazek:</label>
+                                                            {{ form_widget(form_add.imageUrl) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Sufix:</label>
+                                                            {{ form_widget(form_add.sufix, {'value' : 'dni' }) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Typ:</label>
+                                                            {{ form_widget(form_add.type) }}
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label>Kolejność:</label>
+                                                            {{ form_widget(form_add.orderNumber, {'value' : pagination.getTotalItemCount+1 }) }}
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Flagi (Tylko jesli wybrane wyżej)</label>
+                                                            {{ form_widget(form_add.flags) }}
+                                                            <span class="help-block"><a href="#"  target="_blank">Opis flag</a></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                    </div>
+                                                {{ form_end(form_add) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <div class="table-responsive">
+                                    <table class="table display product-overview mb-30" id="support_table">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>NAZWA</th>
+                                            <th>MODUŁ</th>
+                                            <th>KOLEJNOŚĆ</th>
+                                            <?php if(CheckAccess('can_edit_services') || CheckAccess('can_delete_services')) {?><th>AKCJE</th><?php } ?>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for service in pagination %}
+                                                <tr>
+                                                    <td>{{ service.GetId() }}</td>
+                                                    <td>{{ service.GetName() }}</td>
+                                                    <td>
+                                                        {% if service.GetType() == 1 %}
+                                                            <span class="label label-success">Flagi</span>
+                                                        {% elseif service.GetType() == 2 %}
+                                                            <span class="label label-danger">MySQL</span>
+                                                        {% elseif service.GetType() == 3 %}
+                                                            <span class="label label-warning">Inne</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {{ service.GetOrderNumber() }}
+                                                    </td>
+                                                    <td>
+                                                        <?php if(CheckAccess('can_edit_services')) {?><a href="#" data-toggle="modal" data-target="#edit-{{ service.GetId() }}" class=""><i class="fa fa-check"></i></a>
+                                                        <?php } if(CheckAccess('can_delete_services')) {?> | <a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ service.GetId() }}"><i class="fa fa-trash"></i></a>
+                                                    </td>
+
+                                                    <?php if(CheckAccess('can_edit_services')) {?>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="edit-{{ service.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ service.GetId() }}">
+                                                        <div class="modal-dialog modal-lg" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="editlabel1">Edycja usługi</h4>
+                                                                </div>
+                                                                {% set edit_form = form_edit.createView %}
+                                                                {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_service', { 'service' : service.GetId() })}) }}
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <label>NAZWA:</label>
+                                                                            {{ form_row(edit_form.name, {'value' : service.GetName()}) }}
+                                                                        </div>
+                                                                        <?php if($row['type'] != 3) {?>
+                                                                        <div class="form-group">
+                                                                            <label>
+                                                                                OPIS (Strona)<br/>
+                                                                                <span class="help-block">✔ HTML Enabled</span>
+                                                                            </label>
+                                                                            {{ form_row(edit_form.webDescription, {'value' : service.GetWebDescription()}) }}
+                                                                        </div>
+                                                                        <?php } if($row['type'] != 2) {?>
+                                                                        <div class="form-group">
+                                                                            <label>
+                                                                                OPIS (Serwer)<br/>
+                                                                                <span class="help-block">✔ Menu Item</span>
+                                                                            </label>
+                                                                            {{ form_row(edit_form.serverDescription, {'value' : service.GetServerDescription()}) }}
+                                                                        </div>
+                                                                        <?php }?>
+                                                                        <div class="form-group">
+                                                                            <label>Obrazek:</label>
+                                                                            {{ form_row(edit_form.imageUrl, {'value' : service.GetImageUrl()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Sufix:</label>
+                                                                            {{ form_row(edit_form.sufix, {'value' : service.GetSufix()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Typ:</label>
+                                                                            {{ form_row(edit_form.type, {'data' : service.getType()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Kolejność:</label>
+                                                                            {{ form_row(edit_form.orderNumber, {'value' : service.getOrderNumber()}) }}
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Flagi (Tylko jesli wybrane wyżej)</label>
+                                                                            {{ form_row(edit_form.flags, {'value' : service.getFlags()}) }}
+                                                                            <span class="help-block"><a href="#"  target="_blank">Opis flag</a></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="submit" class="btn btn-primary">Edytuj</button>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    </div>
+                                                                {{ form_end(edit_form) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <?php } if(CheckAccess('can_delete_services')) {?>
+                                                    <div class="modal fade" id="delete-{{ service.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ service.GetId() }}">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="deletelabel{{ service.GetId() }}">Usuń usługę</h4>
+                                                                </div>
+                                                                <form action="" method="post">
+                                                                    <div class="modal-body">
+                                                                        Czy jesteś pewny, że chcesz usunąć usługę <b>{{ service.GetName() }}</b> ze sklepu?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a class="btn btn-primary" href="{{ path('delete_service', {'id': service.GetId()}) }}" role="button">Usuń !</a>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php } ?>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
+                            <div class="col col-xs-8">
+                                <ul class="pagination hidden-xs pull-right">
+                                    <div class="navigation">
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Row -->
+    </div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}

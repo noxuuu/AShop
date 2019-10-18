@@ -1,0 +1,117 @@
+{% extends 'frontend/common/index.html.twig' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div>
+                        <div class="d-flex flex-row mb-3 pb-3">
+                            <div class="simple-line-icons">
+                                <div class="glyph">
+                                    <div class="glyph-icon simple-icon-exclamation"></div>
+                                </div>
+                            </div>
+
+                            <div class="pl-3 pr-2">
+                                <a href="#">
+                                    <h2 style="padding-top: 5px;" class="font-weight-light">W tym miejscu możesz kupić usługę na każdym z naszych serwerów!</h2>
+                                    <h2 class="font-weight-light">Niezależnie od usługi, czas jej realizacji wynosi pare sekund!</h2>
+                                    <h2 class="font-weight-light">Pozdrawiamy!</h2>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="row icon-cards-row mb-4 sortable">
+                <div class="col-md-3 col-lg-3 col-sm-4 col-6 mb-2">
+                    <a href="#" class="card">
+                        <div class="card-body text-center">
+                            <i class="simple-icon-star"></i>
+                            <p class="card-text font-weight-semibold mb-0">Wybierz usługę</p>
+                            <p class="text-center btn btn-primary btn-lg">1</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-4 col-6 mb-2">
+                    <a href="#" class="card">
+                        <div class="card-body text-center">
+                            <i class="iconsmind-Cloud-Computer"></i>
+                            <p class="card-text mb-0">Wybierz serwer</p>
+                            <p class="text-center btn btn-primary btn-lg">2</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-4 col-6 mb-2">
+                    <a href="#" class="card">
+                        <div class="card-body text-center">
+                            <i class="iconsmind-Dollar"></i>
+                            <p class="card-text mb-0">Kup usługę</p>
+                            <p class="text-center btn btn-primary btn-lg">3</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-4 col-6 mb-2">
+                    <a href="#" class="card">
+                        <div class="card-body text-center">
+                            <i class="simple-icon-game-controller"></i>
+                            <p class="card-text mb-0">Graj!</p>
+                            <p class="text-center btn btn-primary btn-lg">4</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="simple-icon-star mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ boughtServices|length }} usług </p>
+                            <p class="text-small text-white">Zakupionych przez naszych klientów</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Cloud-Computer mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ servers|length }} serwerów</p>
+                            <p class="text-small text-white">z dostępnymi usługami</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Checked-User mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ users|length }} użytkowników</p>
+                            <p class="text-small text-white">Zarejestrowanych w sklepie</p>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+{% endblock %}

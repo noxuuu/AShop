@@ -1,0 +1,25 @@
+{% extends 'common/base.html.twig' %}
+{% block title %}404 - Nie znaleziono{% endblock %}
+{% block bodyclass %}class="background show-spinner"{% endblock %}
+{% block body %}
+    <div class="fixed-background"></div>
+    <main>
+        <div class="container">
+            <div class="row h-100">
+                <div class="col-12 col-md-10 mx-auto my-auto">
+                    <div class="card auth-card">
+                        <div class="position-relative image-side "></div>
+                        <div class="form-side text-center">
+                            <a href="/">
+                                <span class="logo-single"></span>
+                            </a>
+                            <h3 class="mb-4">Coś popsułeś! Element którego szukasz, nie istnieje.. <i class="iconsmind-Angry"></i></h3>
+                            <p class="display-1 font-weight-bold mb-5">404.</p>
+                            <a href="{{ path('homePage') }}" class="btn btn-primary btn-lg btn-shadow">Wróć do domu!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
