@@ -37,50 +37,55 @@ class pricesController extends AbstractController
 
         // === Create forms ===
         $price = new Prices();
-        //$form_add = $this->createForm(pricesType::class, $price);
-        //$form_edit = $this->createForm(pricesType::class, $price);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $form_add = $this->createForm(pricesType::class, $price);
+        $form_edit = $this->createForm(pricesType::class, $price);
+
+        $form_add->handleRequest($request);
+
+
+        // === Perform data ===
+        if ($form_add->isSubmitted() && $form_add->isValid()) {
+
+            // === Save servers in other form :) ===
+            $servers = "";
+            $formData = $form_add->getData();
+
+            foreach ($formData->getServerId() as $server)
+                $servers = ''.$servers.$server.'-';
+
+            // sub last char, cuz there is useless "-"
+            $servers = substr($servers,0,strlen($servers)-1);
+
+            // === Flush to DataBase! ===
+            try {
+                // let's find a objects
+                $price->setServerId($servers);
+                $price->setServiceId($servicesRepo->find($formData->getServiceId()));
+                $price->setTariffId($tariffsRepo->find($formData->getTariffId()));
+
+                // save progress!
+                $entityManager->persist($price);
+                $entityManager->flush();
+
+                $this->addFlash('add_success', 'Dodano nową cenę!');
+            } catch (Exception $e) {
+                $this->addFlash('add_error', 'Wystąpił niespodziewany błąd.');
+            }
+            return $this->redirectToRoute('admin_prices');
+        }
+
 
         return $this->render('admin/prices.html.twig', [
             'pagination' => $paginator->paginate($pricesRepo->findAll(), $request->query->getInt('page', 1), 30),
             'tariffs' => $tariffsRepo->findAll(),
             'servers' => $serversRepo->findAll(),
             'services' => $servicesRepo->findAll(),
-            //'form_add' => $form_add,
-            //'form_edit' => $form_edit
+            'form_add' => $form_add->createView(),
+            'form_edit' => $form_edit
         ]);
     }
-
-    /*/**
-     * @Route("/admin/prices/add/{pm}", name="add_tariff")
-     * @Entity("pm", expr="repository.find(pm)")
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-
-    public function addPrice(Request $request, PaymentMethod $pm)
-    {
-        // === create default data ===
-        $tariff = new Tariffs();
-        $addForm = $this->createForm(tariffType::class, $tariff);
-        $addForm->handleRequest($request);
-
-        // === validate form & save data ===
-        if ($addForm->isSubmitted() && $addForm->isValid()) {
-            try {
-                $tariff->setPaymentMethodId($pm);
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($tariff);
-                $entityManager->flush();
-
-                $this->addFlash('add_success', 'Dodano nową taryfę!');
-
-            } catch (\Exception $e) {
-                $this->addFlash('add_error', 'Wystąpił niespodziewany błąd.');
-            }
-        }
-
-        return $this->redirectToRoute('admin_prices');
-    }*/
 
     /**
      * @Route("/admin/prices/{price}/edit", name="edit_price")
@@ -90,21 +95,49 @@ class pricesController extends AbstractController
      */
     public function editPrice(Request $request, Prices $price)
     {
+        // get repo's
+        $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+
+        // reset choice type list for edit form 'handller'
+        $price->setServerId(['-', 0]);
+
+        // get form type to handle it
         $editForm = $this->createForm(pricesType::class, $price);
         $editForm->handleRequest($request);
 
+        // validate form
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+
+            // === Save servers in other form :) ===
+            $servers = "";
+            $formData = $editForm->getData();
+
+            foreach ($formData->getServerId() as $server)
+                $servers = ''.$servers.$server.'-';
+
+            // sub last char, cuz there is useless "-"
+            $servers = substr($servers,0,strlen($servers)-1);
+
+            // let's find a objects
+            $price->setServerId($servers);
+            $price->setServiceId($servicesRepo->find($formData->getServiceId()));
+            $price->setTariffId($tariffsRepo->find($formData->getTariffId()));
+
             try {
+                // get entity manager
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
 
+                // notify admin
                 $this->addFlash('edit_success', 'Edytowano cenę!');
 
-            } catch (\Exception $e) {
+            } catch (\Exception $e) { // catch error and send notification if they exist
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
             }
         }
 
+        // go back to prices page
         return $this->redirectToRoute('admin_prices');
     }
 

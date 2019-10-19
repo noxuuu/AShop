@@ -21,4 +21,17 @@ class ServicesRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * Retrieves services names and equal id
+     * @param $id
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getServicesNamesAndId(){
+        $qb = $this->createQueryBuilder('s');
+        $qb->select('s.id', 's.name');
+        $query = $qb->getQuery();
+        return $query->getArrayResult();
+    }
 }
