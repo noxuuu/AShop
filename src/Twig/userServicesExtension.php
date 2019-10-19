@@ -2,19 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: Patryk Szczepanski
- * Date: 18/10/2019
- * Time: 09:37
+ * Date: 19/10/2019
+ * Time: 03:42
  */
 
 namespace App\Twig;
 
-use App\Entity\Servers;
+use App\Entity\UserServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-class serverExtension extends AbstractExtension
+class userServicesExtension extends AbstractExtension
 {
     /**
      * @var EntityRepository
@@ -28,19 +28,27 @@ class serverExtension extends AbstractExtension
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->repository = $entityManager->getRepository(Servers::class);
+        $this->repository = $entityManager->getRepository(UserServices::class);
     }
 
+    /**
+     * @return array|TwigFilter[]|\Twig_Filter[]
+     */
     public function getFilters()
     {
         return [
-            new TwigFilter('get_server', [$this, 'setName']),
+            new TwigFilter('get_service_progressbar', [$this, 'getProgress']),
         ];
     }
 
-    public function setName($price)
+
+    /**
+     * @param $service
+     * @return null|object
+     */
+    public function getProgress($service)
     {
-        $price = $this->repository->find($price);
-        return $price;
+        //$service = $this->repository->find($service);
+        return $service->getBoughtDate()->format('Y-m-d H:i:s');
     }
 }

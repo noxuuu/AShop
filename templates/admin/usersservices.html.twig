@@ -1,9 +1,496 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'frontend/admin/base.html.twig' %}
  
-{% block title %}{% endblock %}
+{% block title %}Usługi użytkowników{% endblock %}
 
 {% block body %}
+<div class="container-fluid">
 
+    <!-- Title -->
+    <div class="row heading-bg  bg-blue">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h5 class="txt-light">Usługi użytkowników</h5>
+        </div>
+        <!-- Servers filter -->
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <select class="form-control round-input" required onChange="self.location='?svr='+this.options[this.selectedIndex].value">
+                <!--<?php   ===============================
+                            ============ Access ===========
+                            ===============================
+							if($_SESSION['can_view_all_stats']) {
+								echo '<option value="0">Wszystkie serwery</option>';
+                }
+
+                $statement2 = $dbh->prepare('SELECT * FROM shop_servers');
+                $statement2->execute();
+
+                while($row2=$statement2->fetch())
+                {
+                $found = false;
+
+                foreach ($servers as $serverid)
+                if($row2['id'] == $serverid)
+                $found = true;
+
+                if(!$found)
+                continue;
+                ?>
+                <option value="<?php echo $row2['id'];?>" <?php if($row2['id'] == $_GET['svr']) echo 'selected'; ?>><b><?php echo $row2['name'];?></b></option>
+                <?php } ?> @down - selected if serverid == server.getId() -->
+                <option value="0">Wszystkie serwery</option>
+                {% for server in servers %}
+                    <option value="{{ server.getId() }}" ><b>{{ server.getName() }}</b></option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- /Servers filter -->
+    </div>
+    <!-- /Title -->
+
+    <!-- Row -->
+    {% if search_results %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default card-view">
+                <div class="panel-heading">
+                    <div class="pull-left">
+                        <h6 class="panel-title txt-dark">Wyniki wyszukiwania dla identyfikatora <b><?php echo $_POST["overlay-search"]; ?></b></h6>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p>Aby powrócić do wcześniejszej strony naciśnij przycisk obok.</p>
+                            </div>
+                            <div class="col-md-2 col-md-offset-2">
+                                <a href="?page=temp_services">
+                                    <button type="button" class="btn btn-success">POKAŻ WSZYSTKIE</button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <div class="table-responsive">
+                                <table class="table display product-overview mb-30" id="support_table">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Użytkownik</th>
+                                        <th>Usługa</th>
+                                        <th>Serwer</th>
+                                        <th>Steam ID</th>
+                                        <th>Status</th>
+                                        <th>Wygasa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+															$statement = $dbh->prepare("SELECT * FROM shop_user_services WHERE auth_data LIKE '%".$_POST['overlay-search']."%' ORDER BY bought_date DESC");
+                                    $statement->execute();
+
+                                    while($row=$statement->fetch())
+                                    {
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $row['id']; ?></td>
+                                        <td>
+                                            <?php
+																	$statement2 = $dbh->prepare("SELECT login, groupid FROM shop_users WHERE steamid = '".$row['auth_data']."'");
+                                            $statement2->execute();
+                                            $row2 = $statement2->fetch();
+
+                                            $statement_style = $dbh->prepare("SELECT style FROM shop_groups WHERE id = ".$row2['groupid']."");
+                                            $statement_style->execute();
+                                            $row3 = $statement_style->fetch();
+
+                                            if($row2['login'] != "")
+                                            echo '<span style="'.$row3['style'].'">'.$row2['login'].'</span>';
+                                            else
+                                            {
+                                            $playerName = "Brak"; // Set default value
+                                            $request = file_get_contents('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=52A66B13219F645834149F1A1180770A&steamids=' . toCommunityID($row['auth_data']) . '');
+                                            $result = json_decode($request);
+
+                                            foreach ($result->response->players as $player)
+                                            $playerName = $player->personaname;
+
+                                            echo '<span class="label label-success">'.$playerName.'</span>';
+                                            }
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+																	$statement_srv = $dbh->prepare("SELECT name FROM shop_services WHERE id = ".$row['service']."");
+                                            $statement_srv->execute();
+                                            $row_srv = $statement_srv->fetch();
+                                            echo '<span class="label label-warning">'.$row_srv['name'].'</span>';
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+																	if($row['server'] != 999999)
+																	{
+																		$statement_svr = $dbh->prepare("SELECT name FROM shop_servers WHERE id = ".$row['server']."");
+                                            $statement_svr->execute();
+                                            $row_svr = $statement_svr->fetch();
+                                            echo '<span class="label label-danger">'.$row_svr['name'].'</span>';
+                                            }
+                                            else
+                                            echo '<span class="label label-danger">Wszystkie</span>';
+                                            ?>
+                                        </td>
+                                        <td><?php echo $row['auth_data'];?></td>
+                                        <td>
+                                            <div class="progress progress-xs mb-0 ">
+                                                <?php
+																		$date = new DateTime();
+																		$timestamp = $date->getTimestamp();
+                                                $procent = round(100 - ((($timestamp - $row['bought_date'])/($row['expires'] - $row['bought_date']))*100));
+
+                                                if($procent >= 60) $style = 'success';
+                                                else if($procent >= 25) $style = 'warning';
+                                                else $style = 'danger';
+
+                                                echo '<div class="progress-bar progress-bar-'.$style.'" style="width: '.$procent.'%"></div>';
+                                                ?>
+                                            </div>
+                                        </td>
+                                        <td><?php echo date('m/d/Y H:i:s', $row['expires']);?></td>
+                                        <td><a href="javascript:void(0)" data-toggle="modal" data-target="#edit-<?php echo $row['id'];?>" class=""><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-inverse" data-toggle="modal" data-target="#delete-<?php echo $row['id'];?>"><i class="fa fa-trash"></i></a></td>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="edit-<?php echo $row['id'];?>" tabindex="-1" role="dialog" aria-labelledby="editlabel<?php echo $row['id'];?>">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="editlabel1">Edytuj usługę gracza: <?php echo 'nazwa/o id STEAM_1:1123123';?></h4>
+                                                    </div>
+                                                    <form action="" method="post">
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label>#ID</label>
+                                                                <input type="text" name="id" disabled value="<?php echo $row['id'];?>" class="form-control">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>SteamID</label>
+                                                                <input type="text" name="auth_data" value="<?php echo $row['auth_data'];?>" class="form-control">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Usługa</label>
+                                                                <select name="service" class="form-control round-input">
+                                                                    <option value="<?php echo $row['service'];?>"><?php echo $row['service'];?></option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Wygasa:</label>
+                                                                <input type="text" name="expires" value="<?php echo date('m/d/Y H:i:s', $row['expires']);?>" class="form-control">
+                                                                <input type="checkbox" name="expires_no"> Na zawsze
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="service_id" value="<?php echo $row['id']; ?>">
+                                                            <button type="sumbit" name="service_edit" class="btn btn-primary">Edytuj</button>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="delete-<?php echo $row['id'];?>" tabindex="-1" role="dialog" aria-labelledby="deletelabel<?php echo $row['id'];?>">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="deletelabel<?php echo $row['id'];?>">Usuń usługę</h4>
+                                                    </div>
+                                                    <form action="" method="post">
+                                                        <div class="modal-body">
+                                                            Czy jesteś pewny, że chcesz usunąć usługę <b><?php echo $row['service'];?></b> ze sklepu?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="service_id" value="<?php echo $row['id']; ?>">
+                                                            <input type="hidden" name="auth_data" value="<?php echo $row['auth_data']; ?>">
+                                                            <button type="sumbit" name="delete_service" class="btn btn-primary">Usuń !</button>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default card-view">
+                <div class="panel-heading">
+                    <div class="pull-left">
+                        <!--?php
+											if($_GET["svr"])
+											{
+												$statement_svr = $dbh->prepare("SELECT name FROM shop_servers WHERE id = ".$_GET['svr']."");
+                        $statement_svr->execute();
+                        $row_svr = $statement_svr->fetch();
+                        }
+                        ?>-->
+                        <h6 class="panel-title txt-dark">Usługi <?php if($_GET["svr"]) echo '('.$row_svr['name'].')'; ?></h6>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-wrapper collapse in">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p>W tym miejscu możesz zarządzać czasowymi usługami graczy.</p>
+                            </div>
+                            <div class="col-md-2 col-md-offset-2">
+                                <?php if(CheckAccess('can_add_user_services')) {?>
+                                <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ USŁUGĘ</button>
+                                <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="add1">Dodaj usługę</h4>
+                                            </div>
+                                            <form action="" method="post">
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label>Usługa:</label>
+                                                        <select name="serviceid" class="form-control round-input" required>
+                                                            <?php
+																					$statement = $dbh->prepare('SELECT * FROM shop_services WHERE type != 3');
+                                                            $statement->execute();
+
+                                                            while($row=$statement->fetch())
+                                                            {
+                                                            ?>
+                                                            <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>SteamID</label>
+                                                        <input type="text" name="auth_data" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="text" name="auth_email" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Serwer:</label>
+                                                        <select name="serverid[]" class="form-control round-input" multiple="multiple" required>
+                                                            <?php
+																					$options = 0;
+																					$statement = $dbh->prepare('SELECT * FROM shop_servers');
+                                                            $statement->execute();
+
+                                                            while($row=$statement->fetch())
+                                                            {
+                                                            $found = false;
+
+                                                            foreach ($servers as $serverid)
+                                                            if($row['id'] == $serverid)
+                                                            $found = true;
+
+                                                            if(!$found)
+                                                            continue;
+
+                                                            $options++; ?>
+                                                            <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
+                                                            <?php }
+
+																				if($options == 0)
+																					echo '<option selected disabled>Nie masz uprawnień do dodawania usług.</option>'; ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Ilość Dni:</label>
+                                                        <input type="text" name="value" class="form-control">
+                                                        <!-- <input type="checkbox" name="expires_no"> Na zawsze -->
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <?php if($options != 0) { ?><button type="sumbit" name="service_add" class="btn btn-primary">Dodaj</button><?php } ?>
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+
+                        <!-- ROWS -->
+                        <div class="table-wrap">
+                            <div class="table-responsive">
+                                <table class="table display product-overview mb-30" id="support_table">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Użytkownik</th>
+                                        <th>Usługa</th>
+                                        <th>Serwer</th>
+                                        <th style="width: 20%;">Steam ID</th>
+                                        <th>Status</th>
+                                        <th>Wygasa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for service in pagination %}
+                                            <tr>
+                                                <td>{{ service.getId() }}</td>
+                                                <td>
+                                                    <?php
+									        								$statement2 = $dbh->prepare("SELECT login, groupid FROM shop_users WHERE steamid = '".$row['auth_data']."'");
+                                                    $statement2->execute();
+                                                    $row2 = $statement2->fetch();
+
+                                                    $statement_style = $dbh->prepare("SELECT style FROM shop_groups WHERE id = ".$row2['groupid']."");
+                                                    $statement_style->execute();
+                                                    $row3 = $statement_style->fetch();
+
+                                                    if($row2['login'] != "")
+                                                    echo '<span style="'.$row3['style'].'">'.$row2['login'].'</span>';
+                                                    else
+                                                    {
+                                                    $playerName = "Brak"; // Set default value
+                                                    $request = file_get_contents('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=52A66B13219F645834149F1A1180770A&steamids=' . toCommunityID($row['auth_data']) . '');
+                                                    $result = json_decode($request);
+
+                                                    foreach ($result->response->players as $player)
+                                                    $playerName = $player->personaname;
+
+                                                    echo '<span class="label label-success">'.$playerName.'</span>';
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                   <span class="label label-warning">{{ service.getServiceId()|get_service.getName() }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="label label-warning">{{ service.getServerId()|get_server.getName() }}</span>
+                                                </td>
+                                                <td>{{ service.getAuthData() }}</td>
+                                                <td>
+                                                    {{ service|get_service_progressbar }}
+                                                    <!--<div class="progress progress-xs mb-0 ">
+                                                        <?php
+									        									$date = new DateTime();
+									        									$timestamp = $date->getTimestamp();
+                                                        $procent = round(100 - ((($timestamp - $row['bought_date'])/($row['expires'] - $row['bought_date']))*100));
+
+                                                        if($procent >= 60) $style = 'success';
+                                                        else if($procent >= 25) $style = 'warning';
+                                                        else $style = 'danger';
+
+                                                        echo '<div class="progress-bar progress-bar-'.$style.'" style="width: '.$procent.'%"></div>';
+                                                        ?>
+                                                    </div>-->
+                                                </td>
+                                                <td>{{ service.getExpires()|date("d/m/Y H:i:s") }}</td>
+                                                <td><?php if(CheckAccess('can_edit_user_services')) { ?>
+                                                    <a href="#" data-toggle="modal" data-target="#edit-{{ service.getId() }}" class=""><i class="fa fa-check"></i></a>
+                                                    <?php } if(CheckAccess('can_delete_user_services')) {?>
+                                                    <a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ service.getId() }}"><i class="fa fa-trash"></i></a>
+                                                </td>
+
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="edit-{{ service.getId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ service.getId() }}">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title" id="editlabel1">Edytuj usługę gracza: <?php echo 'nazwa/o id STEAM_1:1123123';?></h4>
+                                                            </div>
+                                                            <form action="" method="post">
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label>#ID</label>
+                                                                        <input type="text" name="id" disabled value="<?php echo $row['id'];?>" class="form-control">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>SteamID</label>
+                                                                        <input type="text" name="auth_data" value="<?php echo $row['auth_data'];?>" class="form-control">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Usługa</label>
+                                                                        <select name="service" class="form-control round-input">
+                                                                            <option value="<?php echo $row['service'];?>"><?php echo $row['service'];?></option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Wygasa:</label>
+                                                                        <input type="text" name="expires" value="<?php echo date('m/d/Y H:i:s', $row['expires']);?>" class="form-control">
+                                                                        <input type="checkbox" name="expires_no"> Na zawsze
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="sumbit" name="service_edit" class="btn btn-primary">Edytuj</button>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade" id="delete-{{ service.getId() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ service.getId() }}">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title" id="deletelabel{{ service.getId() }}">Usuń usługę</h4>
+                                                            </div>
+                                                            <form action="" method="post">
+                                                                <div class="modal-body">
+                                                                    Czy jesteś pewny, że chcesz usunąć usługę <b><?php echo $row['service'];?></b>?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="submit" class="btn btn-primary">Usuń !</button>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
+                        <div class="col col-xs-8">
+                            <ul class="pagination hidden-xs pull-right">
+                                <div class="navigation">
+                                    {{ knp_pagination_render(pagination) }}
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Row -->
+</div>
 {% endblock %}
 
 {% block javascript %}{% endblock %}
