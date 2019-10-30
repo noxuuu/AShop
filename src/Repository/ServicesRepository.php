@@ -28,9 +28,16 @@ class ServicesRepository extends EntityRepository
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getServicesNamesAndId(){
+    public function getServicesNamesAndId(bool $exclude_apis = false){
         $qb = $this->createQueryBuilder('s');
-        $qb->select('s.id', 's.name');
+
+        if($exclude_apis)
+            $qb->select('s.id', 's.name')
+            ->where('s.type != 3')
+            ->andWhere('s.type != 4'); // exclude api services and minecraft cause that could get bugged
+        else
+            $qb->select('s.id', 's.name');
+
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }

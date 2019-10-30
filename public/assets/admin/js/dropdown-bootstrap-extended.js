@@ -12,7 +12,7 @@ var dropdownSelectors = $('.dropdown, .dropup');
 // Custom function to read dropdown data
 // =========================
 function dropdownEffectData(target) {
-  // @todo - page level global?
+  //
   var effectInDefault = null,
       effectOutDefault = null;
   var dropdown = $(target),

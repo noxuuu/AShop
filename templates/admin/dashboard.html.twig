@@ -24,7 +24,7 @@
                                         <i class="icon-diamond txt-light"></i>
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">- zł</span>
+                                        <span class="txt-light counter">{{ stats['monthly_income']|number_format(2) }} zł</span>
                                         <h6 class="txt-light">Miesięczny zysk</h6>
                                     </div>
                                 </div>
@@ -41,7 +41,7 @@
                                         <i class="icon-rocket txt-light"></i>
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">-</span>
+                                        <span class="txt-light counter">{{ stats['month_bought_services'] }}</span>
                                         <h6 class="txt-light">Zakupionych usług w miesiącu</h6>
                                     </div>
                                 </div>
@@ -127,16 +127,17 @@
                             <ul class="chat-list-wrap">
                                 <li class="chat-list">
                                     <div class="chat-body">
-                                        <a class="" href="#">
-                                            <div class="chat-data">
-                                                <div class="user-data">
-                                                    <span class="name block capitalize-font"><span style="">Login</span></span>
-                                                    <span class="time block txt-grey">STEAM_0:1:2345678 - 11/01/2019</span>
+                                        {% for user in users %}
+                                            <a class="" href="#">
+                                                <div class="chat-data">
+                                                    <div class="user-data">
+                                                        <span class="name block capitalize-font"><span style="">{{ user['username'] }}</span></span>
+                                                        <span class="time block txt-grey">{{ user['authData'] }} - {{ user['joinDate']|date("d/m/Y H:i:s") }}</span>
+                                                    </div>
+                                                    <div class="clearfix"></div>
                                                 </div>
-                                                <div class="status away"></div>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                        </a>
+                                            </a>
+                                        {% endfor %}
                                     </div>
                                 </li>
                             </ul>
@@ -154,7 +155,7 @@
                     </div>
                     <div class="panel-wrapper collapse in">
                         <div class="panel-body">
-                            <canvas id="chart_7" height="447"></canvas>
+                            <canvas id="chart_most_bought" height="447"></canvas>
                         </div>
                     </div>
                 </div>
@@ -169,7 +170,7 @@
                                         <i class="icon-diamond txt-light"></i>
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">- zł</span>
+                                        <span class="txt-light counter">{{ stats['alltime_income']|number_format(2) }} zł</span>
                                         <h6 class="txt-light">Całkowity zysk</h6>
                                     </div>
                                 </div>
@@ -186,7 +187,7 @@
                                         <i class="icon-rocket txt-light"></i>
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">-</span>
+                                        <span class="txt-light counter">{{ stats['bought_services'] }}</span>
                                         <h6 class="txt-light">Zakupione usługi</h6>
                                     </div>
                                 </div>
@@ -203,7 +204,7 @@
                                         <i class="icon-rocket txt-light"></i>
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">-</span>
+                                        <span class="txt-light counter">{{ stats['sent_sms'] }}</span>
                                         <h6 class="txt-light">Wysłane sms-y</h6>
                                     </div>
                                 </div>
@@ -228,7 +229,7 @@
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
                                         <h6 class="txt-light">Użytkowników</h6>
-                                        <span class="txt-light counter">-</span>
+                                        <span class="txt-light counter">{{ stats['users'] }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -245,7 +246,7 @@
                                     </div>
                                     <div class="col-xs-7 text-center data-wrap-right">
                                         <h6 class="txt-light">Serwerów</h6>
-                                        <span class="txt-light counter">-</span>
+                                        <span class="txt-light counter">{{ stats['servers'] }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -267,18 +268,17 @@
                     <div class="panel-wrapper collapse in">
                         <div class="panel-body">
                             <div class="streamline">
-                                <div class="sl-item sl-primary">';
+                                {% for activity in last_activity %}
                                     <div class="sl-item sl-success">
                                         <div class="sl-content">
-    													<span class="font-12 mb-5">
-    														<span style="">'.$row2['login'].'</span>
-    															- date 'd/m/Y H:i:s'
-    														?>
-    													</span>
-                                            <p class="txt-dark">content</p>
+    										<span class="font-12 mb-5">
+    											<span style="">{{ activity['admin'] }}</span>
+    												- {{ activity['date']|date("d/m/Y H:i:s") }}
+    										</span>
+                                            <p class="txt-dark">{{ activity['content'] }}</p>
                                         </div>
                                     </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -289,7 +289,7 @@
     </div>
 {% endblock %}
 
-{% block javascript %}
+{% block javascripts %}
     <script>
         $(document).ready(function(){
             $('#support_table').DataTable({
@@ -298,17 +298,33 @@
                 "bPaginate": false,
                 "bInfo": false,
             });
-            if( $('#chart_7').length > 0 ){
-                var ctx7 = document.getElementById("chart_7").getContext("2d");
+            if( $('#chart_most_bought').length > 0 ){
+                var ctx7 = document.getElementById("chart_most_bought").getContext("2d");
 
 
                 var data7 = {
-                    labels: [],
+                    labels: [
+                        {% for service in chart_services %}
+                        "{{ service['name'] }}",
+                        {% endfor %}
+                    ],
                 datasets: [
                     {
-                        data: [],
-                backgroundColor: [],
-                hoverBackgroundColor: []
+                        data: [
+                            {% for service in chart_services %}
+                                "{{ service['name']|bs_countEm }}",
+                            {% endfor %}
+                        ],
+                backgroundColor: [
+                    {% for i in 0..15 %}
+                        "rgba({{ i|getRandomRGB }},.8)",
+                    {% endfor %}
+                ],
+                hoverBackgroundColor: [
+                    {% for i in 0..15 %}
+                        "rgba({{ i|getRandomRGB }},.8)",
+                    {% endfor %}
+                ]
             }]
             };
 

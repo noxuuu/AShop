@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\Entity(repositoryClass="App\Repository\PaymentPscRepository")
  * @ORM\Table(name="ashop_payments_psc")
  * @UniqueEntity(fields="id")
  */
@@ -32,13 +33,13 @@ class PaymentsPSC
     private $cost;
 
     /**
-     * @ORM\Column(type="string", nullable=true, options={"default": NULL})
+     * @ORM\Column(type="string", nullable=true)
      */
     private $ip;
 
     /**
      * @ORM\ManyToOne(targetEntity="PaymentMethod")
-     * @ORM\JoinColumn(name="paymentMethod", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="paymentMethod", referencedColumnName="id", nullable=false)
      */
     private $paymentMethodId;
 
@@ -46,6 +47,22 @@ class PaymentsPSC
      * @ORM\Column(type="datetime")
      */
     private $date;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return mixed

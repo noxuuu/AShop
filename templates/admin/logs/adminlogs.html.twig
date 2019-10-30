@@ -1,0 +1,85 @@
+{% extends 'frontend/admin/base.html.twig' %}
+ 
+{% block title %}Logi Administracyjne{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h5 class="txt-light">Logi Administracyjne</h5>
+            </div>
+
+        </div>
+        <!-- /Title -->
+        <!-- Row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Logi Administracyjne</h6>
+                        </div>
+                        <div class="clearfix"></div >
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="table-wrap">
+                                <div class="table-responsive">
+                                    <table class="table display product-overview mb-30" id="support_table">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Admin</th>
+                                            <th>IP</th>
+                                            <th>Akcja</th>
+                                            <th>Data</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for log in pagination %}
+                                            <tr>
+                                                <td>{{ log.getId() }}</td>
+                                                <td>
+                                                    {% if log.getAdminName() %}
+                                                        {{ log.getAdminName().getUsername() }}
+                                                    {% else %}
+                                                        <span class="label label-danger">SERVER</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="label label-warning">{{ log.getAdminIp() }}</span>
+                                                </td>
+                                                <td>
+                                                    {{ log.getContent() }}
+                                                </td>
+                                                <td>
+                                                    <span class="label label-success">{{ log.getDate()|date("d/m/Y H:i:s") }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
+                            <div class="col col-xs-8">
+                                <ul class="pagination hidden-xs pull-right">
+                                    <div class="navigation">
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}

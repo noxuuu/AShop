@@ -14,6 +14,19 @@ use Doctrine\ORM\EntityRepository;
 class ServersRepository extends EntityRepository
 {
     /**
+     * Retrieves number of rows
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countEm()
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->select('count(s.id) AS counter');
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    /**
      * Retrieves servers names and equal id
      * @param $id
      * @return mixed

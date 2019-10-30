@@ -1,9 +1,124 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'frontend/admin/base.html.twig' %}
  
-{% block title %}{% endblock %}
+{% block title %}Użytkownicy{% endblock %}
 
 {% block body %}
+    <div class="container-fluid">
 
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h5 class="txt-light">Użytkownicy</h5>
+            </div>
+        </div>
+        <!-- /Title -->
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Użytkownicy</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p>W tym miejscu możesz zarządzać użytkownikami w sklepie</p>
+                                </div>
+                                <div class="col-md-2 col-md-offset-2">
+                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ UŻYTKOWNIKA</button>
+                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="add1">Dodaj użytkownika</h4>
+                                                </div>
+                                                <form action="" method="post">
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Login:</label>
+                                                            <input type="text" name="login" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Hasło:</label>
+                                                            <input type="password" name="password" placeholder="*****" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Powtórz Hasło:</label>
+                                                            <input type="password" name="re-password" placeholder="*****" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Grupa</label>
+                                                            <select name="groupid" class="form-control round-input" required>
+
+                                                                <option value="<?php echo $row3['id'];?>"><?php echo $row3['name'];?></option>
+                                                                <option selected disabled>Nie masz uprawnień do przypisywania grup.</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>SteamID:</label>
+                                                            <input type="text" name="steamid" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                        <?php if($options != 0) { ?><button type="sumbit" name="user_add" class="btn btn-primary">Dodaj !</button><?php } ?>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <div class="table-responsive">
+                                    <table class="table display product-overview mb-30" id="support_table">
+                                        <thead>
+                                            <tr>
+                                                <th>NICK</th>
+                                                <th>GRUPA</th>
+                                                <th>STEAM ID</th>
+                                                <th>AKCJE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for user in pagination %}
+                                                <tr>
+                                                    <td>{{ user.getUsername() }}</td>
+                                                    <td>
+
+                                                    </td>
+                                                    <td>{{ user.getAuthData() }}</td>
+                                                    <td><?php if(CheckAccess('can_edit_wallet') && $find) { ?><a href="javascript:void(0)" class="text-inverse" data-toggle="modal" data-target="#money-<?php echo $row['id']; ?>"><i class="fa fa-usd"></i></a><?php } if(CheckAccess('can_edit_users') && $find) { ?><a href="javascript:void(0)" data-toggle="modal" data-target="#edit-<?php echo $row['id']; ?>" class=""><i class="fa fa-check"></i></a><?php } if(CheckAccess('can_delete_users') && $find) { ?><a href="javascript:void(0)" class="text-inverse" data-toggle="modal" data-target="#delete-<?php echo $row['id']; ?>"><i class="fa fa-trash"></i></a> <?php } ?></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
+                            <div class="col col-xs-8">
+                                <ul class="pagination hidden-xs pull-right">
+                                    <div class="navigation">
+                                        {{ knp_pagination_render(pagination) }}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
-{% block javascript %}{% endblock %}
+{% block javascripts %}{% endblock %}

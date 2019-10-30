@@ -36,19 +36,46 @@ class userServicesExtension extends AbstractExtension
      */
     public function getFilters()
     {
+
         return [
-            new TwigFilter('get_service_progressbar', [$this, 'getProgress']),
+            new TwigFilter('get_service_progressbar', [$this, 'getProgress'], array('is_safe' => array('html'))),
         ];
     }
 
 
     /**
      * @param $service
-     * @return null|object
+     * @return string
      */
     public function getProgress($service)
     {
-        //$service = $this->repository->find($service);
-        return $service->getBoughtDate()->format('Y-m-d H:i:s');
+        $date = new \DateTime();
+        $current_timestamp = $date->getTimestamp();
+        $bought_timestamp = $service->getBoughtDate()->getTimestamp();
+        $expires_timestamp = $service->getExpires()->getTimestamp();
+
+        $percent = round(100 - ( ($current_timestamp - $bought_timestamp) /($expires_timestamp - $bought_timestamp) ) * 100);
+
+        if($percent >= 60) $style = 'success';
+        else if($percent >= 25) $style = 'warning';
+        else $style = 'danger';
+
+
+        return '<div class="progress-bar progress-bar-'.$style.'" style="width: '.$percent.'%"></div>';
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

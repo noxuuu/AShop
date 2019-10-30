@@ -27,28 +27,27 @@ class BoughtServicesLogs
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="PaymentMethod")
-     * @ORM\JoinColumn(name="paymentMethod", referencedColumnName="id", nullable=true)
+     * @ORM\Column(type="integer")
      */
-    private $paymentMethodId; // klucz obcy dla ashop_payment_methods.id
+    private $paymentType;
 
     /**
      * @ORM\ManyToOne(targetEntity="UsersEntity")
-     * @ORM\JoinColumn(name="adminName", referencedColumnName="username", nullable=true)
+     * @ORM\JoinColumn(name="username", referencedColumnName="username", nullable=true)
      */
-    private $userId; // klucz obcy dla ashop_users.id
+    private $userId;
 
     /**
      * @ORM\ManyToOne(targetEntity="Servers")
      * @ORM\JoinColumn(name="server", referencedColumnName="id", nullable=true)
      */
-    private $server; // klucz obcy dla ashop_servers.id
+    private $server;
 
     /**
      * @ORM\ManyToOne(targetEntity="Services")
      * @ORM\JoinColumn(name="service", referencedColumnName="id", nullable=true)
      */
-    private $service; // klucz obcy dla ashop_services.id
+    private $service;
 
     /**
      * @ORM\Column(type="integer")
@@ -70,21 +69,20 @@ class BoughtServicesLogs
      * @ORM\Column(type="datetime")
      */
     private $date;
-
     /**
      * @return mixed
      */
-    public function getPaymentMethodId()
+    public function getPaymentType()
     {
-        return $this->paymentMethodId;
+        return $this->paymentType;
     }
 
     /**
-     * @param mixed $paymentMethodId
+     * @param int
      */
-    public function setPaymentMethodId($paymentMethodId): void
+    public function setPaymentType($paymentType): void
     {
-        $this->paymentMethodId = $paymentMethodId;
+        $this->paymentType = $paymentType;
     }
 
     /**
@@ -108,7 +106,7 @@ class BoughtServicesLogs
      */
     public function getServerId()
     {
-        return $this->serverId;
+        return $this->server;
     }
 
     /**
@@ -116,7 +114,7 @@ class BoughtServicesLogs
      */
     public function setServerId($serverId): void
     {
-        $this->serverId = $serverId;
+        $this->server = $serverId;
     }
 
     /**
@@ -124,7 +122,7 @@ class BoughtServicesLogs
      */
     public function getServiceId()
     {
-        return $this->serviceId;
+        return $this->service;
     }
 
     /**
@@ -132,7 +130,7 @@ class BoughtServicesLogs
      */
     public function setServiceId($serviceId): void
     {
-        $this->serviceId = $serviceId;
+        $this->service = $serviceId;
     }
 
     /**

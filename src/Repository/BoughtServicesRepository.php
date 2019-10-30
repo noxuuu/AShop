@@ -26,6 +26,22 @@ class BoughtServicesRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    /**
+     * Retrieves number of rows
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countEmDistinct($service)
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('count(b.id) AS counter')
+            ->join('b.service', 's', 'WITH', 'b.service = s.id')
+            ->where('s.name = :service')
+            ->setParameter('service', $service);
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
 
     /**
      * Retrieves number of rows with service with our id
@@ -71,6 +87,20 @@ class BoughtServicesRepository extends EntityRepository
             ->setParameter('service', $id)
             ->orderBy('b.date', 'DESC')
             ->setMaxResults(1);
+        $query = $qb->getQuery();
+        return $query->getArrayResult();
+    }
+
+    /**
+     * Retrieves distinct services
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findAllDistinct()
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('DISTINCT s.name')
+            ->join('b.service', 's', 'WITH', 'b.service = s.id');
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }

@@ -8,7 +8,6 @@
 
 namespace App\Form\admin;
 
-
 use App\Entity\Tariffs;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;

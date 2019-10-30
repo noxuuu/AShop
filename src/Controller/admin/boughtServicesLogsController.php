@@ -8,7 +8,10 @@
 
 namespace App\Controller\admin;
 
+use App\Entity\BoughtServicesLogs;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -19,8 +22,14 @@ class boughtServicesLogsController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function boughtServicesLogs()
+    public function boughtServicesLogs(PaginatorInterface $paginator, Request $request)
     {
-        return $this->render('admin/adminbsl.html.twig');
+        // === Get repo for query ===
+        $bsRepo = $this->getDoctrine()->getRepository(BoughtServicesLogs::class);
+
+
+        return $this->render('admin/logs/adminbsl.html.twig', [
+            'pagination' => $paginator->paginate($bsRepo->findAll(), $request->query->getInt('page', 1), 30)
+        ]);
     }
 }

@@ -13,6 +13,34 @@ use Doctrine\ORM\EntityRepository;
 
 class UsersRepository extends EntityRepository implements UserLoaderInterface
 {
+    /**
+     * Retrieves number of rows
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countEm()
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->select('count(u.username) AS counter');
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    /**
+     * Retrieves last registrations
+     * @param $max
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findLastRegistrations($max){
+        $qb = $this->createQueryBuilder('u');
+        $qb->select('u.username', 'u.authData', 'u.joinDate')
+            ->orderBy('u.joinDate', 'DESC')
+            ->setMaxResults($max);
+        $query = $qb->getQuery();
+        return $query->getArrayResult();
+    }
+
     public function loadUserByUsername($username)
     {
         return $this->createQueryBuilder('u')

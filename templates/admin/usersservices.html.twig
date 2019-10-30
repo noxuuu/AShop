@@ -34,11 +34,11 @@
                 if(!$found)
                 continue;
                 ?>
-                <option value="<?php echo $row2['id'];?>" <?php if($row2['id'] == $_GET['svr']) echo 'selected'; ?>><b><?php echo $row2['name'];?></b></option>
-                <?php } ?> @down - selected if serverid == server.getId() -->
+                <option value="<?php echo $row2['id'];?>" <?php if($row2['id'] == $_GET['svr']) echo 'selected'; ?>><b><?php echo $row2['name'];?></b></option>-->
+
                 <option value="0">Wszystkie serwery</option>
                 {% for server in servers %}
-                    <option value="{{ server.getId() }}" ><b>{{ server.getName() }}</b></option>
+                    <option value="{{ server.getId() }}" {% if server.getId() == selected_server %}selected{% endif %}><b>{{ server.getName() }}</b></option>
                 {% endfor %}
             </select>
         </div>
@@ -228,6 +228,8 @@
             </div>
         </div>
     </div>
+
+
     {% endif %}
 
 
@@ -236,15 +238,7 @@
             <div class="panel panel-default card-view">
                 <div class="panel-heading">
                     <div class="pull-left">
-                        <!--?php
-											if($_GET["svr"])
-											{
-												$statement_svr = $dbh->prepare("SELECT name FROM shop_servers WHERE id = ".$_GET['svr']."");
-                        $statement_svr->execute();
-                        $row_svr = $statement_svr->fetch();
-                        }
-                        ?>-->
-                        <h6 class="panel-title txt-dark">Usługi <?php if($_GET["svr"]) echo '('.$row_svr['name'].')'; ?></h6>
+                        <h6 class="panel-title txt-dark">Usługi {% if selected_server > 0 %} ~ {{ selected_server|get_server.getName() }}{% endif %}</h6>
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -264,68 +258,30 @@
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                 <h4 class="modal-title" id="add1">Dodaj usługę</h4>
                                             </div>
-                                            <form action="" method="post">
+                                            {{ form_start(form_add) }}
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>Usługa:</label>
-                                                        <select name="serviceid" class="form-control round-input" required>
-                                                            <?php
-																					$statement = $dbh->prepare('SELECT * FROM shop_services WHERE type != 3');
-                                                            $statement->execute();
-
-                                                            while($row=$statement->fetch())
-                                                            {
-                                                            ?>
-                                                            <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
-                                                            <?php } ?>
-                                                        </select>
+                                                        {{ form_widget(form_add.service) }}
                                                     </div>
                                                     <div class="form-group">
                                                         <label>SteamID</label>
-                                                        <input type="text" name="auth_data" class="form-control">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Email</label>
-                                                        <input type="text" name="auth_email" class="form-control">
+                                                        {{ form_widget(form_add.authData) }}
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Serwer:</label>
-                                                        <select name="serverid[]" class="form-control round-input" multiple="multiple" required>
-                                                            <?php
-																					$options = 0;
-																					$statement = $dbh->prepare('SELECT * FROM shop_servers');
-                                                            $statement->execute();
-
-                                                            while($row=$statement->fetch())
-                                                            {
-                                                            $found = false;
-
-                                                            foreach ($servers as $serverid)
-                                                            if($row['id'] == $serverid)
-                                                            $found = true;
-
-                                                            if(!$found)
-                                                            continue;
-
-                                                            $options++; ?>
-                                                            <option value="<?php echo $row['id'];?>"><?php echo $row['name'];?></option>
-                                                            <?php }
-
-																				if($options == 0)
-																					echo '<option selected disabled>Nie masz uprawnień do dodawania usług.</option>'; ?>
-                                                        </select>
+                                                        {{ form_widget(form_add.server) }}
                                                     </div>
                                                     <div class="form-group">
-                                                        <label>Ilość Dni:</label>
-                                                        <input type="text" name="value" class="form-control">
-                                                        <!-- <input type="checkbox" name="expires_no"> Na zawsze -->
+                                                        <label>Wartość:</label>
+                                                        {{ form_widget(form_add.value) }}
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <?php if($options != 0) { ?><button type="sumbit" name="service_add" class="btn btn-primary">Dodaj</button><?php } ?>
+                                                    <button type="submit" class="btn btn-primary">Dodaj</button>
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
                                                 </div>
-                                            </form>
+                                            {{ form_end(form_add) }}
                                         </div>
                                     </div>
                                 </div>
@@ -353,7 +309,7 @@
                                             <tr>
                                                 <td>{{ service.getId() }}</td>
                                                 <td>
-                                                    <?php
+                                                    <!--<?php
 									        								$statement2 = $dbh->prepare("SELECT login, groupid FROM shop_users WHERE steamid = '".$row['auth_data']."'");
                                                     $statement2->execute();
                                                     $row2 = $statement2->fetch();
@@ -375,7 +331,10 @@
 
                                                     echo '<span class="label label-success">'.$playerName.'</span>';
                                                     }
-                                                    ?>
+                                                    ?>-->
+                                                    TO DO - TWIG EXT + GROUPS
+
+
                                                 </td>
                                                 <td>
                                                    <span class="label label-warning">{{ service.getServiceId()|get_service.getName() }}</span>
@@ -385,20 +344,9 @@
                                                 </td>
                                                 <td>{{ service.getAuthData() }}</td>
                                                 <td>
-                                                    {{ service|get_service_progressbar }}
-                                                    <!--<div class="progress progress-xs mb-0 ">
-                                                        <?php
-									        									$date = new DateTime();
-									        									$timestamp = $date->getTimestamp();
-                                                        $procent = round(100 - ((($timestamp - $row['bought_date'])/($row['expires'] - $row['bought_date']))*100));
-
-                                                        if($procent >= 60) $style = 'success';
-                                                        else if($procent >= 25) $style = 'warning';
-                                                        else $style = 'danger';
-
-                                                        echo '<div class="progress-bar progress-bar-'.$style.'" style="width: '.$procent.'%"></div>';
-                                                        ?>
-                                                    </div>-->
+                                                    <div class="progress progress-xs mb-0 ">
+                                                        {{ service|get_service_progressbar }}
+                                                    </div>
                                                 </td>
                                                 <td>{{ service.getExpires()|date("d/m/Y H:i:s") }}</td>
                                                 <td><?php if(CheckAccess('can_edit_user_services')) { ?>
@@ -407,42 +355,39 @@
                                                     <a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ service.getId() }}"><i class="fa fa-trash"></i></a>
                                                 </td>
 
-
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="edit-{{ service.getId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ service.getId() }}">
                                                     <div class="modal-dialog modal-lg" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                <h4 class="modal-title" id="editlabel1">Edytuj usługę gracza: <?php echo 'nazwa/o id STEAM_1:1123123';?></h4>
+                                                                <h4 class="modal-title" id="editlabel1">Edytuj usługę gracza</h4>
                                                             </div>
-                                                            <form action="" method="post">
-                                                                <div class="modal-body">
-                                                                    <div class="form-group">
-                                                                        <label>#ID</label>
-                                                                        <input type="text" name="id" disabled value="<?php echo $row['id'];?>" class="form-control">
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label>SteamID</label>
-                                                                        <input type="text" name="auth_data" value="<?php echo $row['auth_data'];?>" class="form-control">
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label>Usługa</label>
-                                                                        <select name="service" class="form-control round-input">
-                                                                            <option value="<?php echo $row['service'];?>"><?php echo $row['service'];?></option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label>Wygasa:</label>
-                                                                        <input type="text" name="expires" value="<?php echo date('m/d/Y H:i:s', $row['expires']);?>" class="form-control">
-                                                                        <input type="checkbox" name="expires_no"> Na zawsze
-                                                                    </div>
+                                                            {% set edit_form = form_edit.createView %}
+                                                            {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_userservice', { 'service' : service.GetId() })}) }}
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label>#ID</label>
+                                                                    <input type="text" name="id" disabled value="{{ service.getId() }}" class="form-control">
                                                                 </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="sumbit" name="service_edit" class="btn btn-primary">Edytuj</button>
-                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                <div class="form-group">
+                                                                    <label>Identyfikator (SteamID/IP)</label>
+                                                                    {{ form_widget(edit_form.authData, {'value' : service.getAuthData()}) }}
                                                                 </div>
-                                                            </form>
+                                                                <div class="form-group">
+                                                                    <label>Usługa:</label>
+                                                                    {{ form_widget(edit_form.service, {'data' : service.getServiceId()}) }}
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Wygasa:</label>
+                                                                    {{ form_widget(edit_form.value, {'value' : service.getExpires()|date("d/m/Y H:i:s")}) }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                            </div>
+                                                            {{ form_end(edit_form) }}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -456,10 +401,12 @@
                                                             </div>
                                                             <form action="" method="post">
                                                                 <div class="modal-body">
-                                                                    Czy jesteś pewny, że chcesz usunąć usługę <b><?php echo $row['service'];?></b>?
+                                                                    Czy jesteś pewny, że chcesz usunąć tą usługę?
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="submit" class="btn btn-primary">Usuń !</button>
+                                                                    <a class="btn btn-primary"
+                                                                       href="{{ path('delete_userservice', {'id': service.GetId()}) }}"
+                                                                       role="button">Usuń !</a>
                                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
                                                                 </div>
                                                             </form>

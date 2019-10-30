@@ -30,7 +30,7 @@ class AdminLogs
      * @ORM\ManyToOne(targetEntity="UsersEntity")
      * @ORM\JoinColumn(name="adminName", referencedColumnName="username", nullable=true)
      */
-    private $adminName; // klucz obcy dla ashop_users.username
+    private $adminName;
 
     /**
      * @ORM\Column(type="string", nullable=true, options={"default": NULL})

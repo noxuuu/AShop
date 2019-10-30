@@ -63,7 +63,8 @@ class servicesType extends AbstractType
                 'choices'  => [
                     'Flagi' => 1,
                     'Zapytanie MySQL' => 2,
-                    'Inne (Bazujące na API)' => 3,
+                    'Zapytanie Minecraft' => 3,
+                    'Inne (Bazujące na API)' => 4,
                 ],
                 'label' => false,
                 'required' => true,

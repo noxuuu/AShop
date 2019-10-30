@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\Entity(repositoryClass="App\Repository\PaymentSmsRepository")
  * @ORM\Table(name="ashop_payments_sms")
  * @UniqueEntity(fields="id")
  */
@@ -27,13 +28,11 @@ class PaymentsSMS
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\NotBlank()
      */
     private $income;
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\NotBlank()
      */
     private $cost;
 
@@ -49,7 +48,7 @@ class PaymentsSMS
     private $number;
 
     /**
-     * @ORM\Column(type="string", nullable=true, options={"default": NULL})
+     * @ORM\Column(type="string", nullable=true)
      */
     private $ip;
 
@@ -63,6 +62,22 @@ class PaymentsSMS
      * @ORM\Column(type="string", length=16)
      */
     private $platform;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return mixed

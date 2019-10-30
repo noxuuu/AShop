@@ -8,7 +8,10 @@
 
 namespace App\Controller\admin;
 
+use App\Entity\AdminLogs;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -19,8 +22,14 @@ class adminLogsController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function adminLogs()
+    public function adminLogs(PaginatorInterface $paginator, Request $request)
     {
-        return $this->render('admin/adminlogs.html.twig');
+        // === Get repo for query ===
+        $logsRepo = $this->getDoctrine()->getRepository(AdminLogs::class);
+
+
+        return $this->render('admin/logs/adminlogs.html.twig', [
+            'pagination' => $paginator->paginate($logsRepo->findAll(), $request->query->getInt('page', 1), 30)
+        ]);
     }
 }

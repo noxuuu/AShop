@@ -207,32 +207,32 @@
                 <a href="javascript:void(0);" data-toggle="collapse" data-target="#dashboard_dr"><i
                             class="icon-picture mr-10"></i>Logi <span class="pull-right"><i
                                 class="fa fa-fw fa-angle-down"></i></span></a>
-                <ul id="dashboard_dr" class="collapse collapse-level-1">
+                <ul id="dashboard_dr">
                     <li>
                         <a href="{{ path('admin_bslogs') }}"
                            {% if app.request.pathinfo == '/admin/logs/bought_services' %}class="active"{% endif %}>Kupione
                             usługi</a>
                     </li>
                     <li>
-                        <a href="{{ path('admin_logs_payment') }}"
+                        <a href="{{ path('admin_logs_sms') }}"
                            {% if app.request.pathinfo == '/admin/logs/payments/sms' %}class="active"{% endif %}>Płatności
                             SMS</a>
                     </li>
                     <li>
-                        <a href="{{ path('admin_logs_payment') }}"
-                           {% if app.request.pathinfo == '/admin/logs/payments/paysafecard' %}class="active"{% endif %}>Płatności
+                        <a href="{{ path('admin_logs_psc') }}"
+                           {% if app.request.pathinfo == '/admin/logs/payments/psc' %}class="active"{% endif %}>Płatności
                             PaySafeCard</a>
                     </li>
                     <li>
-                        <a href="{{ path('admin_logs_payment') }}"
+                        <a href="{{ path('admin_logs_transfer') }}"
                            {% if app.request.pathinfo == '/admin/logs/payments/transfer' %}class="active"{% endif %}>Płatności
                             Przelewem</a>
                     </li>
-                    <li>
-                        <a href="{{ path('admin_logs_payment') }}"
+                    <!--<li>
+                        <a href="{{ path('admin_logs_psc') }}"
                            {% if app.request.pathinfo == '/admin/logs/payments/wallet' %}class="active"{% endif %}>Płatności
                             z Portfela</a>
-                    </li>
+                    </li> @todo -->
                     <li>
                         <a href="{{ path('admin_logs') }}"
                            {% if app.request.pathinfo == '/admin/logs/admin' %}class="active"{% endif %}>Logi

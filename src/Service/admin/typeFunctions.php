@@ -38,9 +38,9 @@ class typeFunctions
         return $choiceList;
     }
 
-    function loadServicesToChoiceList()
+    function loadServicesToChoiceList(bool $exclude_apis = false)
     {
-        $services = $this->servicesRepo->getServicesNamesAndId();
+        $services = $this->servicesRepo->getServicesNamesAndId($exclude_apis);
 
         $choiceList = array();
         foreach ($services as $service)

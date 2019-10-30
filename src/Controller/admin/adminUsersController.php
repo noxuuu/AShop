@@ -8,7 +8,10 @@
 
 namespace App\Controller\admin;
 
+use App\Entity\UsersEntity;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -19,8 +22,14 @@ class adminUsersController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function users()
+    public function users(PaginatorInterface $paginator, Request $request)
     {
-        return $this->render('admin/users.html.twig');
+        // === Get repo for query ===
+        $usersRepo = $this->getDoctrine()->getRepository(UsersEntity::class);
+
+
+        return $this->render('admin/users.html.twig', [
+            'pagination' => $paginator->paginate($usersRepo->findAll(), $request->query->getInt('page', 1), 30)
+        ]);
     }
 }

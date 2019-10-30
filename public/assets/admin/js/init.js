@@ -124,7 +124,7 @@ var kenny = function(){
 		return false;
 	});
 	
-	/*Todo*/
+	/*To do*/
 	var random = Math.random();
 	$(document).on("click","#add_todo",function (e) {
 		if (!$('.new-todo input').val().length == 0) {
