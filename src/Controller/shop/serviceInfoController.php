@@ -44,7 +44,6 @@ class serviceInfoController extends AbstractController
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
 
         // get best price for this service
-        $bestPrice = "-";
         $bestPrice = $pricesRepo->getBestPriceForService($service->getId());
 
         // get bought services count

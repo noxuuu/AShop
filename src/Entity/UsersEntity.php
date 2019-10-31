@@ -15,6 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Role\Role;
 
+// todo implement steam authentication
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UsersRepository")
@@ -69,7 +71,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
      * @ORM\Column(type="string", length=64)
      * @Assert\NotBlank()
      */
-    protected $steamId;
+    private $authData;
 
     /**
      * @ORM\Column(type="float")
@@ -79,7 +81,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $joinDate;
+    private $joinDate;
 
     public function __construct()
     {
@@ -214,7 +216,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
      */
     public function getAuthData()
     {
-        return $this->steamId;
+        return $this->authData;
     }
 
     /**
@@ -222,7 +224,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
      */
     public function setAuthData($authData): void
     {
-        $this->steamId = $authData;
+        $this->authData = $authData;
     }
 
     /**
@@ -242,16 +244,18 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function setJoinDate(?int $joinDate): void
+    public function getJoinDate()
     {
-        if (null !== $joinDate) {
-            $joinDateDate = new \DateTime();
-            $joinDateDate->setTimestamp($joinDate);
-            $joinDate = $joinDateDate;
-        }
+        return $this->joinDate;
+    }
 
+    /**
+     * @param mixed $joinDate
+     */
+    public function setJoinDate($joinDate): void
+    {
         $this->joinDate = $joinDate;
     }
 

@@ -25,46 +25,38 @@ class BoughtServicesLogs
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
     /**
      * @ORM\Column(type="integer")
      */
     private $paymentType;
-
     /**
      * @ORM\ManyToOne(targetEntity="UsersEntity")
      * @ORM\JoinColumn(name="username", referencedColumnName="username", nullable=true)
      */
     private $userId;
-
     /**
      * @ORM\ManyToOne(targetEntity="Servers")
      * @ORM\JoinColumn(name="server", referencedColumnName="id", nullable=true)
      */
     private $server;
-
     /**
      * @ORM\ManyToOne(targetEntity="Services")
      * @ORM\JoinColumn(name="service", referencedColumnName="id", nullable=true)
      */
     private $service;
-
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank()
      */
     private $value;
-
     /**
-    * @ORM\Column(type="string", nullable=true)
-    */
+     * @ORM\Column(type="string", nullable=true)
+     */
     private $authData;
-
     /**
      * @ORM\Column(type="string", nullable=true, options={"default": NULL})
      */
     private $userIp;
-
     /**
      * @ORM\Column(type="datetime")
      */
@@ -76,7 +68,6 @@ class BoughtServicesLogs
     {
         return $this->paymentType;
     }
-
     /**
      * @param int
      */
@@ -84,7 +75,6 @@ class BoughtServicesLogs
     {
         $this->paymentType = $paymentType;
     }
-
     /**
      * @return mixed
      */
@@ -92,7 +82,6 @@ class BoughtServicesLogs
     {
         return $this->userId;
     }
-
     /**
      * @param mixed $userId
      */
@@ -100,7 +89,6 @@ class BoughtServicesLogs
     {
         $this->userId = $userId;
     }
-
     /**
      * @return mixed
      */
@@ -108,7 +96,6 @@ class BoughtServicesLogs
     {
         return $this->server;
     }
-
     /**
      * @param mixed $serverId
      */
@@ -116,7 +103,6 @@ class BoughtServicesLogs
     {
         $this->server = $serverId;
     }
-
     /**
      * @return mixed
      */
@@ -124,7 +110,6 @@ class BoughtServicesLogs
     {
         return $this->service;
     }
-
     /**
      * @param mixed $serviceId
      */
@@ -132,7 +117,6 @@ class BoughtServicesLogs
     {
         $this->service = $serviceId;
     }
-
     /**
      * @return mixed
      */
@@ -140,7 +124,6 @@ class BoughtServicesLogs
     {
         return $this->value;
     }
-
     /**
      * @param mixed $value
      */
@@ -148,7 +131,6 @@ class BoughtServicesLogs
     {
         $this->value = $value;
     }
-
     /**
      * @return mixed
      */
@@ -156,7 +138,6 @@ class BoughtServicesLogs
     {
         return $this->authData;
     }
-
     /**
      * @param mixed $authData
      */
@@ -164,7 +145,6 @@ class BoughtServicesLogs
     {
         $this->authData = $authData;
     }
-
     /**
      * @return mixed
      */
@@ -172,7 +152,6 @@ class BoughtServicesLogs
     {
         return $this->userIp;
     }
-
     /**
      * @param mixed $userIp
      */
@@ -180,7 +159,6 @@ class BoughtServicesLogs
     {
         $this->userIp = $userIp;
     }
-
     /**
      * @return mixed
      */
@@ -188,7 +166,6 @@ class BoughtServicesLogs
     {
         return $this->date;
     }
-
     /**
      * @param mixed $date
      */
@@ -196,7 +173,6 @@ class BoughtServicesLogs
     {
         $this->date = $date;
     }
-
     /**
      * @return mixed
      */

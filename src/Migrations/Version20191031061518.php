@@ -8,7 +8,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20191029191512 extends AbstractMigration
+final class Version20191031061518 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
@@ -17,7 +17,7 @@ final class Version20191029191512 extends AbstractMigration
 
         $this->addSql('CREATE TABLE ashop_admin_login_logs (id INT AUTO_INCREMENT NOT NULL, admin_ip VARCHAR(255) DEFAULT NULL, date DATETIME NOT NULL, success TINYINT(1) DEFAULT \'0\' NOT NULL, adminName VARCHAR(255) DEFAULT NULL, INDEX IDX_634A4D82C57D9BB7 (adminName), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_admin_logs (id INT AUTO_INCREMENT NOT NULL, admin_ip VARCHAR(255) DEFAULT NULL, content VARCHAR(256) NOT NULL, date DATETIME NOT NULL, adminName VARCHAR(255) DEFAULT NULL, INDEX IDX_6A4FD3EC57D9BB7 (adminName), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE ashop_bought_services_logs (id INT AUTO_INCREMENT NOT NULL, server INT DEFAULT NULL, service INT DEFAULT NULL, payment_type INT NOT NULL, value INT NOT NULL, auth_data VARCHAR(255) DEFAULT NULL, user_ip VARCHAR(255) DEFAULT NULL, date DATETIME NOT NULL, adminName VARCHAR(255) DEFAULT NULL, INDEX IDX_790A0882C57D9BB7 (adminName), INDEX IDX_790A08825A6DD5F6 (server), INDEX IDX_790A0882E19D9AD2 (service), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE ashop_bought_services_logs (id INT AUTO_INCREMENT NOT NULL, username VARCHAR(255) DEFAULT NULL, server INT DEFAULT NULL, service INT DEFAULT NULL, payment_type INT NOT NULL, value INT NOT NULL, auth_data VARCHAR(255) DEFAULT NULL, user_ip VARCHAR(255) DEFAULT NULL, date DATETIME NOT NULL, INDEX IDX_790A0882F85E0677 (username), INDEX IDX_790A08825A6DD5F6 (server), INDEX IDX_790A0882E19D9AD2 (service), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_groups_permissions (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(48) NOT NULL, value VARCHAR(128) NOT NULL, groupId INT DEFAULT NULL, INDEX IDX_5D26622DED8188B0 (groupId), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_groups (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(48) NOT NULL, style VARCHAR(256) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_noffications (id INT AUTO_INCREMENT NOT NULL, type INT NOT NULL, title VARCHAR(48) NOT NULL, content VARCHAR(256) NOT NULL, viited TINYINT(1) DEFAULT \'0\' NOT NULL, date DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
@@ -34,11 +34,11 @@ final class Version20191029191512 extends AbstractMigration
         $this->addSql('CREATE TABLE ashop_temporary_payments (payment_hash VARCHAR(255) NOT NULL, server INT DEFAULT NULL, service INT DEFAULT NULL, amount DOUBLE PRECISION NOT NULL, auth_data VARCHAR(255) DEFAULT NULL, status TINYINT(1) DEFAULT \'0\' NOT NULL, date DATETIME NOT NULL, INDEX IDX_4D2CDB935A6DD5F6 (server), INDEX IDX_4D2CDB93E19D9AD2 (service), PRIMARY KEY(payment_hash)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_url_shortener (id INT AUTO_INCREMENT NOT NULL, oryginal_url VARCHAR(256) NOT NULL, new_url VARCHAR(128) NOT NULL, expires DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_users (username VARCHAR(255) NOT NULL, password VARCHAR(64) NOT NULL, email VARCHAR(255) NOT NULL, is_active TINYINT(1) NOT NULL, roles LONGTEXT NOT NULL COMMENT \'(DC2Type:array)\', auth_data VARCHAR(64) NOT NULL, wallet DOUBLE PRECISION NOT NULL, join_date DATETIME NOT NULL, groupId INT DEFAULT NULL, UNIQUE INDEX UNIQ_CAC26FD9E7927C74 (email), INDEX IDX_CAC26FD9ED8188B0 (groupId), PRIMARY KEY(username)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE ashop_user_services (id INT AUTO_INCREMENT NOT NULL, server INT NOT NULL, service INT NOT NULL, value INT NOT NULL, auth_data VARCHAR(255) DEFAULT NULL, bought_date DATETIME NOT NULL, expires DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE ashop_user_services (id INT AUTO_INCREMENT NOT NULL, server INT DEFAULT NULL, service INT DEFAULT NULL, value INT NOT NULL, auth_data VARCHAR(255) DEFAULT NULL, bought_date DATETIME NOT NULL, expires DATETIME NOT NULL, INDEX IDX_8CDE8E205A6DD5F6 (server), INDEX IDX_8CDE8E20E19D9AD2 (service), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE ashop_vouchers (id INT AUTO_INCREMENT NOT NULL, price INT DEFAULT NULL, code VARCHAR(6) NOT NULL, INDEX IDX_87B0ACC4CAC822D9 (price), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE ashop_admin_login_logs ADD CONSTRAINT FK_634A4D82C57D9BB7 FOREIGN KEY (adminName) REFERENCES ashop_users (username)');
         $this->addSql('ALTER TABLE ashop_admin_logs ADD CONSTRAINT FK_6A4FD3EC57D9BB7 FOREIGN KEY (adminName) REFERENCES ashop_users (username)');
-        $this->addSql('ALTER TABLE ashop_bought_services_logs ADD CONSTRAINT FK_790A0882C57D9BB7 FOREIGN KEY (adminName) REFERENCES ashop_users (username)');
+        $this->addSql('ALTER TABLE ashop_bought_services_logs ADD CONSTRAINT FK_790A0882F85E0677 FOREIGN KEY (username) REFERENCES ashop_users (username)');
         $this->addSql('ALTER TABLE ashop_bought_services_logs ADD CONSTRAINT FK_790A08825A6DD5F6 FOREIGN KEY (server) REFERENCES ashop_servers (id)');
         $this->addSql('ALTER TABLE ashop_bought_services_logs ADD CONSTRAINT FK_790A0882E19D9AD2 FOREIGN KEY (service) REFERENCES ashop_services (id)');
         $this->addSql('ALTER TABLE ashop_groups_permissions ADD CONSTRAINT FK_5D26622DED8188B0 FOREIGN KEY (groupId) REFERENCES ashop_groups (id)');
@@ -51,6 +51,8 @@ final class Version20191029191512 extends AbstractMigration
         $this->addSql('ALTER TABLE ashop_temporary_payments ADD CONSTRAINT FK_4D2CDB935A6DD5F6 FOREIGN KEY (server) REFERENCES ashop_servers (id)');
         $this->addSql('ALTER TABLE ashop_temporary_payments ADD CONSTRAINT FK_4D2CDB93E19D9AD2 FOREIGN KEY (service) REFERENCES ashop_services (id)');
         $this->addSql('ALTER TABLE ashop_users ADD CONSTRAINT FK_CAC26FD9ED8188B0 FOREIGN KEY (groupId) REFERENCES ashop_groups (id)');
+        $this->addSql('ALTER TABLE ashop_user_services ADD CONSTRAINT FK_8CDE8E205A6DD5F6 FOREIGN KEY (server) REFERENCES ashop_servers (id)');
+        $this->addSql('ALTER TABLE ashop_user_services ADD CONSTRAINT FK_8CDE8E20E19D9AD2 FOREIGN KEY (service) REFERENCES ashop_services (id)');
         $this->addSql('ALTER TABLE ashop_vouchers ADD CONSTRAINT FK_87B0ACC4CAC822D9 FOREIGN KEY (price) REFERENCES ashop_prices (id)');
     }
 
@@ -68,13 +70,15 @@ final class Version20191029191512 extends AbstractMigration
         $this->addSql('ALTER TABLE ashop_vouchers DROP FOREIGN KEY FK_87B0ACC4CAC822D9');
         $this->addSql('ALTER TABLE ashop_bought_services_logs DROP FOREIGN KEY FK_790A08825A6DD5F6');
         $this->addSql('ALTER TABLE ashop_temporary_payments DROP FOREIGN KEY FK_4D2CDB935A6DD5F6');
+        $this->addSql('ALTER TABLE ashop_user_services DROP FOREIGN KEY FK_8CDE8E205A6DD5F6');
         $this->addSql('ALTER TABLE ashop_bought_services_logs DROP FOREIGN KEY FK_790A0882E19D9AD2');
         $this->addSql('ALTER TABLE ashop_prices DROP FOREIGN KEY FK_C2CC1C3FE19D9AD2');
         $this->addSql('ALTER TABLE ashop_temporary_payments DROP FOREIGN KEY FK_4D2CDB93E19D9AD2');
+        $this->addSql('ALTER TABLE ashop_user_services DROP FOREIGN KEY FK_8CDE8E20E19D9AD2');
         $this->addSql('ALTER TABLE ashop_prices DROP FOREIGN KEY FK_C2CC1C3F9465207D');
         $this->addSql('ALTER TABLE ashop_admin_login_logs DROP FOREIGN KEY FK_634A4D82C57D9BB7');
         $this->addSql('ALTER TABLE ashop_admin_logs DROP FOREIGN KEY FK_6A4FD3EC57D9BB7');
-        $this->addSql('ALTER TABLE ashop_bought_services_logs DROP FOREIGN KEY FK_790A0882C57D9BB7');
+        $this->addSql('ALTER TABLE ashop_bought_services_logs DROP FOREIGN KEY FK_790A0882F85E0677');
         $this->addSql('DROP TABLE ashop_admin_login_logs');
         $this->addSql('DROP TABLE ashop_admin_logs');
         $this->addSql('DROP TABLE ashop_bought_services_logs');

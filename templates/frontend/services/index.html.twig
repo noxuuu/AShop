@@ -8,10 +8,12 @@
                aria-controls="first" aria-selected="true">Opis usługi</a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link " id="second-tab" data-toggle="tab" href="#second" role="tab"
-               aria-controls="second" aria-selected="false">Kup Teraz!</a>
-        </li>
+        {% if avaibleServers|length > 0 %}
+            <li class="nav-item">
+                <a class="nav-link " id="second-tab" data-toggle="tab" href="#second" role="tab"
+                   aria-controls="second" aria-selected="false">Kup Teraz!</a>
+            </li>
+        {% endif %}
     </ul>
     <div class="tab-content">
         <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
@@ -26,13 +28,17 @@
 
                             <br/>
                             <br/>
-                            <p class="text-muted text-small mb-2">Dostępny na serwerach:</p>
-                            <p class="mb-3">
+                            {% if avaibleServers|length > 0 %}
+                                <p class="text-muted text-small mb-2">Dostępny na serwerach:</p>
+                                <p class="mb-3">
+                                    {% for server in avaibleServers %}
+                                        <span class="badge badge-pill badge-outline-theme-2 mb-1">{{ server.GetName() }}</span>
+                                    {% endfor %}
+                                </p>
+                            {% else %}
+                                <p class="text-muted text-small mb-2">Usługa aktualnie niedostępna.</p>
+                            {% endif %}
 
-                                {% for server in avaibleServers %}
-                                    <span class="badge badge-pill badge-outline-theme-2 mb-1">{{ server.GetName() }}</span>
-                                {% endfor %}
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -56,7 +62,7 @@
                             <div>
                                 <i class="iconsmind-Dollar mr-2 text-white align-text-bottom d-inline-block"></i>
                                 <div>
-                                    <p class="lead text-white">{{ bestPrice }} zł</p>
+                                    <p class="lead text-white">{% if bestPrice != null %}{{ bestPrice }} zł{% else %}-{% endif %}</p>
                                     <p class="text-small text-white">Najniższa cena</p>
                                 </div>
                             </div>
@@ -95,138 +101,76 @@
             </div>
         </div>
 
-
-        <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="mb-4">1. Wybierz serwer</h5>
-                </div>
-            </div>
-            <div class="row">
-                {% for server in avaibleServers %}
-                    <div class="col-lg-3">
-                        <div id="server_{{ server.GetName() }}" class="card mb-4 progress-banner" style="border: none">
-                            <div class="card-body justify-content-between align-items-center text-center">
-                                <a onclick="activateServer('server_{{ server.GetName() }}')">
-                                    <div>
-                                        <i class="iconsmind-Cloud-Computer mr-2 text-white align-text-bottom d-inline-block"></i>
-                                        <div>
-                                            <p class="lead text-white">{{ server.GetName() }}</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div class="collapse" id="collapsePaymentMethod" style="">
+        {% if avaibleServers|length > 0 %}
+            <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="mb-4">2. Wybierz metode płatności </h5>
-                        <div id="server_name" style="visibility: hidden"></div>
+                        <h5 class="mb-4">1. Wybierz serwer</h5>
                     </div>
                 </div>
-
                 <div class="row">
-                    <div class="col-lg-3">
-                        <div class="card d-flex flex-row mb-4">
-                            <a class="d-flex" href="#">
-                                <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">
-                            </a>
-                            <div class=" d-flex flex-grow-1 min-width-zero">
-                                <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                    <div class="min-width-zero">
-                                        <a href="#" onclick="LoadValuesForService('{{ service.GetName() }}', 'sms')">
-                                            <p class="list-item-heading mb-1 truncate">SMS</p>
-                                        </a>
-                                    </div>
+                    {% for server in avaibleServers %}
+                        <div class="col-lg-3">
+                            <div id="server_{{ server.GetName() }}" class="card mb-4 progress-banner" style="border: none">
+                                <div class="card-body justify-content-between align-items-center text-center">
+                                    <a onclick="activateServer('server_{{ server.GetName() }}', '{{ service.GetName() }}')">
+                                        <div>
+                                            <i class="iconsmind-Cloud-Computer mr-2 text-white align-text-bottom d-inline-block"></i>
+                                            <div>
+                                                <p class="lead text-white">{{ server.GetName() }}</p>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endfor %}
+                </div>
 
-                    <div class="col-lg-3">
-                        <div class="card d-flex flex-row mb-4">
-                            <a class="d-flex" href="#">
-                                <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">
-                            </a>
-                            <div class=" d-flex flex-grow-1 min-width-zero">
-                                <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                    <div class="min-width-zero">
-                                        <a href="#" onclick="LoadValuesForService('{{ service.GetName() }}', 'payysafecard')">
-                                            <p class="list-item-heading mb-1 truncate">PaySafeCard</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="collapse" id="collapsePaymentMethod" style="">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-4">2. Wybierz metode płatności </h5>
+                            <div id="server_name" style="visibility: hidden"></div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <div class="card d-flex flex-row mb-4">
-                            <a class="d-flex" href="#">
-                                <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">
-                            </a>
-                            <div class=" d-flex flex-grow-1 min-width-zero">
-                                <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                    <div class="min-width-zero">
-                                        <a href="#" onclick="LoadValuesForService('{{ service.GetName() }}', 'transfer')">
-                                            <p class="list-item-heading mb-1 truncate">Przelew</p>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div class="col-lg-3" id="sms_type"> </div>
+                        <div class="col-lg-3" id="psc_type"> </div>
+                        <div class="col-lg-3" id="transfer_type"> </div>
+                        <div class="col-lg-3" id="wallet_type"> </div>
+                    </div>
+                </div>
+
+                <div class="collapse" id="collapseValueSelection">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-4">3. Wybierz wartość</h5>
                         </div>
                     </div>
+                    <div class="row" id="p_values"> </div>
+                </div>
 
-                    <div class="col-lg-3">
-                        <div class="card d-flex flex-row mb-4">
-                            <a class="d-flex" href="#">
-                                <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">
-                            </a>
-                            <div class=" d-flex flex-grow-1 min-width-zero">
-                                <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                    <div class="min-width-zero">
-                                        <a href="#" onclick="LoadValuesForService('{{ service.GetName() }}', 'paypal')">
-                                            <p class="list-item-heading mb-1 truncate">PayPal</p>
-                                        </a>
-                                    </div>
-                                </div>
+                <div class="modal fade modal-right" id="payment_info" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalRight" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <h5 class="modal-title"><i class="iconsmind-Checkout"></i> Kup teraz</h5>
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div id="payment_details"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="collapse" id="collapseValueSelection">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="mb-4">3. Wybierz wartość</h5>
-                    </div>
-                </div>
-                <div class="row" id="p_values"> </div>
-            </div>
-
-            <div class="modal fade modal-right" id="payment_info" tabindex="-1" role="dialog"
-                 aria-labelledby="exampleModalRight" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-
-                            <h5 class="modal-title"><i class="iconsmind-Checkout"></i> Kup teraz</h5>
-
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <div id="payment_details"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

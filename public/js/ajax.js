@@ -2,7 +2,7 @@
 
 
 // service buy
-function activateServer(i) {
+function activateServer(i, service) {
     if(document.getElementById(i).style.border == 'none') {
 
         // reset current info
@@ -11,7 +11,7 @@ function activateServer(i) {
 
         // prepare new info
         changePaymentDetails(i);
-        togglePaymentCollapse(true);
+        togglePaymentCollapse(true, service);
         document.getElementById(i).style.border='6px solid #1a75ff';
 
         // Go to the botom of page
@@ -33,9 +33,9 @@ function changePaymentDetails(i){
 }
 
 // show/hide payments options
-function togglePaymentCollapse(on = false) {
+function togglePaymentCollapse(on = false, service = null) {
     if(on)
-        $('#collapsePaymentMethod').addClass('show');
+        GetPaymentTypeAccesiblity(service);
     else
         $('#collapsePaymentMethod').removeClass('show');
 }
@@ -55,6 +55,112 @@ function togglePaymentInfo(on = false) {
     else
         $('#payment_info').modal('hide');
 }
+
+// Load prices values for service
+function GetPaymentTypeAccesiblity(service){
+    // collapse current values
+    $('#collapsePaymentMethod').removeClass('show');
+
+    // show loader
+    $("#ajax_loader").show();
+
+    $.ajax({
+        url:        '/buy/' + service + '/' + document.getElementById('server_name').getAttribute('value') + '/',
+        type:       'POST',
+        dataType:   'json',
+        async:      true,
+
+        success: function(data, status) {
+            $("#ajax_loader").hide();
+
+            $('#sms_type').html('');
+            $('#psc_type').html('');
+            $('#transfer_type').html('');
+            $('#wallet_type').html('');
+
+            var sms = $('<div class="card d-flex flex-row mb-4">' +
+                '       <a class="d-flex" href="#">' +
+                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '       </a>' +
+                '       <div class=" d-flex flex-grow-1 min-width-zero">' +
+                '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
+                '               <div class="min-width-zero">' +
+                '                   <a href="#" onclick="LoadValuesForService(\'' + service + '\',\'sms\')">' +
+                '                       <p class="list-item-heading mb-1 truncate">SMS</p>' +
+                '                   </a>' +
+                '               </div>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>');
+            var psc = $('<div class="card d-flex flex-row mb-4">' +
+                '       <a class="d-flex" href="#">' +
+                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '       </a>' +
+                '       <div class=" d-flex flex-grow-1 min-width-zero">' +
+                '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
+                '               <div class="min-width-zero">' +
+                '                   <a href="#" onclick="LoadValuesForService(\'' + service + '\',\'paysafecard\')">' +
+                '                       <p class="list-item-heading mb-1 truncate">PaySafeCard</p>' +
+                '                   </a>' +
+                '               </div>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>');
+            var transfer = $('<div class="card d-flex flex-row mb-4">' +
+                '       <a class="d-flex" href="#">' +
+                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '       </a>' +
+                '       <div class=" d-flex flex-grow-1 min-width-zero">' +
+                '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
+                '               <div class="min-width-zero">' +
+                '                   <a href="#" onclick="LoadValuesForService(\'' + service + '\',\'transfer\')">' +
+                '                       <p class="list-item-heading mb-1 truncate">Przelew</p>' +
+                '                   </a>' +
+                '               </div>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>');
+            var wallet = $('<div class="card d-flex flex-row mb-4">' +
+                '       <a class="d-flex" href="#">' +
+                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '       </a>' +
+                '       <div class=" d-flex flex-grow-1 min-width-zero">' +
+                '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
+                '               <div class="min-width-zero">' +
+                '                   <a href="#" onclick="LoadValuesForService(\'' + service + '\',\'wallet\')">' +
+                '                       <p class="list-item-heading mb-1 truncate">Portfel</p>' +
+                '                   </a>' +
+                '               </div>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>');
+
+            if(data['sms'])
+                $('#sms_type').append(sms);
+
+            if(data['psc'])
+                $('#psc_type').append(psc);
+
+            if(data['transfer'])
+                $('#transfer_type').append(transfer);
+
+            if(data['wallet'])
+                $('#wallet_type').append(wallet);
+
+            // show avaible metods
+            $('#collapsePaymentMethod').addClass('show');
+
+            // Go to the botom of page
+            $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+        },
+        error : function(xhr, textStatus, errorThrown) {
+            $("#ajax_loader").hide();
+
+            // Alert (no prices for this payment method)
+            alert('Ajax request failed: ' + errorThrown);
+        }
+    });
+};
 
 // Load prices values for service
 function LoadValuesForService(service, payment){

@@ -33,8 +33,7 @@ class Tariffs
     private $paymentMethodId;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="integer", nullable=true, options={"default" : NULL})
      */
     private $smsNumber;
 

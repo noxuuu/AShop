@@ -136,6 +136,34 @@ class paymentsController extends AbstractController
 
     /**
      * Returns values for given data
+     * @Route("/buy/{service}/{server}/")
+     */
+    public function loadPayments(Request $request, $service, $server)
+    {
+        // get repo's
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $pricesRepo = $this->getDoctrine()->getRepository(Prices::class);
+
+        // if there is no service or server with this names or wrong payment type - throw exception
+        if (!$servicesRepo->findOneBy(['name' => $service])
+            || !$serversRepo->findOneBy(['name' => $server]))
+            throw $this->createNotFoundException('Bad credentials');
+
+        // Get prices for specified payment types
+        $data['sms'] = $pricesRepo->GetPaymentTypeAccesiblity($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId('sms'));
+        $data['psc'] = $pricesRepo->GetPaymentTypeAccesiblity($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId('paysafecard'));
+        $data['transfer'] = $pricesRepo->GetPaymentTypeAccesiblity($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId('transfer'));
+        
+        // Send data
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
+    }
+
+    /**
+     * Returns values for given data
      * @Route("/buy/{service}/{server}/{payment}/")
      */
     public function loadValues(Request $request, $service, $server, $payment)
@@ -144,6 +172,8 @@ class paymentsController extends AbstractController
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $pricesRepo = $this->getDoctrine()->getRepository(Prices::class);
+
+        // todo add transfer method
 
         // if there is no service or server with this names or wrong payment type - throw exception
         if (!$servicesRepo->findOneBy(['name' => $service])

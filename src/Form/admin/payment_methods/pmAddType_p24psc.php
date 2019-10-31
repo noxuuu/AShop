@@ -30,7 +30,7 @@ class pmAddType_p24psc extends AbstractType
             ])
             ->add('smskey', TextType::class, [
                 'label' => false,
-                'required' => true,
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ]

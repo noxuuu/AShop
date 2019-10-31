@@ -28,7 +28,11 @@ class PricesRepository extends EntityRepository
             ->setMaxResults(1);
         $query = $qb->getQuery();
         $result = $query->getResult();
-        return $result[0]['brutto'];
+
+        if($result)
+            return $result[0]['brutto'];
+
+        return null;
     }
 
     /**
@@ -39,11 +43,34 @@ class PricesRepository extends EntityRepository
      */
     public function GetAvaibleServersForService($id){
         $qb = $this->createQueryBuilder('p');
-        $qb->select('p.server')
+        $qb->select('DISTINCT p.server')
             ->where('p.service = :service')
             ->setParameter('service', $id);
         $query = $qb->getQuery();
         return $query->getArrayResult();
+    }
+
+    /**
+     * Check for payment type accessibility
+     * @param $id
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function GetPaymentTypeAccesiblity($serviceid, $paymentType){
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('count(p.value)')
+            ->join('p.service', 's', 'WITH', 'p.service = s.id')
+            ->join('p.tariff', 't', 'WITH', 'p.tariff = t.id')
+            ->join('t.paymentMethodId', 'm', 'WITH', 't.paymentMethodId = m.id')
+            ->where('p.service = :service')
+            ->andWhere('m.type = :type')
+            ->setParameter('service', $serviceid)
+            ->setParameter('type', $paymentType);
+        $query = $qb->getQuery();
+
+        if($query->getSingleScalarResult())
+            return 1;
+        return 0;
     }
 
     /**

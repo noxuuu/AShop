@@ -62,6 +62,7 @@ class tariffsController extends AbstractController
             try {
                 $tariff->setPaymentMethodId($pm);
 
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($tariff);
                 $entityManager->flush();
