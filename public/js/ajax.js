@@ -80,7 +80,7 @@ function GetPaymentTypeAccesiblity(service){
 
             var sms = $('<div class="card d-flex flex-row mb-4">' +
                 '       <a class="d-flex" href="#">' +
-                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '           <img alt="sms" src="/img/payment-icons/sms.png" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
                 '       </a>' +
                 '       <div class=" d-flex flex-grow-1 min-width-zero">' +
                 '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
@@ -94,7 +94,7 @@ function GetPaymentTypeAccesiblity(service){
                 '   </div>');
             var psc = $('<div class="card d-flex flex-row mb-4">' +
                 '       <a class="d-flex" href="#">' +
-                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '           <img alt="paysafecard" src="/img/payment-icons/psc.png" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
                 '       </a>' +
                 '       <div class=" d-flex flex-grow-1 min-width-zero">' +
                 '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
@@ -108,7 +108,7 @@ function GetPaymentTypeAccesiblity(service){
                 '   </div>');
             var transfer = $('<div class="card d-flex flex-row mb-4">' +
                 '       <a class="d-flex" href="#">' +
-                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '           <img alt="transfer" src="/img/payment-icons/transfer.png" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
                 '       </a>' +
                 '       <div class=" d-flex flex-grow-1 min-width-zero">' +
                 '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
@@ -122,7 +122,7 @@ function GetPaymentTypeAccesiblity(service){
                 '   </div>');
             var wallet = $('<div class="card d-flex flex-row mb-4">' +
                 '       <a class="d-flex" href="#">' +
-                '           <img alt="Profile" src="/img/profile-pic-l.jpg" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
+                '           <img alt="wallet" src="/img/payment-icons/wallet.png" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center">' +
                 '       </a>' +
                 '       <div class=" d-flex flex-grow-1 min-width-zero">' +
                 '           <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">' +
