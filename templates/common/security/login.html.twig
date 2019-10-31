@@ -6,7 +6,7 @@
     <main>
         <div class="container">
             <div class="row h-100">
-                <div class="col-12 col-md-10 mx-auto my-auto">
+                <div class="col-12 col-md-12 mx-auto my-auto">
                     <div class="card auth-card">
                         <div class="position-relative image-side ">
 
@@ -49,7 +49,8 @@
                                 <div class="col-md-4 text-center" >
                                     <div style="border-left: 1px #ccc solid; padding-left: 15px;">
                                         <h6 class="mb-4">Inne metody</h6>
-                                        <img style="margin-bottom: 5px;" src="https://camo.githubusercontent.com/bc810ec0615dae65aae384e8e9b3cd7a2f5aa208/68747470733a2f2f737465616d636f6d6d756e6974792d612e616b616d616968642e6e65742f7075626c69632f696d616765732f7369676e696e7468726f756768737465616d2f736974735f30322e706e67">
+                                        {# include '@KnojectorSteamAuthentication/login.html.twig' with { 'btn': 2 } #}
+                                        {# todo change button style in prod version #}
                                         <a href="{{ path('register') }}"><button class="btn btn-secondary btn-lg btn-shadow" style="margin-bottom: 5px; width: 100%; padding: .75rem 0;" type="button">REJESTRACJA</button></a><br />
                                         <a href="#" style="font-size: 9px;">PRZYPOMNIENIE HASŁA</a>
                                     </div>

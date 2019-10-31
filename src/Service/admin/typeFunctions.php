@@ -9,6 +9,7 @@
 namespace App\Service\admin;
 
 
+use App\Entity\Groups;
 use App\Entity\Servers;
 use App\Entity\Services;
 use App\Entity\Tariffs;
@@ -19,12 +20,14 @@ class typeFunctions
     private $serversRepo;
     private $servicesRepo;
     private $tariffsRepo;
+    private $groupsRepo;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->serversRepo = $entityManager->getRepository(Servers::class);
         $this->servicesRepo = $entityManager->getRepository(Services::class);
         $this->tariffsRepo = $entityManager->getRepository(Tariffs::class);
+        $this->groupsRepo = $entityManager->getRepository(Groups::class);
     }
 
     function loadServersToChoiceList()
@@ -62,6 +65,17 @@ class typeFunctions
 
             $choiceList[$tariff['name']] = $tariff['id'];
         }
+
+        return $choiceList;
+    }
+
+    function loadGroupsToChoiceList()
+    {
+        $groups = $this->groupsRepo->getGroupsNamesAndId();
+
+        $choiceList = array();
+        foreach ($groups as $group)
+            $choiceList[$group['name']] = $group['id'];
 
         return $choiceList;
     }

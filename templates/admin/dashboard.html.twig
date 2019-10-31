@@ -131,7 +131,7 @@
                                             <a class="" href="#">
                                                 <div class="chat-data">
                                                     <div class="user-data">
-                                                        <span class="name block capitalize-font"><span style="">{{ user['username'] }}</span></span>
+                                                        <span class="name block capitalize-font"><span style="{{ user['style'] }}">{{ user['username'] }}</span></span>
                                                         <span class="time block txt-grey">{{ user['authData'] }} - {{ user['joinDate']|date("d/m/Y H:i:s") }}</span>
                                                     </div>
                                                     <div class="clearfix"></div>
@@ -272,7 +272,7 @@
                                     <div class="sl-item sl-success">
                                         <div class="sl-content">
     										<span class="font-12 mb-5">
-    											<span style="">{{ activity['admin'] }}</span>
+    											<span style="{{ activity['style'] }}">{{ activity['admin'] }}</span>
     												- {{ activity['date']|date("d/m/Y H:i:s") }}
     										</span>
                                             <p class="txt-dark">{{ activity['content'] }}</p>

@@ -64,6 +64,7 @@ class securityController extends AbstractController
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
+            // set user group as default
             $user->setGroupId($this->getDoctrine()->getRepository(Groups::class)->findOneBy(['id' => 2]));
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -72,11 +73,9 @@ class securityController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        return $this->render(
-            'common/security/register.html.twig',
-            array(
-                'form' => $form->createView(),
-                )
+        return $this->render('common/security/register.html.twig', [
+                'form' => $form->createView()
+            ]
         );
     }
 

@@ -27,14 +27,12 @@ class UserServices
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
      * @ORM\ManyToOne(targetEntity="Servers")
      * @ORM\JoinColumn(name="server", referencedColumnName="id", nullable=true)
      */
     private $server;
 
     /**
-     * @ORM\Column(type="integer")
      * @ORM\ManyToOne(targetEntity="Services")
      * @ORM\JoinColumn(name="service", referencedColumnName="id", nullable=true)
      */

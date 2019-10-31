@@ -20,13 +20,6 @@
                 <rect x="0.5" y="15.5" width="25" height="1" />
             </svg>
         </a>
-
-        <div class="search" data-search-path="#">
-            <input placeholder="Szukaj...">
-            <span class="search-icon">
-                    <i class="simple-icon-magnifier"></i>
-                </span>
-        </div>
     </div>
 
 
@@ -39,48 +32,7 @@
         <div class="header-icons d-inline-block align-middle">
             {% if is_granted('ROLE_ADMIN') %}<a class="btn btn-sm btn-outline-primary mr-2 d-none d-md-inline-block mb-2" href="{{ path('admin') }}">&nbsp;PANEL ADMINA&nbsp;</a>{% endif %}
 
-            {#<div class="position-relative d-none d-sm-inline-block">
-                <button class="header-icon btn btn-empty" type="button" id="iconMenuButton" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    <i class="simple-icon-grid"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right mt-3  position-absolute" id="iconMenuDropdown">
-                    <a href="#" class="icon-menu-item">
-                        <i class="iconsmind-Equalizer d-block"></i>
-                        <span>Settings</span>
-                    </a>
 
-                    <a href="#" class="icon-menu-item">
-                        <i class="iconsmind-MaleFemale d-block"></i>
-                        <span>Users</span>
-                    </a>
-
-                    <a href="#" class="icon-menu-item">
-                        <i class="iconsmind-Puzzle d-block"></i>
-                        <span>Components</span>
-                    </a>
-
-                    <a href="#" class="icon-menu-item">
-                        <i class="iconsmind-Bar-Chart d-block"></i>
-                        <span>Profits</span>
-                    </a>
-
-                    <a href="#" class="icon-menu-item">
-                        <i class="iconsmind-File-Chart d-block"></i>
-                        <span>Surveys</span>
-                    </a>
-
-                    <a href="#" class="icon-menu-item">
-                        <i class="iconsmind-Suitcase d-block"></i>
-                        <span>Tasks</span>
-                    </a>
-
-                </div>
-            </div>#}
-            <button class="header-icon btn btn-empty d-none d-sm-inline-block" type="button" id="fullScreenButton">
-                <i class="simple-icon-size-fullscreen"></i>
-                <i class="simple-icon-size-actual"></i>
-            </button>
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="position-relative d-inline-block">
                 <button class="header-icon btn btn-empty" type="button" id="notificationButton" data-toggle="dropdown"
@@ -103,24 +55,29 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
 
-        <div class="user d-inline-block">
-            <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                <span class="name">{{ app.user.username }}</span>
-                <span>
-                        <img alt="Profile Picture" src="img/profile-pic-l.jpg" />
-                    </span>
-            </button>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div class="user d-inline-block">
+                <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true">
+                    <span class="name">{{ app.user.username }}</span>
+                    <span><img alt="Profile Picture" src="img/profile-pic-l.jpg"></span>
+                </button>
 
-            <div class="dropdown-menu dropdown-menu-right mt-3">
-                <a class="dropdown-item" href="#">Konto</a>
-                <a class="dropdown-item" href="#">Historia</a>
-                <a class="dropdown-item" href="#">Pomoc</a>
-                <a class="dropdown-item" href="#">Wyloguj</a>
+                <div class="dropdown-menu dropdown-menu-right mt-3">
+                    <a class="dropdown-item" href="#">Account</a>
+                    <a class="dropdown-item" href="#">Features</a>
+                    <a class="dropdown-item" href="#">History</a>
+                    <a class="dropdown-item" href="#">Support</a>
+                    <a class="dropdown-item" href="#">Sign out</a>
+                </div>
+                {# fix dropdowns#}
             </div>
-        </div>
+        {% else %}
+            <div class="user d-inline-block">
+                <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" href="{{ path('login') }}">LOGOWANIE&nbsp;</a>
+            </div>
         {% endif %}
     </div>
 </nav>

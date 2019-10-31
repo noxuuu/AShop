@@ -58,7 +58,7 @@ class UsersType extends AbstractType
             ))
             ->add('authData', TextType::class, [
                 'label' => 'STEAM ID',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Wprowadź swoje STEAM_ID'

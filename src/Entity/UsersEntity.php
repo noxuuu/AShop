@@ -63,13 +63,13 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
      * @ORM\ManyToOne(targetEntity="Groups")
      * @ORM\JoinColumn(name="groupId", referencedColumnName="id", nullable=true)
      */
-    private $groupId; // klucz obcy dla shop_groups.id // default 2 - as user.
+    private $groupId;
 
     /**
      * @ORM\Column(type="string", length=64)
      * @Assert\NotBlank()
      */
-    private $authData;
+    protected $steamId;
 
     /**
      * @ORM\Column(type="float")
@@ -79,7 +79,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
     /**
      * @ORM\Column(type="datetime")
      */
-    private $joinDate;
+    protected $joinDate;
 
     public function __construct()
     {
@@ -204,6 +204,8 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
         foreach ($this->roles as $role) {
             $roles[] = new Role($role);
         }
+
+        // todo delete roles from user entity, add roles in groups - create alternative named permissions and save it like array
         return $roles;
     }
 
@@ -212,7 +214,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
      */
     public function getAuthData()
     {
-        return $this->authData;
+        return $this->steamId;
     }
 
     /**
@@ -220,7 +222,7 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
      */
     public function setAuthData($authData): void
     {
-        $this->authData = $authData;
+        $this->steamId = $authData;
     }
 
     /**
@@ -240,18 +242,16 @@ class UsersEntity implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function getJoinDate()
+    public function setJoinDate(?int $joinDate): void
     {
-        return $this->joinDate;
-    }
+        if (null !== $joinDate) {
+            $joinDateDate = new \DateTime();
+            $joinDateDate->setTimestamp($joinDate);
+            $joinDate = $joinDateDate;
+        }
 
-    /**
-     * @param mixed $joinDate
-     */
-    public function setJoinDate($joinDate): void
-    {
         $this->joinDate = $joinDate;
     }
 

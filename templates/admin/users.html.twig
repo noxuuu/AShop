@@ -38,38 +38,45 @@
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                     <h4 class="modal-title" id="add1">Dodaj użytkownika</h4>
                                                 </div>
-                                                <form action="" method="post">
+
+                                                {{ form_start(form_add) }}
                                                     <div class="modal-body">
                                                         <div class="form-group">
                                                             <label>Login:</label>
-                                                            <input type="text" name="login" class="form-control">
+                                                            {{ form_widget(form_add.username) }}
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>Hasło:</label>
-                                                            <input type="password" name="password" placeholder="*****" class="form-control">
+                                                            <label>Email:</label>
+                                                            {{ form_widget(form_add.email) }}
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>Powtórz Hasło:</label>
-                                                            <input type="password" name="re-password" placeholder="*****" class="form-control">
+                                                        <div class="form-group {% if form_errors(form_add.plainPassword.first) %}has-error{% endif %}">
+                                                            <label class="control-label mb-10">Hasło:</label>
+                                                            {{ form_widget(form_add.plainPassword.first) }}
+                                                            {% if form_errors(form_add.plainPassword.first) %}
+                                                                <span class="help-block">Hasła muszą być identyczne!</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="form-group {% if form_errors(form_add.plainPassword.first) %}has-error{% endif %}">
+                                                            <label class="control-label mb-10">Powtórz Hasło:</label>
+                                                            {{ form_widget(form_add.plainPassword.second) }}
+                                                            {% if form_errors(form_add.plainPassword.first) %}
+                                                                <span class="help-block">Hasła muszą być identyczne!</span>
+                                                            {% endif %}
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Grupa</label>
-                                                            <select name="groupid" class="form-control round-input" required>
-
-                                                                <option value="<?php echo $row3['id'];?>"><?php echo $row3['name'];?></option>
-                                                                <option selected disabled>Nie masz uprawnień do przypisywania grup.</option>
-                                                            </select>
+                                                            {{ form_widget(form_add.groupId) }}
                                                         </div>
                                                         <div class="form-group">
                                                             <label>SteamID:</label>
-                                                            <input type="text" name="steamid" class="form-control">
+                                                            {{ form_widget(form_add.authData) }}
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <?php if($options != 0) { ?><button type="sumbit" name="user_add" class="btn btn-primary">Dodaj !</button><?php } ?>
+                                                        <button type="submit" class="btn btn-primary">Dodaj</button>
                                                     </div>
-                                                </form>
+                                                {{ form_end(form_add) }}
                                             </div>
                                         </div>
                                     </div>
@@ -91,11 +98,70 @@
                                                 <tr>
                                                     <td>{{ user.getUsername() }}</td>
                                                     <td>
-
+                                                        <span style="{{ user.getGroupId().getStyle() }}">{{ user.getGroupId().getName() }}</span>
                                                     </td>
                                                     <td>{{ user.getAuthData() }}</td>
-                                                    <td><?php if(CheckAccess('can_edit_wallet') && $find) { ?><a href="javascript:void(0)" class="text-inverse" data-toggle="modal" data-target="#money-<?php echo $row['id']; ?>"><i class="fa fa-usd"></i></a><?php } if(CheckAccess('can_edit_users') && $find) { ?><a href="javascript:void(0)" data-toggle="modal" data-target="#edit-<?php echo $row['id']; ?>" class=""><i class="fa fa-check"></i></a><?php } if(CheckAccess('can_delete_users') && $find) { ?><a href="javascript:void(0)" class="text-inverse" data-toggle="modal" data-target="#delete-<?php echo $row['id']; ?>"><i class="fa fa-trash"></i></a> <?php } ?></td>
+                                                    <td><a href="#" class="text-inverse" data-toggle="modal" data-target="#money-{{ user.getUsername() }}"><i class="fa fa-usd"></i></a>
+                                                        <a href="#" data-toggle="modal" data-target="#edit-{{ user.getUsername() }}" class=""><i class="fa fa-check"></i></a>
+                                                        <a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ user.getUsername() }}"><i class="fa fa-trash"></i></a>
+                                                    </td>
                                                 </tr>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="money-{{ user.getUsername() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ user.getUsername() }}">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title" id="editlabel{{ user.getUsername() }}">Edytuj portfel użytkownika <b>{{ user.getUsername() }}</b></h4>
+                                                            </div>
+                                                            {% set wallet_from = form_wallet.createView %}
+                                                            {{ form_start(wallet_from, { 'method' : 'post', 'action': path('edit_wallet', { 'username' :  user.getUsername() })}) }}
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label>Portfel:</label>
+                                                                        {{ form_widget(wallet_from.value, {'value' : user.getWallet()}) }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    <button type="submit"  class="btn btn-primary">Edytuj</button>
+                                                                </div>
+                                                            {{ form_end(wallet_from) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade" id="delete-{{ user.getUsername() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ user.getUsername() }}">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                <h4 class="modal-title" id="deletelabel{{ user.getUsername() }}">Usuń użytkownika <b>{{ user.getUsername() }}</b></h4>
+                                                            </div>
+                                                            <form action="" method="post">
+                                                                <div class="modal-body">
+                                                                    {% if user.getUsername() == app.user.username %}
+                                                                        <div class="alert alert-danger alert-dismissable alert-style-1">
+                                                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                                            <i class="ti-na"></i>Nie możesz usunąć własnego konta !
+                                                                        </div>
+                                                                    {% else %}
+                                                                        Czy jesteś pewny, że chcesz usunąć użytkownika <b>{{ user.getUsername() }}</b> ?
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    {% if user.getUsername() == app.user.username %}
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                                                                    {% else %}
+                                                                        <a class="btn btn-primary" href="{{ path('delete_user', {'username': user.getUsername()}) }}" role="button">Usuń !</a>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             {% endfor %}
                                         </tbody>
                                     </table>

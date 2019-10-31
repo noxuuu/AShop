@@ -21,7 +21,9 @@ class AdminLogsRepository extends EntityRepository
      */
     public function getLastActivity($max){
         $qb = $this->createQueryBuilder('l');
-        $qb->select('IDENTITY(l.adminName) as admin', 'l.content', 'l.date')
+        $qb->select('IDENTITY(l.adminName) as admin', 'g.style', 'l.content', 'l.date')
+            ->join('l.adminName', 'u', 'WITH', 'l.adminName = u.username')
+            ->join('u.groupId', 'g', 'WITH', 'u.groupId = g.id')
             ->orderBy('l.date', 'DESC')
             ->setMaxResults($max);
         $query = $qb->getQuery();

@@ -1,9 +1,141 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'frontend/admin/base.html.twig' %}
  
-{% block title %}{% endblock %}
+{% block title %}Grupy{% endblock %}
 
 {% block body %}
+    <div class="container-fluid">
 
+        <!-- Title -->
+        <div class="row heading-bg  bg-blue">
+            <div class="col-lg-3 col-md-6 col-sm-4 col-xs-12">
+                <h5 class="txt-light">Grupy</h5>
+            </div>
+
+        </div>
+        <!-- /Title -->
+
+        <!-- Row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default card-view">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <h6 class="panel-title txt-dark">Grupy</h6>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-wrapper collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p>W tym miejscu możesz zarządzać grupami w sklepie</p>
+                                </div>
+                                <div class="col-md-2 col-md-offset-2">
+                                    <?php if(CheckAccess('can_add_groups')) {?>
+                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ GRUPĘ</button>
+                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="add1">Dodaj grupę</h4>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <div class="table-responsive">
+                                    <table class="table display product-overview mb-30" id="support_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>NAZWA</th>
+                                                <th>Użytkownicy</th>
+                                                <th>AKCJE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for group in pagination %}
+                                                <tr>
+                                                    <td>{{ group.getId() }}</td>
+                                                    <td><span style="{{ group.getStyle() }}">{{ group.getName() }}</span></td>
+                                                    <td>
+										        		<span class="label label-success">
+										        			Users count
+										        		</span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0)" data-toggle="modal" data-target="#edit-{{ group.getId() }}" class=""><i class="fa fa-check"></i></a>
+                                                        | <a href="javascript:void(0)" data-toggle="modal" data-target="#edit_perms-{{ group.getId() }}" class=""><i class="fa fa-lock"></i></a>
+                                                        | <a href="javascript:void(0)" class="text-inverse" data-toggle="modal" data-target="#delete-{{ group.getId() }}"><i class="fa fa-trash"></i></a>
+                                                    </td>
+
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="edit-<?php echo $row['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editlabel<?php echo $row['id']; ?>">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="editlabel1">Edycja grupy <b><?php echo $row['name']; ?></b></h4>
+                                                                </div>
+                                                                <form action="" method="post">
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <label>NAZWA:</label>
+                                                                            <input type="text" name="name" value="<?php echo $row['name']; ?>" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>STYL:</label>
+                                                                            <input type="text" name="style" value="<?php echo $row['style']; ?>" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="group_id" value="<?php echo $row['id']; ?>">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                        <button type="sumbit" name="edit_group" class="btn btn-primary">Edytuj</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal fade" id="delete-<?php echo $row['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="deletelabel<?php echo $row['id']; ?>">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="deletelabel<?php echo $row['id']; ?>">Usuń grupę <b><?php echo $row['name'];?></b></h4>
+                                                                </div>
+                                                                <form action="" method="post">
+                                                                    <div class="modal-body">
+                                                                        Czy jesteś pewny, że chcesz usunąć tą grupę ?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="group_id" value="<?php echo $row['id']; ?>">
+                                                                        <input type="hidden" name="name" value="<?php echo $row['name']; ?>">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                                                        <button type="sumbit" name="delete_group" class="btn btn-primary">Usuń !</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Row -->
+    </div>
 {% endblock %}
 
-{% block javascript %}{% endblock %}
+{% block javascripts %}{% endblock %}

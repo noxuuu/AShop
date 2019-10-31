@@ -34,7 +34,8 @@ class UsersRepository extends EntityRepository implements UserLoaderInterface
      */
     public function findLastRegistrations($max){
         $qb = $this->createQueryBuilder('u');
-        $qb->select('u.username', 'u.authData', 'u.joinDate')
+        $qb->select('u.username', 'g.style', 'u.authData', 'u.joinDate')
+            ->join('u.groupId', 'g', 'WITH', 'u.groupId = g.id')
             ->orderBy('u.joinDate', 'DESC')
             ->setMaxResults($max);
         $query = $qb->getQuery();
