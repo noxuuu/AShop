@@ -154,7 +154,7 @@ class paymentsController extends AbstractController
         $data['sms'] = $pricesRepo->GetPaymentTypeAccesiblity($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId('sms'));
         $data['psc'] = $pricesRepo->GetPaymentTypeAccesiblity($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId('paysafecard'));
         $data['transfer'] = $pricesRepo->GetPaymentTypeAccesiblity($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId('transfer'));
-        
+
         // Send data
         if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
             return new JsonResponse($data);
@@ -271,7 +271,7 @@ class paymentsController extends AbstractController
                             // add service when response is OK (200)
                             if ($response == "OK") {
                                 // log payment
-                                $serviceAdded2 = $tempServicesRepo->addService();
+                                //$serviceAdded2 = $tempServicesRepo->addService();
 
                                 // give client's service
                                 $serviceAdded = $tempServicesRepo->addService($price[0]['priceId'], $server, $authData);

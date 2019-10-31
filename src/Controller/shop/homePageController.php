@@ -4,6 +4,7 @@ namespace App\Controller\shop;
 use App\Entity\BoughtServicesLogs;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Entity\UsersEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,10 +49,8 @@ class homePageController extends AbstractController
         ]);
     }
 
-    /** DELETE CONTROLLERS UNDER THIS COMMENT **/
-
     /**
-     * Get common of AShop
+     * Get faq
      *
      * @Route("/faq", name="faq")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -59,16 +58,83 @@ class homePageController extends AbstractController
      */
     public function faq()
     {
+        // todo make faq editable in ACP->Settings
+
+        // get repo's
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+
+        // get data
         $services = $servicesRepo->findAll();
         $servers = $serversRepo->findAll();
+
+        //
         $breadcrumbs = [];
 
         return $this->render('frontend/pages/faq/index.html.twig', [
             'services' => $services,
             'servers' => $servers,
             'title' => 'Często zadawane pytania',
+            'breadcrumbs' => $breadcrumbs
+        ]);
+    }
+
+    /**
+     * Get terms
+     *
+     * @Route("/terms", name="terms")
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function terms()
+    {
+        // todo make terms editable in ACP->settings
+
+        // get repo's
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+
+        // get data
+        $services = $servicesRepo->findAll();
+        $servers = $serversRepo->findAll();
+
+        //
+        $breadcrumbs = [];
+
+        return $this->render('frontend/pages/terms/index.html.twig', [
+            'services' => $services,
+            'servers' => $servers,
+            'title' => 'Regulamin',
+            'breadcrumbs' => $breadcrumbs
+        ]);
+    }
+
+    /**
+     * Get contact
+     *
+     * @Route("/contact", name="contact")
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function contact()
+    {
+        // todo make contact entity - simply add new admins in ACP->settings
+
+        // get repo's
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+
+        // get data
+        $services = $servicesRepo->findAll();
+        $servers = $serversRepo->findAll();
+
+        //
+        $breadcrumbs = [];
+
+        return $this->render('frontend/pages/contact/index.html.twig', [
+            'services' => $services,
+            'servers' => $servers,
+            'title' => 'Kontakt',
             'breadcrumbs' => $breadcrumbs
         ]);
     }

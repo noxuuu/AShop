@@ -97,33 +97,30 @@
                         <div class="d-flex flex-row mb-3 pb-3">
                             <div class="accordion">
                                 <div class="accordion-item">
-                                    <a>Why is the moon sometimes out during the day?</a>
+                                    <a>Jak mogę zasilić wirtualny portfel?</a>
                                     <div class="content">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                                        <p>
+                                            Płatność można dokonać na różne sposoby takie jak: SMS, Przelew, PayPal, PaySafeCard.: SMS, Przelew, PayPal, PaySafeCard.<br/>
+                                            Aby doładować portfel, wejdź na swój profil i klknij "Doładuj portfel", po czym wybierz formę doładowania konta, która Cię interesuje.
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="accordion-item">
-                                    <a>Why is the sky blue?</a>
+                                    <a>Dlaczego metoda płatności SMS jest droższa od pozostałych?</a>
                                     <div class="content">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                                        <p>Ponieważ operator płatności SMS pobiera prowizję w wysokościu 50%, co się wiąże z tym że, realny przychód jest mniejszy niż przy zakupieniu usługi za pomocą przelewu.</p>
                                     </div>
                                 </div>
                                 <div class="accordion-item">
-                                    <a>Will we ever discover aliens?</a>
+                                    <a>Co zrobić w przypadku otrzymania nieprawidłowego kodu?</a>
                                     <div class="content">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                                        <p>Porsimy o ponowne przepisanie kodu, jeżeli problem bedzie się powtarzał skontaktuj się z Administracją.</p>
                                     </div>
                                 </div>
                                 <div class="accordion-item">
-                                    <a>How much does the Earth weigh?</a>
+                                    <a>Jak mogę połączyć się z serwerem gdy jest pełny?</a>
                                     <div class="content">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
-                                    </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <a>How do airplanes stay up?</a>
-                                    <div class="content">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor pretium viverra suspendisse potenti.</p>
+                                        <p>Wchodzimy do gry, następnie otwieremy konsole i łączymy się z serwerem poprzez komendę "connect ip_serwera" </p>
                                     </div>
                                 </div>
                             </div>
@@ -133,18 +130,16 @@
             </div>
         </div>
     </div>
-
-
 {% endblock %}
 {% block javascripts %}
-            <script>
-                const items = document.querySelectorAll(".accordion a");
+    <script>
+        const items = document.querySelectorAll(".accordion a");
 
-                function toggleAccordion(){
-                    this.classList.toggle('active');
-                    this.nextElementSibling.classList.toggle('active');
-                }
+        function toggleAccordion(){
+            this.classList.toggle('active');
+            this.nextElementSibling.classList.toggle('active');
+        }
 
-                items.forEach(item => item.addEventListener('click', toggleAccordion));
-                </script>
+        items.forEach(item => item.addEventListener('click', toggleAccordion));
+    </script>
 {% endblock %}

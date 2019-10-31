@@ -1,0 +1,87 @@
+{% extends 'frontend/common/index.html.twig' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <h5 class="mb-4">Administracja sklepu</h5>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card d-flex flex-row mb-4">
+                <a class="d-flex" href="#"><img alt="Profile" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center" src="{{ asset('img/profile-pic-l-8.jpg') }}"></a>
+                <div class="d-flex flex-grow-1 min-width-zero">
+                    <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                        <div class="min-width-zero">
+                            <a href="#">
+                                <p class="list-item-heading mb-1 truncate">n.o.x</p>
+                            </a>
+                            <p class="mb-2 text-muted text-small"><span class="color:red; text-shadow: 0px 0px 8px #FF0000;">Administrator</span></p>
+                            <div class="social-icons">
+                                <ul class="list-unstyled list-inline">
+                                    <li class="list-inline-item">
+                                        <a href="#"><i class="simple-icon-social-facebook"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="#"><i class="simple-icon-social-steam"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="#"><i class="simple-icon-envelope"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card d-flex flex-row mb-4">
+                <a class="d-flex" href="#"><img alt="Profile" class="img-thumbnail border-0 rounded-circle m-4 list-thumbnail align-self-center" src="{{ asset('img/profile-pic-l-8.jpg') }}"></a>
+                <div class="d-flex flex-grow-1 min-width-zero">
+                    <div class="card-body pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
+                        <div class="min-width-zero">
+                            <a href="#">
+                                <p class="list-item-heading mb-1 truncate">XaZaX</p>
+                            </a>
+                            <p class="mb-2 text-muted text-small"><span class="color:red; text-shadow: 0px 0px 8px #FF0000;">Administrator</span></p>
+                            <div class="social-icons">
+                                <ul class="list-unstyled list-inline">
+                                    <li class="list-inline-item">
+                                        <a href="#"><i class="simple-icon-social-facebook"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="#"><i class="simple-icon-social-steam"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="#"><i class="simple-icon-envelope"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mb-4">Wyślij nam wiadomość</h5>
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <form class="mb-5" id="tooltipPositions" name="tooltipPositions" novalidate="novalidate">
+                    <div class="tooltip-label-right">
+                        <div class="error-l-100 position-relative form-group">
+                            <label>Email</label>
+                            <input class="form-control" id="input1" name="input1" required="" type="text">
+                        </div>
+                    </div>
+                    <div class="tooltip-center-bottom position-relative form-group">
+                        <label>Wiadomość</label>
+                        <textarea class="form-control" rows="5" required=""></textarea>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <button class="text-center btn btn-primary">Wyślij</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

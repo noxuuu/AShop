@@ -44,7 +44,7 @@
 
                     <div class="d-flex flex-row mb-3 pb-3 border-bottom">
                         <a href="#">
-                            <img src="img/profile-pic-l-2.jpg" alt="Notification Image" class="img-thumbnail list-thumbnail xsmall border-0 rounded-circle" />
+                            <img src="{{ asset('img/profile-pic-l-8.jpg') }}" alt="Notification Image" class="img-thumbnail list-thumbnail xsmall border-0 rounded-circle" />
                         </a>
                         <div class="pl-3 pr-2">
                             <a href="#">
@@ -62,7 +62,7 @@
             <div class="user d-inline-block">
                 <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true">
                     <span class="name">{{ app.user.username }}</span>
-                    <span><img alt="Profile Picture" src="img/profile-pic-l.jpg"></span>
+                    <span><img alt="Profile Picture" src="{{ asset('img/profile-pic-l-8.jpg') }}"></span>
                 </button>
 
                 <div class="dropdown-menu dropdown-menu-right mt-3">
