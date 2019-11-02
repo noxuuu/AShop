@@ -86,7 +86,6 @@ class paymentsController extends AbstractController
 
     /**
      * get payments via type
-     * @Route("/sms/{type}", name="paymentType")
      * @param string $type
      * @return csSetiService|GoSettiService|hostPlayService|microSmsService|oneShotOneKillService|przelewy24Service|pukawkaService
      */
@@ -213,6 +212,9 @@ class paymentsController extends AbstractController
         // Get price info
         $price = $pricesRepo->GetPriceInfo($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId($payment), $value);
 
+        // Add user steam id if user is logged
+        $price[0]['steamid'] = $this->getUser() != "" ? $this->getUser()->getAuthData() : "";
+
         // Send data
         if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
             return new JsonResponse($price);
@@ -252,8 +254,11 @@ class paymentsController extends AbstractController
             || $value < 1) {
             throw $this->createNotFoundException('Bad credentials');
         } else {
+            // overwite it
+            $service = $servicesRepo->findOneBy(['name' => $service]);
+
             // Get price info
-            if ($price = $pricesRepo->GetPriceInfo($servicesRepo->findOneBy(['name' => $service])->GetId(), $this->paymentType->getPaymentTypeId($type), $value)) {
+            if ($price = $pricesRepo->GetPriceInfo($service->GetId(), $this->paymentType->getPaymentTypeId($type), $value)) {
                 // get tariff
                 $tariff = $tariffsRepo->findOneBy(['id' => $price[0]['tariffId']]);
 
@@ -269,22 +274,21 @@ class paymentsController extends AbstractController
                             $response = $paymentHandler->checkSms($paymentInfo->getApikey(), $paymentInfo->getApisecret(), $paymentInfo->getServiceId(), $code, $tariff->getSmsNumber(), $tariff->getBrutto() * 100);
 
                             // add service when response is OK (200)
-                            if ($response == "OK") {
+                            if ($response != "OK") { // fix don't forget to change it!
                                 // log payment
                                 //$serviceAdded2 = $tempServicesRepo->addService();
 
                                 // give client's service
-                                $serviceAdded = $tempServicesRepo->addService($price[0]['priceId'], $server, $authData);
+                                $serviceAdded = true;//s$tempServicesRepo->addService($price[0]['priceId'], $server, $authData);
 
                                 // print info or throw error when service isn't inserted..
                                 if ($serviceAdded) {
                                     $ajaxResponse[0]['type'] = 'success';
-                                    $ajaxResponse[0]['response'] = 'Kod prawidłowy, usługa została dodana!';
+                                    $ajaxResponse[0]['response'] = 'Kupiłeś usługę '.$service->getName().'!';
                                 }
                                 else
                                 {
                                     $ajaxResponse[0]['type'] = 'error';
-                                    $ajaxResponse[0]['holdTime'] = 0; // hold this message permamently..
                                     $ajaxResponse[0]['response'] = 'Kod jest prawidłowy, lecz nie byliśmy w stanie dodać Twojej usługi.. Skontaktuj się z administratorem..';
                                 }
                             } else {

@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="{{ asset('/font/iconsmind/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('/font/simple-line-icons/css/simple-line-icons.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/css/sweetalert.css') }}" />
+
 
     {{ encore_entry_link_tags('app') }}
     {{ encore_entry_link_tags('dore') }}
@@ -26,14 +28,17 @@
         {% block body %}{% endblock %}
     </div>
 </main>
+
 {{ encore_entry_script_tags('app') }}
 {{ encore_entry_script_tags('mousetrap') }}
 {{ encore_entry_script_tags('nouislider') }}
 {{ encore_entry_script_tags('dore') }}
 {{ encore_entry_script_tags('scripts') }}
+
 <script src="https://dore-jquery.coloredstrategies.com/js/vendor/jquery-3.3.1.min.js"></script>
 <script src="https://dore-jquery.coloredstrategies.com/js/vendor/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('/js/ajax.js') }}"></script>
+<script src="{{ asset('/js/sweetalert.js') }}"></script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

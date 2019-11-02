@@ -29,15 +29,19 @@ class oneShotOneKillService
      * @return mixed
      */
     function checkSms(string $apikey, ?string $apisecret, ?int $serviceid, ?string $code, int $number, int $amount){
-        if($apikey == NULL || $apikey == '' || $code == NULL || $code == '') return $this->response->getResponse(100);
-        $response = json_decode(file_get_contents(sprintf('http://www.1shot1kill.pl/api?type=sms&key=%d&sms_code=%d&comment=%d', $apikey, $code, 'testowo')));
-        if(!is_array($response)) return $this->response->getResponse(100);
+        if($apikey == NULL || $apikey == '' || $code == NULL || $code == '')
+            return $this->response->getResponse(100);
+
+        $response = json_decode(file_get_contents(sprintf('https://www.1shot1kill.pl/api?type=sms&key=%s&sms_code=%s&comment=%s', $apikey, $code, 'testowo')));
+
+        if(!is_array($response))
+            return $this->response->getResponse(100);
+
         if($response['status'] == 'ok') return $this->response->getResponse(200);
         else if(
             $response['desc'] == 'internal api error' ||
             $response['desc'] == 'wrong api key' ||
-            $response['desc'] == 'wrong api type'
-        ) return $this->response->getResponse(500);
+            $response['desc'] == 'wrong api type') return $this->response->getResponse(500);
         else if($response['desc'] == 'empty sms code') return $this->response->getResponse(903);
         else if($response['desc'] == 'wrong sms code') return $this->response->getResponse(902);
         else if($response['desc'] == 'sms code already used') return $this->response->getResponse(901);

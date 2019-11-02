@@ -273,8 +273,7 @@ function LoadPaymentInfo(service, server, payment, value){
                             '   </div>' +
                             '   <div class="form-group">' +
                             '       <label>SteamID:</label>' +
-                            '       <input type="text" id="authData" class="form-control" placeholder="STEAM_0:0:12345" required>' +
-                            '       <input type="text" id="displayResponse" class="form-control" placeholder="">' +
+                            '       <input type="text" id="authData" class="form-control" placeholder="STEAM_0:0:12345" value="' + info['steamid'] + '" required>' +
                             '   </div>' +
                             '   <button type="button" onclick="PerformPayment(\'sms\', \'' + service + '\', \'' + server + '\', \'' + value + '\')" class="btn btn-secondary btn-block mb-1">Zapłać</button>' +
                             '</form>');
@@ -311,7 +310,8 @@ function LoadPaymentInfo(service, server, payment, value){
             $("#ajax_loader").hide();
 
             // Alert (no prices for this payment method)
-            alert('Ajax request failed: ' + errorThrown);
+            swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
+
         }
     });
 };
@@ -334,13 +334,31 @@ function PerformPayment(type, service, server, value){
         success: function(data, status) {
             $("#ajax_loader").hide();
 
+            if(data[0]['type'] == "error")
+                swal("Błąd", data[0]['response'], "error");
+            else
+            {
+                togglePaymentInfo(false);
+                swal({
+                    title: "Gratulacje!",
+                    text: data[0]['response'],
+                    type: "success",
+                    confirmButtonClass: "btn-primary",
+                    confirmButtonText: "OK",
+                    closeOnConfirm: true
+                },
+                    function() {
+                        //document.location.href="/user/services"; // todo make redirect to users services page
+                    });
+            }
+
             $("#displayResponse").val(data[0]['response']);
         },
         error : function(xhr, textStatus, errorThrown) {
             $("#ajax_loader").hide();
 
             // Alert (no prices for this payment method)
-            alert('Ajax request failed: ' + errorThrown);
+            swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
         }
     });
 };
