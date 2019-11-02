@@ -8,7 +8,12 @@
 
 namespace App\Repository;
 
+use App\Entity\BoughtServicesLogs;
+use App\Entity\Prices;
+use App\Entity\Servers;
+use App\Entity\UsersEntity;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class BoughtServicesRepository extends EntityRepository
@@ -103,5 +108,46 @@ class BoughtServicesRepository extends EntityRepository
             ->join('b.service', 's', 'WITH', 'b.service = s.id');
         $query = $qb->getQuery();
         return $query->getArrayResult();
+    }
+
+    /**
+     * @param $priceId
+     * @param Servers $server
+     * @param $authData
+     * @param $paymentType
+     * @param UsersEntity $user
+     * @return bool
+     */
+    public function logServiceBuy($priceId, Servers $server, $authData, $paymentType, UsersEntity $user){
+        $pricesRepo = $this->getEntityManager()->getRepository(Prices::class);
+        $price = $pricesRepo->findOneBy(['id' => $priceId]);
+
+        if(!$price)
+            return false;
+
+        try{
+            $time = new \DateTime();
+            $log = new BoughtServicesLogs();
+            $request = Request::createFromGlobals();
+
+            if($user)
+                $log->setUserId($user);
+            
+            $log->setServerId($server);
+            $log->setServiceId($price->getServiceId());
+            $log->setPaymentType($paymentType);
+            $log->setValue($price->getValue());
+            $log->setAuthData($authData);
+            $log->setUserIp($request->getClientIp());
+            $log->setDate($time);
+
+            $entityManager = $this->getEntityManager();
+            $entityManager->persist($log);
+            $entityManager->flush();
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

@@ -36,7 +36,7 @@ class dashboardController extends AbstractController
      */
     public function dashboard()
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Nie masz uprawnień do tej strony');
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Nie masz uprawnień do tej strony');
 
         // get repo's
         $usersRepo = $this->getDoctrine()->getRepository(UsersEntity::class);

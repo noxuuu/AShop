@@ -32,8 +32,10 @@ class oneShotOneKillService
         if($apikey == NULL || $apikey == '' || $code == NULL || $code == '')
             return $this->response->getResponse(100);
 
-        $response = json_decode(file_get_contents(sprintf('https://www.1shot1kill.pl/api?type=sms&key=%s&sms_code=%s&comment=%s', $apikey, $code, 'testowo')));
+        // make url
+        $response = json_decode( @file_get_contents(sprintf("http://www.1shot1kill.pl/api?type=sms&key=%s&sms_code=%s&comment=AShop", $apikey, $code)), true );
 
+        // check wheter api is valid
         if(!is_array($response))
             return $this->response->getResponse(100);
 

@@ -2,7 +2,10 @@
 
 namespace App\Controller\shop;
 
+use App\Entity\BoughtServicesLogs;
 use App\Entity\PaymentMethod;
+use App\Entity\PaymentsSMS;
+use App\Entity\PaymentsWallet;
 use App\Entity\Prices;
 use App\Entity\Servers;
 use App\Entity\Services;
@@ -241,6 +244,11 @@ class paymentsController extends AbstractController
 
         // get repo's
         $tempServicesRepo = $this->getDoctrine()->getRepository(UserServices::class);
+        $boughtServicesRepo = $this->getDoctrine()->getRepository(BoughtServicesLogs::class);
+        $smsLogsRepo = $this->getDoctrine()->getRepository(PaymentsSMS::class);
+        //$pscLogsRepo = $this->getDoctrine()->getRepository(PaymentsPSC::class);
+        //$transferLogsRepo = $this->getDoctrine()->getRepository(PaymentsSMS::class);
+        //$walletLogsRepo = $this->getDoctrine()->getRepository(PaymentsWallet::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $paymentRepo = $this->getDoctrine()->getRepository(PaymentMethod::class);
@@ -259,6 +267,7 @@ class paymentsController extends AbstractController
 
             // Get price info
             if ($price = $pricesRepo->GetPriceInfo($service->GetId(), $this->paymentType->getPaymentTypeId($type), $value)) {
+
                 // get tariff
                 $tariff = $tariffsRepo->findOneBy(['id' => $price[0]['tariffId']]);
 
@@ -274,12 +283,16 @@ class paymentsController extends AbstractController
                             $response = $paymentHandler->checkSms($paymentInfo->getApikey(), $paymentInfo->getApisecret(), $paymentInfo->getServiceId(), $code, $tariff->getSmsNumber(), $tariff->getBrutto() * 100);
 
                             // add service when response is OK (200)
-                            if ($response != "OK") { // fix don't forget to change it!
+                            if ($response == "OK") {
+
+                                // log service bought
+                                $boughtServicesRepo->logServiceBuy($price[0]['priceId'], $server, $authData, $this->paymentType->getPaymentTypeId($type), $this->getUser());
+
                                 // log payment
-                                //$serviceAdded2 = $tempServicesRepo->addService();
+                                $smsLogsRepo->logPayment($tariff, $paymentInfo, $code); // todo check wheter payment is logged successfully, if not - notiffy admin
 
                                 // give client's service
-                                $serviceAdded = true;//s$tempServicesRepo->addService($price[0]['priceId'], $server, $authData);
+                                $serviceAdded = $tempServicesRepo->addService($price[0]['priceId'], $server, $authData);
 
                                 // print info or throw error when service isn't inserted..
                                 if ($serviceAdded) {

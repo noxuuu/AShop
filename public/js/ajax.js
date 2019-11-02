@@ -275,7 +275,7 @@ function LoadPaymentInfo(service, server, payment, value){
                             '       <label>SteamID:</label>' +
                             '       <input type="text" id="authData" class="form-control" placeholder="STEAM_0:0:12345" value="' + info['steamid'] + '" required>' +
                             '   </div>' +
-                            '   <button type="button" onclick="PerformPayment(\'sms\', \'' + service + '\', \'' + server + '\', \'' + value + '\')" class="btn btn-secondary btn-block mb-1">Zapłać</button>' +
+                            '   <button type="submit" onclick="PerformPayment(\'sms\', \'' + service + '\', \'' + server + '\', \'' + value + '\')" class="btn btn-secondary btn-block mb-1">Zapłać</button>' +
                             '</form>');
 
                         // fill payment info
@@ -311,7 +311,6 @@ function LoadPaymentInfo(service, server, payment, value){
 
             // Alert (no prices for this payment method)
             swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
-
         }
     });
 };

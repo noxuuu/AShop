@@ -36,22 +36,21 @@ class UserServicesRepository extends EntityRepository
         try{
             $time = new \DateTime();
             $expires = new \DateTime();
-            $expires->setTimestamp($time->getTimestamp() + $price->getValue()*864000);
 
             $userService = new UserServices();
-            $userService->setServerId($server->getId());
-            $userService->setServiceId($price->getServiceId()->getId());
+            $userService->setServerId($server);
+            $userService->setServiceId($price->getServiceId());
             $userService->setAuthData($authData);
             $userService->setValue($price->getValue());
             $userService->setBoughtDate($time);
-            $userService->setExpires($expires);
+            $userService->setExpires($expires->setTimestamp($time->getTimestamp() + ($price->getValue() * 86400)));
 
             $entityManager = $this->getEntityManager();
             $entityManager->persist($userService);
             $entityManager->flush();
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

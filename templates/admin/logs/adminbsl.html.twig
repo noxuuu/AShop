@@ -61,7 +61,7 @@
                                                     </td>
                                                     <td>
                                                         {% if log.getUserId() %}
-                                                            <span style="{{ log.getUserId().getGroupId().getStyle() }}">{{ log.getUserId().getGroupId().getName() }}</span>
+                                                            <span style="{{ log.getUserId().getGroupId().getStyle() }}">{{ log.getUserId().getUsername() }}</span>
                                                         {% else %}
                                                             Brak
                                                         {% endif %}
