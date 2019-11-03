@@ -20,6 +20,9 @@ class vouchersController extends AbstractController
      */
     public function vouchersController()
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         return $this->render('admin/vouchers.html.twig');
     }
 }

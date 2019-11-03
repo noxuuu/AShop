@@ -113,15 +113,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="RandomSteamGame" />
-    <orderEntry type="module" module-name="NITShop" />
     <orderEntry type="module" module-name="AlfaSystem" />
     <orderEntry type="module" module-name="AlfaShop" />
-    <orderEntry type="module" module-name="Presta Themes" />
     <orderEntry type="module" module-name="www" />
     <orderEntry type="module" module-name="AlfaShop" />
     <orderEntry type="module" module-name="www" />
-    <orderEntry type="module" module-name="PortfolioKasia" />
-    <orderEntry type="module" module-name="report-player-csgo" />
   </component>
 </module>

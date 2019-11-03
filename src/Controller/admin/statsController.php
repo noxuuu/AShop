@@ -21,6 +21,9 @@ class statsController extends AbstractController
      */
     public function stats()
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         return $this->render('admin/stats.html.twig');
     }
 }

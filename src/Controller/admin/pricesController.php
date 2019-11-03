@@ -29,6 +29,9 @@ class pricesController extends AbstractController
      */
     public function prices(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === Get some data ===
         $pricesRepo = $this->getDoctrine()->getRepository(Prices::class);
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
@@ -95,6 +98,9 @@ class pricesController extends AbstractController
      */
     public function editPrice(Request $request, Prices $price)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // get repo's
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
@@ -148,6 +154,9 @@ class pricesController extends AbstractController
      */
     public function deletePrice($id)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $entityManager = $this->getDoctrine()->getManager();
             $price = $this->getDoctrine()->getRepository(Prices::class)->find($id);

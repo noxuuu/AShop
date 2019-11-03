@@ -24,6 +24,9 @@ class paymentTransferController extends AbstractController
      */
     public function adminSMSPayment(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === Get repo for query ===
         $logsRepo = $this->getDoctrine()->getRepository(PaymentsTransfer::class);
 

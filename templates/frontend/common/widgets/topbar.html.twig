@@ -29,52 +29,15 @@
     </a>
 
     <div class="navbar-right">
-        <div class="header-icons d-inline-block align-middle">
-            {% if is_granted('ROLE_ADMIN') %}<a class="btn btn-sm btn-outline-primary mr-2 d-none d-md-inline-block mb-2" href="{{ path('admin') }}">&nbsp;PANEL ADMINA&nbsp;</a>{% endif %}
-
-
+        <div class="header-icons d-inline-block align-middle pr-lg-5">
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <div class="position-relative d-inline-block">
-                <button class="header-icon btn btn-empty" type="button" id="notificationButton" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    <i class="simple-icon-bell"></i>
-                    <span class="count">1</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right mt-3 scroll position-absolute" id="notificationDropdown">
-
-                    <div class="d-flex flex-row mb-3 pb-3 border-bottom">
-                        <a href="#">
-                            <img src="{{ asset('img/profile-pic-l-8.jpg') }}" alt="Notification Image" class="img-thumbnail list-thumbnail xsmall border-0 rounded-circle" />
-                        </a>
-                        <div class="pl-3 pr-2">
-                            <a href="#">
-                                <p class="font-weight-medium mb-1">Kupiłeś usługę ABC!</p>
-                                <p class="text-muted mb-0 text-small">12:45 12.01.2018</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <a class="btn btn-sm btn-outline-primary mr-2 d-none d-md-inline-block mb-2" href="#">
+                    <div class="glyph-icon simple-icon-wallet">&nbsp;{{ app.user.wallet }} zł | +&nbsp;</div>
+                </a>
             {% endif %}
         </div>
 
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <div class="user d-inline-block">
-                <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true">
-                    <span class="name">{{ app.user.username }}</span>
-                    <span><img alt="Profile Picture" src="{{ asset('img/profile-pic-l-8.jpg') }}"></span>
-                </button>
-
-                <div class="dropdown-menu dropdown-menu-right mt-3">
-                    <a class="dropdown-item" href="#">Account</a>
-                    <a class="dropdown-item" href="#">Features</a>
-                    <a class="dropdown-item" href="#">History</a>
-                    <a class="dropdown-item" href="#">Support</a>
-                    <a class="dropdown-item" href="#">Sign out</a>
-                </div>
-                {# fix dropdowns#}
-            </div>
-        {% else %}
+        {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="user d-inline-block">
                 <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" href="{{ path('login') }}">LOGOWANIE&nbsp;</a>
             </div>

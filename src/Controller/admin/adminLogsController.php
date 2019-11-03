@@ -24,6 +24,9 @@ class adminLogsController extends AbstractController
      */
     public function adminLogs(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === Get repo for query ===
         $logsRepo = $this->getDoctrine()->getRepository(AdminLogs::class);
 

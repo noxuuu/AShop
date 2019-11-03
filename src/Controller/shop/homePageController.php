@@ -148,6 +148,9 @@ class homePageController extends AbstractController
      */
     public function voucher()
     {
+
+        throw $this->createNotFoundException('Page is currently offline.');
+
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $services = $servicesRepo->findAll();

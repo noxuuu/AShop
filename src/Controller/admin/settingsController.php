@@ -42,6 +42,9 @@ class settingsController extends AbstractController
      */
     public function changeSettings(Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // declare settingsArray
         $definedSettings = $this->publicFunctions->getSettingsNames();
 

@@ -27,6 +27,9 @@ class userServicesController extends AbstractController
      */
     public function userServices(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === Get repo for query ===
         $usRepo = $this->getDoctrine()->getRepository(UserServices::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
@@ -102,6 +105,9 @@ class userServicesController extends AbstractController
      */
     public function editService(Request $request, UserServices $service)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // get form type to handle it
         $defaultData = [];
         $editForm = $this->createForm(usersServicesEditType::class, $defaultData);
@@ -145,6 +151,9 @@ class userServicesController extends AbstractController
      */
     public function deleteService($id)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $entityManager = $this->getDoctrine()->getManager();
             $service = $this->getDoctrine()->getRepository(UserServices::class)->find($id);

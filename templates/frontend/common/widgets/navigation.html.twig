@@ -13,6 +13,13 @@
                         <i class="iconsmind-Checkout"></i> Usługi
                     </a>
                 </li>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li>
+                        <a href="#">
+                            <i class="iconsmind-Coins"></i> Twoje Usługi
+                        </a>
+                    </li>
+                {% endif %}
                 <li>
                     <a href="#servers">
                         <i class="iconsmind-Cloud-Computer"></i> Serwery
@@ -23,7 +30,20 @@
                         <i class="iconsmind-Billing"></i> Vouchery
                     </a>
                 </li>
-
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li>
+                        <a href="{{ path('admin') }}">
+                            <i class="iconsmind-Gear"></i> Panel Admina
+                        </a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li>
+                        <a href="{{ path('logout') }}">
+                            <i class="iconsmind-Plug-In"></i> Wyloguj się
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

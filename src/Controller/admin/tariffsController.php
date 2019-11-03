@@ -27,6 +27,9 @@ class tariffsController extends AbstractController
      */
     public function tariffs(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === Get some data ===
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
         $pmRepo = $this->getDoctrine()->getRepository(PaymentMethod::class);
@@ -52,6 +55,9 @@ class tariffsController extends AbstractController
      */
     public function addTariff(Request $request, PaymentMethod $pm)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === create default data ===
         $tariff = new Tariffs();
         $addForm = $this->createForm(tariffType::class, $tariff);
@@ -85,6 +91,9 @@ class tariffsController extends AbstractController
      */
     public function editTariff(Request $request, Tariffs $tariff)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $editForm = $this->createForm(tariffType::class, $tariff);
         $editForm->handleRequest($request);
 
@@ -110,6 +119,9 @@ class tariffsController extends AbstractController
      */
     public function deleteTariff($id)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $entityManager = $this->getDoctrine()->getManager();
             $tariff = $this->getDoctrine()->getRepository(Tariffs::class)->find($id);

@@ -25,6 +25,9 @@ class serversController extends AbstractController
      */
     public function adminServers(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // === Get repo for query ===
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
@@ -64,6 +67,9 @@ class serversController extends AbstractController
      */
     public function editServer(Request $request, Servers $server)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $serverName = $server->getName();
 
         $editForm = $this->createForm(serversType::class, $server);
@@ -92,6 +98,9 @@ class serversController extends AbstractController
      */
     public function deleteServer($id)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $entityManager = $this->getDoctrine()->getManager();
             $server = $this->getDoctrine()->getRepository(Servers::class)->find($id);

@@ -331,6 +331,4 @@ class paymentsController extends AbstractController
         else
             throw new \Exception('Not allowed usage');
     }
-
-    // - pierwsze skonczyc i poprawic system walidacji sms, aby nie przekazywac danych przez komentarze (dodac apisecret, apikey, number)
 }

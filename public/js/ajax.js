@@ -275,7 +275,7 @@ function LoadPaymentInfo(service, server, payment, value){
                             '       <label>SteamID:</label>' +
                             '       <input type="text" id="authData" class="form-control" placeholder="STEAM_0:0:12345" value="' + info['steamid'] + '" required>' +
                             '   </div>' +
-                            '   <button type="submit" onclick="PerformPayment(\'sms\', \'' + service + '\', \'' + server + '\', \'' + value + '\')" class="btn btn-secondary btn-block mb-1">Zapłać</button>' +
+                            '   <button type="button" onclick="PerformPayment(\'sms\', \'' + service + '\', \'' + server + '\', \'' + value + '\')" class="btn btn-secondary btn-block mb-1">Zapłać</button>' +
                             '</form>');
 
                         // fill payment info
@@ -334,7 +334,9 @@ function PerformPayment(type, service, server, value){
             $("#ajax_loader").hide();
 
             if(data[0]['type'] == "error")
+            {
                 swal("Błąd", data[0]['response'], "error");
+            }
             else
             {
                 togglePaymentInfo(false);
@@ -346,12 +348,10 @@ function PerformPayment(type, service, server, value){
                     confirmButtonText: "OK",
                     closeOnConfirm: true
                 },
-                    function() {
+                    function(isConfirmed) {
                         //document.location.href="/user/services"; // todo make redirect to users services page
                     });
             }
-
-            $("#displayResponse").val(data[0]['response']);
         },
         error : function(xhr, textStatus, errorThrown) {
             $("#ajax_loader").hide();
@@ -360,4 +360,4 @@ function PerformPayment(type, service, server, value){
             swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
         }
     });
-};
+}

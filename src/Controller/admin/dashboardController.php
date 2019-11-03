@@ -18,7 +18,6 @@ use App\Entity\UsersEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 /**
  * Controller for admin common.
  *
@@ -36,7 +35,8 @@ class dashboardController extends AbstractController
      */
     public function dashboard()
     {
-        //$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Nie masz uprawnień do tej strony');
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // get repo's
         $usersRepo = $this->getDoctrine()->getRepository(UsersEntity::class);

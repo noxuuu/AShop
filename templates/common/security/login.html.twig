@@ -21,7 +21,6 @@
                                     <h6 class="mb-4">Logowanie</h6>
 
                                     {% if error %}
-                                        {{  dump(error) }}
                                         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                     {% endif %}
                                     <form action="{{ path('login') }}" method="post">
