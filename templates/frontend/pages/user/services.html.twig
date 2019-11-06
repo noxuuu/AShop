@@ -1,0 +1,33 @@
+{% extends 'frontend/common/index.html.twig' %}
+{% block title %}{{ title }}{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-12 list" data-check-all="checkAll">
+            {% if user_services|length > 0 %}
+                {% for service in user_services %}
+                    <div class="card d-flex flex-row mb-3 active">
+                        <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                            <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                                <a class="w-40 w-sm-100 text-center" href="#">
+                                    <p class="list-item-heading mb-0 truncate">{{ service.getServiceId().getName() }}</p>
+                                </a>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" style="width: 66%;"></div>
+                                </div>
+                                <p class="mb-0 text-muted text-small w-15 w-sm-100">Kupno: {{ service.getBoughtDate()|date("d/m/Y H:i:s") }}</p>
+                                <p class="mb-0 text-muted text-small w-15 w-sm-100">Wygasa: {{ service.getExpires()|date("d/m/Y H:i:s") }}</p>
+                                <div class="w-15 w-sm-100">
+                                    <span class="badge badge-pill badge-primary">AKTYWNA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-danger rounded text-center" role="alert">
+                    <h4>Nie posiadasz żadnych usług.</h4>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

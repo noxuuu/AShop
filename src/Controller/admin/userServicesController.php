@@ -9,6 +9,7 @@
 namespace App\Controller\admin;
 
 use App\Entity\Servers;
+use App\Entity\Services;
 use App\Entity\UserServices;
 use App\Form\admin\usersServicesAddType;
 use App\Form\admin\usersServicesEditType;
@@ -33,6 +34,7 @@ class userServicesController extends AbstractController
         // === Get repo for query ===
         $usRepo = $this->getDoctrine()->getRepository(UserServices::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
 
         // === Load data ===
         $serverSelection = $request->query->getInt('svr', 0); // filter by server
@@ -71,8 +73,8 @@ class userServicesController extends AbstractController
                 } else { // create new user service
                     $newDate = new \DateTime();
                     $userService = new UserServices();
-                    $userService->setServerId($server);
-                    $userService->setServiceId($formData['service']);
+                    $userService->setServerId($serversRepo->findOneBy(['id' => $server]));
+                    $userService->setServiceId($servicesRepo->findOneBy(['id' => $formData['service']]));
                     $userService->setAuthData($formData['authData']);
                     $userService->setValue($formData['value']);
                     $userService->setBoughtDate($currentDate);
@@ -110,6 +112,7 @@ class userServicesController extends AbstractController
 
         // get form type to handle it
         $defaultData = [];
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $editForm = $this->createForm(usersServicesEditType::class, $defaultData);
         $editForm->handleRequest($request);
 
@@ -123,7 +126,7 @@ class userServicesController extends AbstractController
             $setDate = \DateTime::createFromFormat('d/m/Y H:i:s', $formData['value']);
 
             // set new data
-            $service->setServiceId($formData['service']);
+            $service->setServiceId($servicesRepo->find($formData['service']));
             $service->setAuthData($formData['authData']);
             $service->setExpires($setDate);
 

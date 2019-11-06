@@ -14,8 +14,8 @@
                     </a>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <li>
-                        <a href="#">
+                    <li {% if app.request.get('_route') == 'user_services' or app.request.get('_route') == 'charge_wallet' %}class="active"{% endif %}>
+                        <a href="{{ path('user_services') }}">
                             <i class="iconsmind-Coins"></i> Twoje Usługi
                         </a>
                     </li>
@@ -37,7 +37,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li>
                         <a href="{{ path('logout') }}">
                             <i class="iconsmind-Plug-In"></i> Wyloguj się

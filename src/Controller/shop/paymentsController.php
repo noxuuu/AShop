@@ -79,7 +79,7 @@ class paymentsController extends AbstractController
 
     /**
      * get payments list
-     * @Route("/list", name="paymentList")
+     * @Route("/api/get/payment-list", name="paymentList")
      * @return array
      */
     public function paymentList()
@@ -138,7 +138,7 @@ class paymentsController extends AbstractController
 
     /**
      * Returns values for given data
-     * @Route("/buy/{service}/{server}/")
+     * @Route("/api/get/payments/{service}/{server}/")
      */
     public function loadPayments(Request $request, $service, $server)
     {
@@ -166,7 +166,7 @@ class paymentsController extends AbstractController
 
     /**
      * Returns values for given data
-     * @Route("/buy/{service}/{server}/{payment}/")
+     * @Route("/api/get/values/{service}/{server}/{payment}/")
      */
     public function loadValues(Request $request, $service, $server, $payment)
     {
@@ -196,7 +196,7 @@ class paymentsController extends AbstractController
 
     /**
      * Returns price info for given data
-     * @Route("/buy/{service}/{server}/{payment}/{value}/")
+     * @Route("/api/get/price-info/{service}/{server}/{payment}/{value}/")
      */
     public function loadPriceInfo(Request $request, $service, $server, $payment, $value)
     {
@@ -227,7 +227,7 @@ class paymentsController extends AbstractController
 
     /**
      * Validate payment centre *
-     * @Route("/payment/perform/{type}/{service}/{server}/{value}/{authData}/{code}/")
+     * @Route("/api/payment/perform/{type}/{service}/{server}/{value}/{authData}/{code}/")
      * @param Request $request
      * @param $type (sms|paysafecard|transfer|paypal)
      * @param $service

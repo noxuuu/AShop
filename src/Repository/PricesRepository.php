@@ -23,7 +23,7 @@ class PricesRepository extends EntityRepository
         $qb->select('t.brutto')
             ->join('p.tariff', 't', 'WITH', 'p.tariff = t.id')
             ->where('p.service = :service')
-            ->orderBy('t.brutto', 'ASC')
+            ->orderBy('t.brutto', 'DESC')
             ->setParameter('service', $service)
             ->setMaxResults(1);
         $query = $qb->getQuery();
@@ -71,6 +71,18 @@ class PricesRepository extends EntityRepository
         if($query->getSingleScalarResult())
             return 1;
         return 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetAccesiblePaymentTypes(){
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('DISTINCT m.type')
+            ->join('p.tariff', 't', 'WITH', 'p.tariff = t.id')
+            ->join('t.paymentMethodId', 'm', 'WITH', 't.paymentMethodId = m.id');
+        $query = $qb->getQuery();
+        return $query->getArrayResult();
     }
 
     /**

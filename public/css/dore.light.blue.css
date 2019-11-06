@@ -1,4 +1,4 @@
-/* Dore Main Style 
+/* Dore Main Style
 
 Table of Contents
 
@@ -4922,3 +4922,21 @@ a.ck.ck-button.ck-on:not(.ck-disabled):hover {
     @media (max-width: 991px) {
       .timeline > li.timeline-inverted > .timeline-badge {
         left: 15px; } }
+
+.radius-type {
+    border-radius: 0.75rem;
+    text-align: center;
+    text-align-last:center;
+}
+
+.payment-price, .payment-smskey, .payment-smsnumber {
+  background-color:#145388;
+  padding: 8px 15px;
+  border-radius: 50px;
+  display: inline-block;
+  margin-bottom:20px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: Courier New, Courier, monospace;
+  margin-top:0;
+}

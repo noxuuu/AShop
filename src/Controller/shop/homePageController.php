@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\shop;
 
 use App\Entity\BoughtServicesLogs;
@@ -6,6 +7,7 @@ use App\Entity\Servers;
 use App\Entity\Services;
 use App\Entity\Settings;
 use App\Entity\UsersEntity;
+use App\Entity\UserServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -158,29 +160,6 @@ class homePageController extends AbstractController
         $breadcrumbs = [];
 
         return $this->render('frontend/pages/vouchers/index.html.twig', [
-            'services' => $services,
-            'servers' => $servers,
-            'title' => 'Wykorzystaj voucher',
-            'breadcrumbs' => $breadcrumbs
-        ]);
-    }
-
-    /**
-     * Get common of AShop
-     *
-     * @Route("/default-page", name="default-page")
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     */
-    public function defaulpage()
-    {
-        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
-        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
-        $services = $servicesRepo->findAll();
-        $servers = $serversRepo->findAll();
-        $breadcrumbs = [];
-
-        return $this->render('frontend/pages/default-page/index.html.twig', [
             'services' => $services,
             'servers' => $servers,
             'title' => 'Wykorzystaj voucher',

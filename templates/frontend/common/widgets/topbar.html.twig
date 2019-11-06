@@ -31,8 +31,8 @@
     <div class="navbar-right">
         <div class="header-icons d-inline-block align-middle pr-lg-5">
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a class="btn btn-sm btn-outline-primary mr-2 d-none d-md-inline-block mb-2" href="#">
-                    <div class="glyph-icon simple-icon-wallet">&nbsp;{{ app.user.wallet }} zł | +&nbsp;</div>
+                <a class="btn btn-sm btn-outline-primary mr-2 d-none d-md-inline-block mb-2" href="#" onclick="loadWalletPayments()">
+                    <div class="glyph-icon simple-icon-wallet" id="wallet_funds">&nbsp;{{ app.user.wallet }} zł | +&nbsp;</div>
                 </a>
             {% endif %}
         </div>

@@ -21,7 +21,9 @@ Encore
     .addEntry('dore', './assets/js/dore.js')
     .addEntry('mousetrap', './assets/js/mousetrap.js')
     .addEntry('nouislider', './assets/js/nouislider.js')
+    .addEntry('sweetalert', './assets/js/sweetalert.js')
     .addEntry('scripts', './assets/js/scripts.js')
+    .addEntry('ajax', './assets/js/ajax.js')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 
