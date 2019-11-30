@@ -1,285 +1,44 @@
-{% extends 'frontend/admin/base.html.twig' %}
+{% extends 'frontend/common/index.html.twig' %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
 
-        <!-- Title -->
-        <div class="row heading-bg  bg-blue">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h5 class="txt-light">Panel kontrolny</h5>
-            </div>
-        </div>
-
-        <!-- Row -->
-        <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-green">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-diamond txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">{{ stats['monthly_income']|number_format(2) }} zł</span>
-                                        <h6 class="txt-light">Miesięczny zysk</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-red">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-rocket txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">{{ stats['month_bought_services'] }}</span>
-                                        <h6 class="txt-light">Zakupionych usług w miesiącu</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Service info -->
-            <div class="col-lg-9 col-md-6">
-                <div class="panel panel-default card-view">
-                    <div class="panel-wrapper collapse in">
-                        <div  class="panel-body">
-                            <!-- START carousel-->
-                            <div id="testimonial_slider" data-ride="carousel" class="carousel slide testimonial-slider-wrap text-slider">
-                                <ol class="carousel-indicators">
-                                    <li data-target="#testimonial_slider" data-slide-to="0" class="active"></li>
-                                    <li data-target="#testimonial_slider" data-slide-to="1"></li>
-                                    <li data-target="#testimonial_slider" data-slide-to="2"></li>
-                                </ol>
-                                <div role="listbox" class="carousel-inner mb-50">
-                                    <div class="item active">
-                                        <div class="testimonial-wrap text-center  pl-30 pr-30">
-                                            <h2>Slider pobierany ze strony AShop ...</h2>
-                                            <span class="testi-text block capitalize-font">Linia #1</span>
-                                            <span class="testi-text block capitalize-font">Linia #2</span>
-                                            <span class="testi-text block capitalize-font">Linia #3</span>
-                                            <span class="testi-text block capitalize-font">Linia #4</span>
-                                            <span class="testi-text block capitalize-font">Linia #5</span>
-                                            <span class="testi-text block capitalize-font">Linia #6</span>
-                                            <span class="testi-text block capitalize-font">Linia #7</span>
-                                        </div>
-                                    </div>
-                                    <div class="item">
-                                        <div class="testimonial-wrap text-center  pl-30 pr-30">
-                                            <h2>Slider pobierany ze strony AShop ...</h2>
-                                            <span class="testi-text block capitalize-font">Linia #1</span>
-                                            <span class="testi-text block capitalize-font">Linia #2</span>
-                                            <span class="testi-text block capitalize-font">Linia #3</span>
-                                            <span class="testi-text block capitalize-font">Linia #4</span>
-                                            <span class="testi-text block capitalize-font">Linia #5</span>
-                                            <span class="testi-text block capitalize-font">Linia #6</span>
-                                            <span class="testi-text block capitalize-font">Linia #7</span>
-                                        </div>
-                                    </div>
-                                    <div class="item">
-                                        <div class="testimonial-wrap text-center  pl-30 pr-30">
-                                            <h2>Slider pobierany ze strony AShop ...</h2>
-                                            <span class="testi-text block capitalize-font">Linia #1</span>
-                                            <span class="testi-text block capitalize-font">Linia #2</span>
-                                            <span class="testi-text block capitalize-font">Linia #3</span>
-                                            <span class="testi-text block capitalize-font">Linia #4</span>
-                                            <span class="testi-text block capitalize-font">Linia #5</span>
-                                            <span class="testi-text block capitalize-font">Linia #6</span>
-                                            <span class="testi-text block capitalize-font">Linia #7</span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Coins mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['monthly_income']|number_format(2) }} zł </p>
+                            <p class="text-small text-white">Miesięczny dochód</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Row -->
-        <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-heading mb-20">
-                        <div class="pull-left">
-                            <h6 class="panel-title txt-dark"><i class="icon-user mr-10"></i>Ostatnio zarejestrowani</h6>
-                        </div>
-                        <div class="pull-right">
-                            <a class="txt-light" href="javascript:void(0);"><i class="ti-plus"></i></a>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <ul class="chat-list-wrap">
-                                <li class="chat-list">
-                                    <div class="chat-body">
-                                        {% for user in users %}
-                                            <a class="" href="#">
-                                                <div class="chat-data">
-                                                    <div class="user-data">
-                                                        <span class="name block capitalize-font"><span style="{{ user['style'] }}">{{ user['username'] }}</span></span>
-                                                        <span class="time block txt-grey">{{ user['authData'] }} - {{ user['joinDate']|date("d/m/Y H:i:s") }}</span>
-                                                    </div>
-                                                    <div class="clearfix"></div>
-                                                </div>
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5 col-md-6 col-sm-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-heading">
-                        <div class="pull-left">
-                            <h6 class="panel-title txt-dark"><i class="icon-support mr-10"></i>Najczęściej kupowane</h6>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <canvas id="chart_most_bought" height="447"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-blue">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-diamond txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">{{ stats['alltime_income']|number_format(2) }} zł</span>
-                                        <h6 class="txt-light">Całkowity zysk</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-red">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-rocket txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">{{ stats['bought_services'] }}</span>
-                                        <h6 class="txt-light">Zakupione usługi</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-green">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-rocket txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <span class="txt-light counter">{{ stats['sent_sms'] }}</span>
-                                        <h6 class="txt-light">Wysłane sms-y</h6>
-                                    </div>
-                                </div>
-                            </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Checkout mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['month_bought_services'] }}</p>
+                            <p class="text-small text-white">Zakupione usługi (miesiąc)</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- /Row -->
-
-        <!-- Row -->
-        <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-red">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-user txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <h6 class="txt-light">Użytkowników</h6>
-                                        <span class="txt-light counter">{{ stats['users'] }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default card-view pa-0">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body pa-0">
-                            <div class="sm-data-box bg-blue">
-                                <div class="row ma-0">
-                                    <div class="col-xs-5 text-center pa-0 icon-wrap-left">
-                                        <i class="icon-rocket txt-light"></i>
-                                    </div>
-                                    <div class="col-xs-7 text-center data-wrap-right">
-                                        <h6 class="txt-light">Serwerów</h6>
-                                        <span class="txt-light counter">{{ stats['servers'] }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Last Activity -->
-            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-heading">
-                        <div class="pull-left">
-                            <h6 class="panel-title txt-dark">Ostatnia aktywność</h6>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <div class="streamline">
-                                {% for activity in last_activity %}
-                                    <div class="sl-item sl-success">
-                                        <div class="sl-content">
-    										<span class="font-12 mb-5">
-    											<span style="{{ activity['style'] }}">{{ activity['admin'] }}</span>
-    												- {{ activity['date']|date("d/m/Y H:i:s") }}
-    										</span>
-                                            <p class="txt-dark">{{ activity['content'] }}</p>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="simple-icon-star mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['active_services'] }}</p>
+                            <p class="text-small text-white">Aktywne usługi</p>
                         </div>
                     </div>
 
@@ -287,70 +46,310 @@
             </div>
         </div>
     </div>
+
+
+    <div class="row">
+        <div class="col-lg-12 col-xl-12">
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Wykres sprzedaży miesięcznej</h5>
+                            <div class="dashboard-line-chart"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                <canvas id="salesChart" width="646" height="283" class="chartjs-render-monitor" style="display: block; width: 646px; height: 283px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Najczęściej kupowane usługi</h5>
+                    <div class="dashboard-donut-chart">
+                        <canvas id="servicesChart" style="display: block; width: 402px; height: 200px;"></canvas> <!-- polarChart -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ostatnie logi systemowe</h5>
+                    <div class="scroll dashboard-logs">
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                            {% for activity in last_activity %}
+                                <tr>
+                                    <td><span class="log-indicator border-theme-1 align-middle"></span></td>
+                                    <td><span class="font-weight-medium">[{{ activity['admin'] }}] {{ activity['content'] }}</span></td>
+                                    <td class="text-right"><span class="text-muted">{{ activity['date']|date("d/m/Y H:i:s") }}</span></td>
+                                </tr>
+                                {# border-theme-2, border-danger, border-dark #}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-center">
+                        <h5 class="card-title">Ostatni użytkownik</h5>
+                        <img alt="Profile" src="{{ asset('/img/default_photo.png') }}" class="img-thumbnail border-0 rounded-circle mb-4 list-thumbnail">
+                        <p class="list-item-heading mb-1">{{ users[0]['username'] }}</p>
+                        <p class="text-muted text-small">{{ users[0]['authData'] }}</p>
+                        <p class="text-muted text-small">{{ users[0]['joinDate']|date("d/m/Y H:i:s") }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ostatnie logowania administratorów</h5>
+
+                    <div class="scroll dashboard-list-with-user">
+                        <div class="d-flex flex-row mb-3 pb-3 border-bottom">
+                            <a href="#"><img src="{{ asset('/img/default_photo.png') }}" alt="Mayra Sibley" class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" /></a>
+                            <div class="pl-3 pr-2">
+                                <a href="#">
+                                    <p class="font-weight-medium mb-0 ">n.o.x</p>
+                                    <p class="text-muted mb-0 text-small">09.08.2018 - 12:45</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row mb-3 pb-3 border-bottom">
+                            <a href="#"><img src="{{ asset('/img/default_photo.png') }}" alt="Mayra Sibley" class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" /></a>
+                            <div class="pl-3 pr-2">
+                                <a href="#">
+                                    <p class="font-weight-medium mb-0 ">n.o.x</p>
+                                    <p class="text-muted mb-0 text-small">09.08.2018 - 12:45</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row mb-3 pb-3 border-bottom">
+                            <a href="#"><img src="{{ asset('/img/default_photo.png') }}" alt="Mayra Sibley" class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" /></a>
+                            <div class="pl-3 pr-2">
+                                <a href="#">
+                                    <p class="font-weight-medium mb-0 ">n.o.x</p>
+                                    <p class="text-muted mb-0 text-small">09.08.2018 - 12:45</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8 col-lg-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Ostatnio zakupione usługi</h5>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+                        <table class="data-table responsive nowrap dataTable no-footer dtr-inline"role="grid" style="width: 635px;"><thead>
+                            <tbody>
+
+                            {% for pucharse in last_bought %}
+                                <tr>
+                                    <td><p class="list-item-heading text-center">VIP</p></td>
+                                    <td><p class="text-muted text-center">{{ pucharse.getUserId().getUsername() }}</p></td>
+                                    <td><p class="text-muted text-center">{{ pucharse.getValue() }} dni</p></td>
+                                    <td><p class="text-muted text-center">{{ pucharse.getDate()|date("d/m/Y H:i:s") }}</p></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Coins mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['alltime_income']|number_format(2) }} zł </p>
+                            <p class="text-small text-white">Całkowity dochód</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Checkout mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['alltime_bought_services'] }}</p>
+                            <p class="text-small text-white">Kupionych usług</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Checked-User mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['users_count']|length }}</p>
+                            <p class="text-small text-white">Użytkowników</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Cloud-Computer mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['servers'] }}</p>
+                            <p class="text-small text-white">Serwerów</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('/js/chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('/js/chartjs-plugin-datalabels.js') }}"></script>
+
+
     <script>
         $(document).ready(function(){
-            $('#support_table').DataTable({
-                "bFilter": false,
-                "bLengthChange": false,
-                "bPaginate": false,
-                "bInfo": false,
-            });
-            if( $('#chart_most_bought').length > 0 ){
-                var ctx7 = document.getElementById("chart_most_bought").getContext("2d");
 
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.global.defaultFontFamily = "'Nunito', sans-serif";
 
-                var data7 = {
-                    labels: [
-                        {% for service in chart_services %}
-                        "{{ service['name'] }}",
-                        {% endfor %}
-                    ],
-                datasets: [
-                    {
-                        data: [
-                            {% for service in chart_services %}
-                                "{{ service['name']|bs_countEm }}",
-                            {% endfor %}
-                        ],
-                backgroundColor: [
-                    {% for i in 0..15 %}
-                        "rgba({{ i|getRandomRGB }},.8)",
-                    {% endfor %}
-                ],
-                hoverBackgroundColor: [
-                    {% for i in 0..15 %}
-                        "rgba({{ i|getRandomRGB }},.8)",
-                    {% endfor %}
-                ]
-            }]
-            };
-
-                var doughnutChart = new Chart(ctx7, {
-                    type: 'doughnut',
-                    data: data7,
-                    options: {
-                        animation: {
-                            duration:	2000
-                        },
-                        responsive: true,
-                        maintainAspectRatio:false,
-                        legend: {
-                            labels: {
-                                fontFamily: "Varela Round",
-                                fontColor:"#2f2c2c"
-                            }
-                        },
-                        tooltips: {
-                            backgroundColor:'rgba(47,44,44,.9)',
-                            cornerRadius:0,
-                            footerFontFamily:"'Varela Round'"
-                        }
+                Chart.defaults.PolarWithShadow = Chart.defaults.polarArea;
+                Chart.controllers.PolarWithShadow = Chart.controllers.polarArea.extend({
+                    draw: function(ease) {
+                        Chart.controllers.polarArea.prototype.draw.call(this, ease);
+                        let ctx = this.chart.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.2)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 5;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        Chart.controllers.polarArea.prototype.draw.apply(this, arguments);
+                        ctx.restore();
                     }
                 });
+
+
+
+                /*
+                --theme-color-1: #145388;
+                --theme-color-2: #2a93d5;
+                --theme-color-3: #6c90a1;
+                --theme-color-4: #365573;
+                --theme-color-5: #47799a;
+                --theme-color-6: #8e9599;
+                --theme-color-1-10: rgba(20, 83, 136, 0.1);
+                --theme-color-2-10: rgba(42, 147, 213, 0.1);
+                --theme-color-3-10: rgba(108, 144, 161, 0.1);
+                --theme-color-4-10: rgba(54, 85, 115, 0.1);
+                --theme-color-5-10: rgba(71, 121, 154, 0.1);
+                --theme-color-6-10: rgba(142, 149, 153, 0.1);
+                --primary-color: #212121;
+                --foreground-color: white;
+                --separator-color: #d7d7d7; }*/
+
+                var chartTooltip = {
+                    backgroundColor: 'white',
+                    titleFontColor: '#212121',
+                    borderColor: '#d7d7d7',
+                    borderWidth: 0.5,
+                    bodyFontColor: '#212121',
+                    bodySpacing: 10,
+                    xPadding: 15,
+                    yPadding: 15,
+                    cornerRadius: 0.15,
+                    displayColors: false
+                };
+
+                if (document.getElementById("servicesChart")) {
+                    var polarChart2 = document.getElementById("servicesChart").getContext("2d");
+                    var myChart = new Chart(polarChart2, {
+                        type: "PolarWithShadow",
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    display: false
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scale: {
+                                ticks: {
+                                    display: false
+                                }
+                            },
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    padding: 30,
+                                    usePointStyle: true,
+                                    fontSize: 12
+                                }
+                            },
+                            tooltips: chartTooltip
+                        },
+                        data: {
+                            datasets: [
+                                {
+                                    label: "Stock",
+                                    borderWidth: 2,
+                                    pointBackgroundColor: '#145388',
+                                    borderColor: ['#145388', '#2a93d5', '#6c90a1', '#145388', '#2a93d5', '#6c90a1', '#145388', '#2a93d5', '#6c90a1'],
+                                    backgroundColor: [
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)',
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)',
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)'
+                                    ],
+                                    data: [
+                                        {% for service in chart_services %}
+                                        "{{ service['name']|bs_countEm }}",
+                                        {% endfor %}
+                                    ]
+                                }
+                            ],
+                            labels: [
+                                {% for service in chart_services %}
+                                "{{ service['name'] }}",
+                                {% endfor %}
+                            ]
+                        }
+                    });
+                }
             }
-        })
+        });
     </script>
 {% endblock %}

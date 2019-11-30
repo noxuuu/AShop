@@ -23,7 +23,7 @@ class PricesRepository extends EntityRepository
         $qb->select('t.brutto')
             ->join('p.tariff', 't', 'WITH', 'p.tariff = t.id')
             ->where('p.service = :service')
-            ->orderBy('t.brutto', 'DESC')
+            ->orderBy('t.brutto', 'ASC')
             ->setParameter('service', $service)
             ->setMaxResults(1);
         $query = $qb->getQuery();

@@ -31,9 +31,9 @@
                     </a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
-                    <li>
-                        <a href="{{ path('admin') }}">
-                            <i class="iconsmind-Gear"></i> Panel Admina
+                    <li {% if app.request.get('_route') == 'admin' %}class="active"{% endif %}>
+                        <a href="#acp" }}">
+                        <i class="iconsmind-Gear"></i> Panel Admina
                         </a>
                     </li>
                 {% endif %}
@@ -49,7 +49,7 @@
     </div>
 
     <div class="sub-menu">
-        <div class="scroll">
+        <div class="scroll" style="top: 10px;">
             <ul class="list-unstyled" data-link="dashboard">
                 <li>
                     <a href="{{ path('homePage') }}">
@@ -117,6 +117,93 @@
                 <li>
                     <a href="{{ path('voucher') }}">
                         <i class="simple-icon-wallet"></i> Zrealizuj kod
+                    </a>
+                </li>
+            </ul>
+            <ul class="list-unstyled" data-link="acp">
+                <li>
+                    <a href="{{ path('admin') }}">
+                        <i class="simple-icon-screen-desktop"></i> Panel Kontrolny
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_settings') }}">
+                        <i class="simple-icon-settings"></i> Ustawienia
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_pm') }}">
+                        <i class="simple-icon-wallet"></i> Metody platnosci
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_tariffs') }}">
+                        <i class="iconsmind-Coins-3"></i> Taryfy
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_servers') }}">
+                        <i class="iconsmind-Cloud-Computer"></i> Serwery
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_services') }}">
+                        <i class="iconsmind-Checkout"></i> Usługi
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_prices') }}">
+                        <i class="iconsmind-Dollar"></i> Cennik
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_vouchers') }}">
+                        <i class="iconsmind-Billing"></i> Vouchery
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_usersServices') }}">
+                        <i class="iconsmind-Coins"></i> Usługi użytkowników
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_stats') }}">
+                        <i class="simple-icon-chart"></i> Statystyki
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_users') }}">
+                        <i class="simple-icon-user"></i> Użytkownicy
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin') }}">
+                        <i class="simple-icon-people"></i> Grupy
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_logs') }}">
+                        <i class="simple-icon-lock"></i> Logi Administracyjne
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_bslogs') }}">
+                        <i class="simple-icon-lock"></i> Logi Kupionych Usług
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_logs_sms') }}">
+                        <i class="simple-icon-lock"></i> Logi Płatności SMS
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_logs_transfer') }}">
+                        <i class="simple-icon-lock"></i> Logi Płatności Przelewem
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_logs_psc') }}">
+                        <i class="simple-icon-lock"></i> Logi Płatności PaySafeCard
                     </a>
                 </li>
             </ul>

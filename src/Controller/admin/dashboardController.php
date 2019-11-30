@@ -14,7 +14,9 @@ use App\Entity\PaymentsPSC;
 use App\Entity\PaymentsSMS;
 use App\Entity\PaymentsTransfer;
 use App\Entity\Servers;
+use App\Entity\Services;
 use App\Entity\UsersEntity;
+use App\Entity\UserServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -41,6 +43,8 @@ class dashboardController extends AbstractController
         // get repo's
         $usersRepo = $this->getDoctrine()->getRepository(UsersEntity::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $userServicesRepo = $this->getDoctrine()->getRepository(UserServices::class);
         $smsRepo = $this->getDoctrine()->getRepository(PaymentsSMS::class);
         $pscRepo = $this->getDoctrine()->getRepository(PaymentsPSC::class);
         $transferRepo = $this->getDoctrine()->getRepository(PaymentsTransfer::class);
@@ -52,6 +56,7 @@ class dashboardController extends AbstractController
         $stats['servers'] = $serversRepo->countEm();
         $stats['sent_sms'] = $smsRepo->countEm();
         $stats['bought_services'] = $bslRepo->countEm();
+        $stats['active_services'] = $userServicesRepo->countEm();
 
         // get first day of month
         $firstDayUTS = mktime (0, 0, 0, date("m"), 1, date("Y"));
@@ -60,7 +65,9 @@ class dashboardController extends AbstractController
         // set defaults
         $stats['alltime_income'] = 0;
         $stats['monthly_income'] = 0;
+        $stats['alltime_bought_services'] = 0;
         $stats['month_bought_services'] = 0;
+        $stats['users_count'] = $usersRepo->findAll();
 
         // get income
         $smsStats = $smsRepo->findAll();
@@ -93,14 +100,21 @@ class dashboardController extends AbstractController
         foreach ($bsStats as $service){
             if($service->getDate() >= $firstDay)
                 $stats['month_bought_services'] += 1;
+            $stats['alltime_bought_services']++;
         }
 
         // most bought chart data
         $boughtServices = $bslRepo->findAllDistinct();
 
+        // render page
         return $this->render('admin/dashboard.html.twig', [
+            'title' => 'Panel Kontrolny',
+            'breadcrumbs' => [['Panel Administracyjny', $this->generateUrl('admin')]],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
             'stats' => $stats,
-            'users' => $usersRepo->findLastRegistrations(5),
+            'users' => $usersRepo->findLastRegistrations(1),
+            'last_bought' => $bslRepo->findLastPucharses(3),
             'last_activity' => $adminsRepo->getLastActivity(3),
             'chart_services' => $boughtServices
         ]);

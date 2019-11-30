@@ -9,6 +9,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="Alfa System">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../RankMe-NOX" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
   </component>
 </project>

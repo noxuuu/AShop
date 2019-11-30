@@ -1818,7 +1818,7 @@ $.dore = function(element, options) {
                 data: [80, 90, 70]
               }
             ],
-            labels: ["Cakes", "Desserts", "Cupcakes"]
+            labels: ["asdad", "Deasserts", "Cupcaasdkes"]
           }
         });
       }

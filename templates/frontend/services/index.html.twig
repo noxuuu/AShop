@@ -23,7 +23,7 @@
                         <div class="card-body">
                             <p class="text-muted text-small mb-2">Opis:</p>
                             <p class="mb-3">
-                                {{ service.getWebDescription() }}
+                                {{ service.getWebDescription()|raw }}
                             </p>
 
                             <br/>

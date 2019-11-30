@@ -18,6 +18,19 @@ use Doctrine\ORM\EntityRepository;
 class UserServicesRepository extends EntityRepository
 {
     /**
+     * Retrieves number of rows
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countEm()
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->select('count(u.id) AS counter');
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    /**
      * @param $priceId
      * @param Servers $server
      * @param $authData

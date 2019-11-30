@@ -26,6 +26,7 @@ class TariffsRepository extends EntityRepository
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }
+
     /**
      * Retrieves tariffs data
      * @param $id
@@ -54,7 +55,7 @@ class TariffsRepository extends EntityRepository
             ->join('t.paymentMethodId', 'm', 'WITH', 't.paymentMethodId = m.id')
             ->where('m.type = :type')
             ->setParameter('type', $paymentType)
-            ->orderBy('t.brutto', 'DESC');
+            ->orderBy('t.brutto', 'ASC');
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }

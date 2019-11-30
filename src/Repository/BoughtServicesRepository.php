@@ -97,6 +97,20 @@ class BoughtServicesRepository extends EntityRepository
     }
 
     /**
+     * Retrieves last registrations
+     * @param $max
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findLastPucharses($max){
+        $qb = $this->createQueryBuilder('b');
+        $qb->orderBy('b.date', 'DESC')
+            ->setMaxResults($max);
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
+
+    /**
      * Retrieves distinct services
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
