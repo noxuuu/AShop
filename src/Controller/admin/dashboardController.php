@@ -8,6 +8,7 @@
 
 namespace App\Controller\admin;
 
+use App\Entity\AdminLoginLogs;
 use App\Entity\AdminLogs;
 use App\Entity\BoughtServicesLogs;
 use App\Entity\PaymentsPSC;
@@ -50,6 +51,7 @@ class dashboardController extends AbstractController
         $transferRepo = $this->getDoctrine()->getRepository(PaymentsTransfer::class);
         $bslRepo = $this->getDoctrine()->getRepository(BoughtServicesLogs::class);
         $adminsRepo = $this->getDoctrine()->getRepository(AdminLogs::class);
+        $adminLoginLogsRepo = $this->getDoctrine()->getRepository(AdminLoginLogs::class);
 
         // get some stats
         $stats['users'] = $usersRepo->countEm();
@@ -115,6 +117,7 @@ class dashboardController extends AbstractController
             'stats' => $stats,
             'users' => $usersRepo->findLastRegistrations(1),
             'last_bought' => $bslRepo->findLastPucharses(3),
+            'last_acp_logins' => $adminLoginLogsRepo->getLastActivity(3),
             'last_activity' => $adminsRepo->getLastActivity(7),
             'chart_services' => $boughtServices
         ]);

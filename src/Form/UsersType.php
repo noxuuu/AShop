@@ -29,7 +29,7 @@ class UsersType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Wprowadź swój adres e-mail'
+                    'placeholder' => 'Adres e-mail'
                 ]
             ])
             ->add('username', TextType::class, [
@@ -61,7 +61,7 @@ class UsersType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Wprowadź swoje STEAM_ID'
+                    'placeholder' => 'STEAM_0:1:123456'
                 ],
             ])
         ;

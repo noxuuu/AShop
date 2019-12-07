@@ -32,7 +32,7 @@
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li {% if app.request.get('_route') == 'admin' or app.request.get('_route') == 'admin_services' %}class="active"{% endif %}>
-                        <a href="#acp" }}">
+                        <a href="{% if 'admin' in app.request.requestUri %}#acp{% else %}{{ path('admin') }}{% endif %}">
                         <i class="iconsmind-Gear"></i> Panel Admina
                         </a>
                     </li>

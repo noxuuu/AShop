@@ -4,6 +4,7 @@ namespace App\Controller\shop;
 use App\Entity\Groups;
 use App\Entity\UsersEntity;
 use App\Form\UsersType;
+use App\Service\logService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

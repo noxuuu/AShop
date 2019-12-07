@@ -8,7 +8,6 @@
 
 namespace App\Service\shop;
 
-
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class securityService

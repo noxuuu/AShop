@@ -50,9 +50,33 @@ class AdminLoginLogs
     /**
      * @return mixed
      */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getAdminName()
     {
         return $this->adminName;
+    }
+
+    /**
+     * @param mixed $adminName
+     */
+    public function setAdminName($adminName): void
+    {
+        $this->adminName = $adminName;
     }
 
     /**
@@ -64,11 +88,27 @@ class AdminLoginLogs
     }
 
     /**
+     * @param mixed $adminIp
+     */
+    public function setAdminIp($adminIp): void
+    {
+        $this->adminIp = $adminIp;
+    }
+
+    /**
      * @return mixed
      */
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * @param mixed $date
+     */
+    public function setDate($date): void
+    {
+        $this->date = $date;
     }
 
     /**
@@ -80,10 +120,10 @@ class AdminLoginLogs
     }
 
     /**
-     * @return mixed
+     * @param mixed $success
      */
-    public function getId()
+    public function setSuccess($success): void
     {
-        return $this->id;
+        $this->success = $success;
     }
 }
