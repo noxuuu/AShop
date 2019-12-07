@@ -11,6 +11,7 @@ namespace App\Controller\admin;
 use App\Entity\PaymentMethod;
 use App\Entity\Tariffs;
 use App\Form\admin\tariffType;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class tariffsController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/tariffs", name="admin_tariffs")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -40,7 +48,7 @@ class tariffsController extends AbstractController
         $form_edit = $this->createForm(tariffType::class, $tariff);
 
         return $this->render('admin/tariffs.html.twig', [
-            'pagination' => $paginator->paginate($tariffsRepo->findAll(),$request->query->getInt('page', 1),30),
+            'pagination' => $paginator->paginate($tariffsRepo->findAll(), $request->query->getInt('page', 1), 30),
             'payment_methods' => $pmRepo->findAll(),
             'form_add' => $form_add,
             'form_edit' => $form_edit
@@ -68,11 +76,11 @@ class tariffsController extends AbstractController
             try {
                 $tariff->setPaymentMethodId($pm);
 
-
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($tariff);
                 $entityManager->flush();
 
+                $this->logService->logAction('add', 'Dodano nową taryfę.');
                 $this->addFlash('add_success', 'Dodano nową taryfę!');
 
             } catch (\Exception $e) {
@@ -103,6 +111,7 @@ class tariffsController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('edit_success', 'Edytowano taryfę!');
+                $this->logService->logAction('edit', 'Edytowano taryfę [#'.$tariff->getId().'].');
 
             } catch (\Exception $e) {
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
@@ -130,6 +139,7 @@ class tariffsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('delete_success', 'Usunięto taryfę!');
+            $this->logService->logAction('delete', 'Usunięto taryfę.');
 
         } catch (\Exception $e) {
             $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');

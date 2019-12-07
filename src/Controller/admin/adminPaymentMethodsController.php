@@ -22,6 +22,7 @@ use App\Form\admin\payment_methods\pmAddType_pukawka;
 use App\Form\admin\payment_methods\pmAddType_tpay;
 use App\Form\admin\payment_methods\pmDeleteType;
 use App\Form\admin\payment_methods\pmEditType;
+use App\Service\logService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class adminPaymentMethodsController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/payment_methods", name="admin_pm")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -54,6 +62,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [1s1k - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -69,6 +78,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [Pukawka - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -84,6 +94,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [HostPlay - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -99,6 +110,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [Przelewy24 - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -114,6 +126,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [CSSetti - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -129,6 +142,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [GOSetti - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -144,6 +158,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [MicroSMS - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -159,6 +174,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [TPay - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -174,6 +190,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [LiveServer - SMS]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -189,6 +206,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową metode płatności!');
+            $this->logService->logAction('add', 'Dodano nową metode płatności [Przelewy24 - PSC]');
 
             return $this->redirectToRoute('admin_pm');
         }
@@ -199,6 +217,7 @@ class adminPaymentMethodsController extends AbstractController
         if ($form_add_p24_transfer->isSubmitted() && $form_add_p24_transfer->isValid()) {
             try {
                 $method->setMethodName('przelewy24');
+                $this->logService->logAction('add', 'Dodano nową metode płatności [Przelewy24 - Przelew]');
                 $method->setType(2);
 
                 $entityManager->persist($method);
@@ -251,6 +270,7 @@ class adminPaymentMethodsController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('edit_success', 'Edytowano metodę '.$methodName.'!');
+                $this->logService->logAction('edit', 'Edytowano metode płatności [#'.$methodName.']');
 
             } catch (\Exception $e) {
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
@@ -281,6 +301,7 @@ class adminPaymentMethodsController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('delete_success', 'Usunięto metodę '.$methodName.'!');
+            $this->logService->logAction('delete', 'Usunięto metode płatności [#'.$methodName.']');
 
         } catch (\Exception $e) {
             $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');

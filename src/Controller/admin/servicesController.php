@@ -8,8 +8,10 @@
 
 namespace App\Controller\admin;
 
+use App\Entity\Servers;
 use App\Entity\Services;
 use App\Form\admin\servicesType;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +20,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class servicesController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/services", name="admin_services")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -30,27 +39,33 @@ class servicesController extends AbstractController
 
         // === Get repo for query ===
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
         // === Create Form ===
-        $server = new Services();
+        $service = new Services();
         $entityManager = $this->getDoctrine()->getManager();
 
-        $form_add = $this->createForm(servicesType::class, $server);
-        $form_edit = $this->createForm(servicesType::class, $server);
+        $form_add = $this->createForm(servicesType::class, $service);
+        $form_edit = $this->createForm(servicesType::class, $service);
         $form_add->handleRequest($request);
 
         // === Perform data ===
         if ($form_add->isSubmitted() && $form_add->isValid()) {
 
-            $entityManager->persist($server);
+            $entityManager->persist($service);
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nową usługę!');
+            $this->logService->logAction('add', 'Dodano nową usługę [#'.$service->getName().']');
 
             return $this->redirectToRoute('admin_services');
         }
 
-        return $this->render('admin/services.html.twig', [
+        return $this->render('admin/new/services.html.twig', [
+            'title' => 'Usługi',
+            'breadcrumbs' => [['Panel Administracyjny', $this->generateUrl('admin')], ['Sklep', '#'], ['Zarządzanie usługami', $this->generateUrl('admin_services')]],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
             'form_add' => $form_add->createView(),
             'form_edit' => $form_edit,
             'pagination' => $paginator->paginate($servicesRepo->findAll(),$request->query->getInt('page', 1),30)
@@ -79,6 +94,7 @@ class servicesController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('edit_success', 'Edytowano '.$serviceName.'!');
+                $this->logService->logAction('edit', 'Edytowano usługę [#'.$serviceName.']');
 
             } catch (\Exception $e) {
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
@@ -109,6 +125,7 @@ class servicesController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('delete_success', 'Usunięto '.$serviceName.'!');
+            $this->logService->logAction('delete', 'Usunięto usługę [#'.$serviceName.']');
 
         } catch (\Exception $e) {
             $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');

@@ -13,6 +13,7 @@ use App\Entity\Servers;
 use App\Entity\Services;
 use App\Entity\Tariffs;
 use App\Form\admin\pricesType;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class pricesController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/prices", name="admin_prices")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -73,6 +81,7 @@ class pricesController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('add_success', 'Dodano nową cenę!');
+                $this->logService->logAction('add', 'Dodano nową cenę');
             } catch (Exception $e) {
                 $this->addFlash('add_error', 'Wystąpił niespodziewany błąd.');
             }
@@ -137,6 +146,7 @@ class pricesController extends AbstractController
 
                 // notify admin
                 $this->addFlash('edit_success', 'Edytowano cenę!');
+                $this->logService->logAction('edit', 'Edytowano cenę ['.$price->getId().']');
 
             } catch (\Exception $e) { // catch error and send notification if they exist
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
@@ -165,6 +175,7 @@ class pricesController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('delete_success', 'Usunięto cenę!');
+            $this->logService->logAction('delete', 'Usunięto cenę');
 
         } catch (\Exception $e) {
             $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');

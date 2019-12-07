@@ -8,11 +8,19 @@
 
 namespace App\Controller\admin;
 
+use App\Service\logService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class vouchersController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/vouchers", name="admin_vouchers")
      * @return \Symfony\Component\HttpFoundation\Response

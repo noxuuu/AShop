@@ -18,6 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 class PaymentSmsRepository extends EntityRepository
 {
     /**
+     * @return mixed
+     */
+    public function findAll()
+    {
+        return $this->findBy(array(), array('date' => 'DESC'));
+    }
+
+    /**
      * Retrieves number of rows
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException

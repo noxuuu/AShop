@@ -9,6 +9,7 @@
 namespace App\Controller\admin;
 
 use App\Entity\Groups;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class groupsController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
     /**
      * @Route("/admin/groups", name="admin_groups")
      * @return \Symfony\Component\HttpFoundation\Response

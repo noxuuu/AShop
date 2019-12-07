@@ -19,6 +19,14 @@ use Symfony\Component\HttpFoundation\Request;
 class BoughtServicesRepository extends EntityRepository
 {
     /**
+     * @return mixed
+     */
+    public function findAll()
+    {
+        return $this->findBy(array(), array('date' => 'DESC'));
+    }
+
+    /**
      * Retrieves number of rows
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException

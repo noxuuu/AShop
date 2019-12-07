@@ -29,4 +29,12 @@ class AdminLogsRepository extends EntityRepository
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function findAll()
+    {
+        return $this->findBy(array(), array('date' => 'DESC'));
+    }
 }

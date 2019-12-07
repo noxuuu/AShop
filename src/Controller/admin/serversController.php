@@ -10,6 +10,7 @@ namespace App\Controller\admin;
 
 use App\Entity\Servers;
 use App\Form\admin\serversType;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class serversController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/servers", name="admin_servers")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -48,6 +56,7 @@ class serversController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('add_success', 'Dodano nowy serwer!');
+            $this->logService->logAction('add', 'Dodano nowy serwer [#'.$server->getName().', #'.$server->getIpAddress().':'.$server->getPort().']');
 
             return $this->redirectToRoute('admin_servers');
         }
@@ -81,6 +90,7 @@ class serversController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('edit_success', 'Edytowano '.$serverName.'!');
+                $this->logService->logAction('edit', 'Edytowano serwer [#'.$serverName.']');
 
             } catch (\Exception $e) {
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
@@ -111,6 +121,7 @@ class serversController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('delete_success', 'Usunięto '.$serverName.'!');
+            $this->logService->logAction('delete', 'Usunięto serwer [#'.$serverName.']');
 
         } catch (\Exception $e) {
             $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');

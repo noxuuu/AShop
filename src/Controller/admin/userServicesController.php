@@ -13,6 +13,7 @@ use App\Entity\Services;
 use App\Entity\UserServices;
 use App\Form\admin\usersServicesAddType;
 use App\Form\admin\usersServicesEditType;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 class userServicesController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService;
+    }
+
     /**
      * @Route("/admin/users_services", name="admin_usersServices")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -84,6 +92,7 @@ class userServicesController extends AbstractController
                     $entityManager->flush();
 
                     $this->addFlash('add_success', 'Dodano usługę!');
+                    $this->logService->logAction('add', 'Dodano usługę graczowi [#'.$formData['authData'].'] [#'.$servicesRepo->findOneBy(['id' => $formData['service']])->getName().'] [#'.$serversRepo->findOneBy(['id' => $server])->getName().']');
                     return $this->redirectToRoute('admin_usersServices');
                 }
             }
@@ -137,6 +146,7 @@ class userServicesController extends AbstractController
 
                 // notify admin
                 $this->addFlash('edit_success', 'Edytowano usłgę!');
+                $this->logService->logAction('edit', 'Edytowano usługę gracza [#'.$service->getAuthData().']');
 
             } catch (\Exception $e) { // catch error and send notification if they exist
                 $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
@@ -158,8 +168,10 @@ class userServicesController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         try {
+
             $entityManager = $this->getDoctrine()->getManager();
             $service = $this->getDoctrine()->getRepository(UserServices::class)->find($id);
+            $this->logService->logAction('delete', 'Usunięto usługę gracza [#'.$service->getAuthData().']');
 
             $entityManager->remove($service);
             $entityManager->flush();

@@ -1,6 +1,6 @@
 {% extends 'frontend/common/index.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
 
@@ -86,7 +86,7 @@
                             {% for activity in last_activity %}
                                 <tr>
                                     <td><span class="log-indicator border-theme-1 align-middle"></span></td>
-                                    <td><span class="font-weight-medium">[{{ activity['admin'] }}] {{ activity['content'] }}</span></td>
+                                    <td><span class="font-weight-medium">[{{ activity['admin'] }}] {{ activity['content']|slice(0, 24 - activity['admin']|length) }}{% if activity['content']|length > 24 %}..{% endif %}</span></td>
                                     <td class="text-right"><span class="text-muted">{{ activity['date']|date("d/m/Y H:i:s") }}</span></td>
                                 </tr>
                                 {# border-theme-2, border-danger, border-dark #}

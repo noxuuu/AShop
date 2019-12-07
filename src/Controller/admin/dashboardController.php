@@ -115,7 +115,7 @@ class dashboardController extends AbstractController
             'stats' => $stats,
             'users' => $usersRepo->findLastRegistrations(1),
             'last_bought' => $bslRepo->findLastPucharses(3),
-            'last_activity' => $adminsRepo->getLastActivity(3),
+            'last_activity' => $adminsRepo->getLastActivity(7),
             'chart_services' => $boughtServices
         ]);
     }
