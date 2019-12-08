@@ -3,69 +3,11 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <!--<div class="col-12">
-        <div class="mb-3">
-            <h1>Usługi</h1>
-            <div class="float-sm-right text-zero">
-                <button type="button" class="btn btn-primary btn-lg mr-1">Dodaj</button>
-            </div>
-            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <ol class="breadcrumb pt-0">
-                    <li class="breadcrumb-item">
-                        <a href="#">Home</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="#">Library</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Data</li>
-                </ol>
-            </nav>
-        </div>
-
-        <div class="mb-2">
-            <a class="btn pt-0 pl-0 d-inline-block d-md-none" data-toggle="collapse" href="#displayOptions" role="button" aria-expanded="true" aria-controls="displayOptions">
-                Display Options
-                <i class="simple-icon-arrow-down align-middle"></i>
-            </a>
-            <div class="collapse d-md-block" id="displayOptions">
-
-                <div class="d-block d-md-inline-block">
-                    <div class="btn-group float-md-left mr-1 mb-1">
-                        <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Sortuj wg
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                        </div>
-                    </div>
-                    <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
-                        <input placeholder="Szukaj..">
-                    </div>
-                </div>
-                <div class="float-md-right">
-                    <span class="text-muted text-small">Displaying 1-10 of 210 items </span>
-                    <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        20
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(1448px, 92px, 0px); top: 0px; left: 0px; will-change: transform;">
-                        <a class="dropdown-item" href="#">10</a>
-                        <a class="dropdown-item active" href="#">20</a>
-                        <a class="dropdown-item" href="#">30</a>
-                        <a class="dropdown-item" href="#">50</a>
-                        <a class="dropdown-item" href="#">100</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="separator mb-5"></div>
-    </div>-->
-
     <div class="row">
-        <div class="col-12 list" data-check-all="checkAll">
+        <div class="col-12 list">
 
             {% for service in pagination %}
-                <div class="card d-flex flex-row mb-3 active">
+                <div class="card flex-row mb-3 active" id="service-{{ service.GetId() }}">
                     <div class="pl-2 d-flex flex-grow-1 min-width-zero">
                         <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
                             <div class="w-5"></div>
@@ -84,7 +26,7 @@
                             <p class="mb-1 text-muted text-small w-15 w-sm-50">{{ service.getServerDescription() }}</p>
                             <div class="w-15 w-sm-100">
                                 <button type="button" class="btn btn-primary btn-sm mr-1">Edytuj</button>
-                                <button type="button" class="btn btn-primary btn-sm mr-1">Usuń</button>
+                                <button type="button" onclick="confirmDelete({{ service.GetId() }})" class="btn btn-primary btn-sm mr-1">Usuń</button>
                             </div>
                         </div>
                     </div>
@@ -129,4 +71,99 @@
     </div>
 {% endblock %}
 
-{% block javascripts %}{% endblock %}
+{% block modal_add %}
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Dodaj nową uslugę</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    {{ form_start(form_add) }}
+    <div class="modal-body">
+        <div class="form-group">
+            <label>NAZWA:</label>
+            {{ form_widget(form_add.name) }}
+        </div>
+        <div class="form-group">
+            <label>
+                OPIS (Strona)<br/>
+                <span class="help-block">✔ HTML Enabled</span>
+            </label>
+            {{ form_widget(form_add.webDescription) }}
+        </div>
+        <div class="form-group">
+            <label>
+                OPIS (Serwer)<br/>
+                <span class="help-block">✔ Menu Item</span>
+            </label>
+            {{ form_widget(form_add.serverDescription) }}
+        </div>
+        <div class="form-group">
+            <label>Obrazek:</label>
+            {{ form_widget(form_add.imageUrl) }}
+        </div>
+        <div class="form-group">
+            <label>Sufix:</label>
+            {{ form_widget(form_add.sufix, {'value' : 'dni' }) }}
+        </div>
+        <div class="form-group">
+            <label>Typ:</label>
+            {{ form_widget(form_add.type) }}
+        </div>
+
+        <div class="form-group">
+            <label>Kolejność:</label>
+            {{ form_widget(form_add.orderNumber, {'value' : pagination.getTotalItemCount+1 }) }}
+        </div>
+        <div class="form-group">
+            <label>Skadnia zapytania (flagi/api/minecraft)</label>
+            {{ form_widget(form_add.flags) }}
+            <span class="help-block">
+                <a href="#" target="_blank">Dostępne flagi</a> | <a href="#" target="_blank">Dokumentacja API</a><br/>
+                <a href="#" target="_blank">Składnia zapytania Minecraft</a>
+            </span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anulu</button>
+        <button type="submit" class="btn btn-primary">Dodaj</button>
+    </div>
+    {{ form_end(form_add) }}
+{% endblock %}
+
+{% block javascripts %}
+        <script>
+        function confirmDelete(service) {
+            swal({
+                    title: "Jesteś pewien?",
+                    text: "Tej operacji nie będzie można cofnąć!",
+                    type: "warning",
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    confirmButtonClass: "btn-primary",
+                    cancelButtonClass: "btn-outline-primary",
+                    confirmButtonText: "Tak, usuń!",
+                    cancelButtonText: "Anuluj",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        url:        '/admin/services/delete/' + service + '/',
+                        type:       'GET',
+                        dataType:   'json',
+                        async:      true,
+
+                        success: function(data, status) {
+                            if(data[1]){
+                                swal("Usunięto!", "Poprawnie usunięto usługę " + data[0] + ".", "success");
+                                $('#service-' + service).hide();
+                            }
+                        },
+                        error : function(xhr, textStatus, errorThrown) {
+                            swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
+                        }
+                    });
+                });
+        }
+    </script>
+{% endblock %}

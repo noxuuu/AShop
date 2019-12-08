@@ -1,0 +1,25 @@
+<div class="modal fade modal-right" id="chargeWallet" tabindex="-1" role="dialog" aria-labelledby="chargeWallet" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5 class="modal-title"><i class="iconsmind-Wallet"></i> Doładowanie portfela</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="form-group">
+                    <label><h4>Wybierz metodę płatności:</h4></label>
+                    <select id="walletMethods" class="form-control radius-type" onChange="loadPaymentValues(this.options[this.selectedIndex].value)">
+                        <option disabled selected> -- Wybierz -- </option>
+                    </select>
+                </div>
+
+                <div id="walletPaymentContent" class="form-group"></div>
+                <div id="walletPaymentDetails" class="form-group"></div>
+            </div>
+        </div>
+    </div>
+</div>

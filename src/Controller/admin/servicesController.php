@@ -14,6 +14,7 @@ use App\Form\admin\servicesType;
 use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -104,13 +105,10 @@ class servicesController extends AbstractController
         return $this->redirectToRoute('admin_services');
     }
 
-
     /**
-     * @Route("/admin/services/delete/{id}", name="delete_service", requirements={"id"="\d+"})
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/admin/services/delete/{id}", name="delete_service")
      */
-    public function deleteService($id)
+    public function deleteService(Request $request, $id)
     {
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -119,18 +117,21 @@ class servicesController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $service = $this->getDoctrine()->getRepository(Services::class)->find($id);
 
-            $serviceName = $service->getName();
+            $data[0] = $service->getName();
 
             $entityManager->remove($service);
             $entityManager->flush();
 
-            $this->addFlash('delete_success', 'Usunięto '.$serviceName.'!');
-            $this->logService->logAction('delete', 'Usunięto usługę [#'.$serviceName.']');
+            $data[1] = true;
+            $this->logService->logAction('delete', 'Usunięto usługę [#'.$data[0].']');
 
         } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+            $data[1] = false;
         }
 
-        return $this->redirectToRoute('admin_services');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
 }
