@@ -9,11 +9,14 @@
 namespace App\Controller\admin;
 
 use App\Entity\PaymentMethod;
+use App\Entity\Servers;
+use App\Entity\Services;
 use App\Entity\Tariffs;
 use App\Form\admin\tariffType;
 use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -38,6 +41,10 @@ class tariffsController extends AbstractController
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        // === Get repo for query ===
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+
         // === Get some data ===
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
         $pmRepo = $this->getDoctrine()->getRepository(PaymentMethod::class);
@@ -48,6 +55,15 @@ class tariffsController extends AbstractController
         $form_edit = $this->createForm(tariffType::class, $tariff);
 
         return $this->render('admin/tariffs.html.twig', [
+            'title' => 'Usługi',
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie', '#'],
+                ['Taryfy', $this->generateUrl('admin_tariffs')]
+            ],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
             'pagination' => $paginator->paginate($tariffsRepo->findAll(), $request->query->getInt('page', 1), 30),
             'payment_methods' => $pmRepo->findAll(),
             'form_add' => $form_add,
@@ -124,9 +140,10 @@ class tariffsController extends AbstractController
     /**
      * @Route("/admin/tariffs/delete/{id}", name="delete_tariff", requirements={"id"="\d+"})
      * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function deleteTariff($id)
+    public function deleteTariff(Request $request, $id)
     {
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -135,16 +152,24 @@ class tariffsController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $tariff = $this->getDoctrine()->getRepository(Tariffs::class)->find($id);
 
-            $entityManager->remove($tariff);
-            $entityManager->flush();
+            if($tariff)
+            {
+                $entityManager->remove($tariff);
+                $entityManager->flush();
 
-            $this->addFlash('delete_success', 'Usunięto taryfę!');
-            $this->logService->logAction('delete', 'Usunięto taryfę.');
+                $data[1] = true;
+                $this->logService->logAction('delete', 'Usunięto taryfę');
+            }
+            else
+                $data[1] = false;
 
         } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+            $data[1] = false;
         }
 
-        return $this->redirectToRoute('admin_tariffs');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
 }

@@ -12,12 +12,8 @@
                             <div class="w-15">
                                 <span class="badge badge-pill badge-primary mb-1">#{{ log.getId() }}</span>
                             </div>
-                            <p class="w-25 w-sm-50 mb-1">
-                                {{ log.getPaymentMethodId().getName() }}
-                            </p>
-                            <p class="w-15 w-sm-50 mb-1">
-                                <span class="badge badge-pill badge-light mb-1">{{ log.getCode() }}</span>
-                            </p>
+                            <p class="w-25 w-sm-50 mb-1">{{ log.getPaymentMethodId().getName() }}</p>
+                            <p class="w-15 w-sm-50 mb-1"><span class="badge badge-pill badge-light mb-1">{{ log.getCode() }}</span></p>
                             <p class="mb-1 w-20 w-sm-50"><span class="badge badge-pill badge-info mb-1">{{ log.getNumber() }}</span></p>
                             <p class="mb-1 w-15 w-sm-50"><span class="badge badge-pill badge-secondary mb-1">{{ log.getIncome() }}</span></p>
                             <p class="mb-1 w-15 w-sm-50"><span class="badge badge-pill badge-secondary mb-1">{{ log.getCost() }}</span></p>

@@ -32,8 +32,8 @@
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li {% if app.request.get('_route') == 'admin'
-                            or app.request.get('_route') == 'admin_services'
-                            or app.request.get('_route') == 'admin_services'
+                            or app.request.get('_route') == 'admin_pm'
+                            or app.request.get('_route') == 'admin_tariffs'
                             or app.request.get('_route') == 'admin_services'
                             or app.request.get('_route') == 'admin_services'
                             or app.request.get('_route') == 'admin_services'

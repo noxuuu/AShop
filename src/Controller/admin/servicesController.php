@@ -64,7 +64,11 @@ class servicesController extends AbstractController
 
         return $this->render('admin/services.html.twig', [
             'title' => 'Usługi',
-            'breadcrumbs' => [['Panel Administracyjny', $this->generateUrl('admin')], ['Sklep', '#'], ['Zarządzanie usługami', $this->generateUrl('admin_services')]],
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie usługami', $this->generateUrl('admin_services')]
+            ],
             'services' => $servicesRepo->findAll(),
             'servers' => $serversRepo->findAll(),
             'form_add' => $form_add->createView(),
@@ -107,6 +111,8 @@ class servicesController extends AbstractController
 
     /**
      * @Route("/admin/services/delete/{id}", name="delete_service")
+     * @return JsonResponse
+     * @throws \Exception
      */
     public function deleteService(Request $request, $id)
     {

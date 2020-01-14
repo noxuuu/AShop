@@ -2,7 +2,9 @@
     <div class="col-12">
         <div class="mb-3">
             <h1>{{ title }}</h1>
-            {% if app.request.get('_route') == 'admin_services' %}
+            {% if app.request.get('_route') == 'admin_pm'
+                or app.request.get('_route') == 'admin_tariffs'
+                or app.request.get('_route') == 'admin_services' %}
                 <div class="float-sm-right text-zero">
                     <button type="button" class="btn btn-primary btn-lg mr-1" data-toggle="modal" data-backdrop="static" data-target="#modal_add">Dodaj</button>
                 </div>
@@ -12,7 +14,7 @@
                     <li class="breadcrumb-item">
                         <a href="{{ path('homePage') }}"><i class="simple-icon-home"></i></a>
                     </li>
-                    {% for key,value in breadcrumbs %}
+                    {% for key, value in breadcrumbs %}
                     <li class="breadcrumb-item">
                         <a href="{{ value[1] }}">{{ value[0] }}</a>
                     </li>

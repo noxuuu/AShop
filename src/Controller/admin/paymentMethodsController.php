@@ -9,6 +9,8 @@
 namespace App\Controller\admin;
 
 use App\Entity\PaymentMethod;
+use App\Entity\Servers;
+use App\Entity\Services;
 use App\Form\admin\payment_methods\pmAddType_1s1k;
 use App\Form\admin\payment_methods\pmAddType_cssetti;
 use App\Form\admin\payment_methods\pmAddType_gosetti;
@@ -20,15 +22,16 @@ use App\Form\admin\payment_methods\pmAddType_p24sms;
 use App\Form\admin\payment_methods\pmAddType_p24transfer;
 use App\Form\admin\payment_methods\pmAddType_pukawka;
 use App\Form\admin\payment_methods\pmAddType_tpay;
-use App\Form\admin\payment_methods\pmDeleteType;
 use App\Form\admin\payment_methods\pmEditType;
 use App\Service\logService;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
-class adminPaymentMethodsController extends AbstractController
+class paymentMethodsController extends AbstractController
 {
     private $logService;
 
@@ -42,10 +45,15 @@ class adminPaymentMethodsController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function paymentMethods(Request $request)
+    public function paymentMethods(PaginatorInterface $paginator, Request $request)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // === Get repo for query ===
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $pmRepo = $this->getDoctrine()->getRepository(PaymentMethod::class);
-        $paymentMethods = $pmRepo->findAll();
 
         // === Create Forms ===
         $method = new PaymentMethod();
@@ -235,7 +243,16 @@ class adminPaymentMethodsController extends AbstractController
         $editForm = $this->createForm(pmEditType::class, $method);
 
         return $this->render('admin/paymentmethods.html.twig', [
-            'pm_methods' => $paymentMethods,
+            'title' => 'Metody Płatności',
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie', '#'],
+                ['Metody Płatności', $this->generateUrl('admin_pm')]
+            ],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
+            'pagination' => $paginator->paginate($pmRepo->findAll(), $request->query->getInt('page', 1),20),
             'form_1s1k' => $form_add_1s1k->createView(),
             'form_pukawka' => $form_add_pukawka->createView(),
             'form_hostplay' => $form_add_hostplay->createView(),
@@ -280,33 +297,39 @@ class adminPaymentMethodsController extends AbstractController
         return $this->redirectToRoute('admin_pm');
     }
 
-
     /**
-     * @Route("/admin/payment_methods/delete/{id}", name="delete_pm", requirements={"id"="\d+"})
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/admin/payment_methods/delete/{id}", name="delete_method")
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function deleteMethod($id)
+    public function deleteMethod(Request $request, $id)
     {
-        try {
-            $entityManager = $this->getDoctrine()->getManager();
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-            $existingPM = $this->getDoctrine()
-                ->getRepository(PaymentMethod::class)
-                ->find($id);
 
-            $methodName = $existingPM->getName();
+        $entityManager = $this->getDoctrine()->getManager();
+        $method = $this->getDoctrine()->getRepository(PaymentMethod::class)->find($id);
 
-            $entityManager->remove($existingPM);
-            $entityManager->flush();
+        if($method)
+        {
+            $data[0] = $method->getName();
+            try {
+                $entityManager->remove($method);
+                $entityManager->flush();
 
-            $this->addFlash('delete_success', 'Usunięto metodę '.$methodName.'!');
-            $this->logService->logAction('delete', 'Usunięto metode płatności [#'.$methodName.']');
-
-        } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+                $data[1] = true;
+                $this->logService->logAction('delete', 'Usunięto metode płatności [#'.$data[0].']');
+            } catch (\Exception $e) {
+                $data[1] = false;
+            }
         }
+        else
+            $data[1] = false;
 
-        return $this->redirectToRoute('admin_pm');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
 }

@@ -1,534 +1,515 @@
-{% extends 'frontend/admin/base.html.twig' %}
- 
-{% block title %}Metody Płatności{% endblock %}
+{% extends 'frontend/common/index.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-
-        <!-- Title -->
-        <div class="row heading-bg  bg-blue">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h5 class="txt-light">Metody Płatności</h5>
-            </div>
-        </div>
-        
-        <!-- Row -->
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-heading">
-                        <div class="pull-left">
-                            <h6 class="panel-title txt-dark">Metody Płatności</h6>
+    <div class="row">
+        <div class="col-12 list">
+            {% if pagination|length %}
+                {% for method in pagination %}
+                    <div class="card flex-row mb-3 active" id="method-{{ method.GetId() }}">
+                        <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                            <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                                <div class="w-15">
+                                    <span class="badge badge-pill badge-primary mb-1">#{{ method.getId() }}</span>
+                                </div>
+                                <p class="w-25 w-sm-50 mb-1">{{ method.getName() }}</p>
+                                <p class="mb-1 w-20 w-sm-50">
+                                    <span class="badge badge-pill badge-info mb-1">
+                                        {% if method.GetType() == 1 %}
+                                            SMS
+                                        {% elseif method.GetType() == 2 %}
+                                            Przelew
+                                        {% elseif method.GetType() == 3 %}
+                                            PSC
+                                        {% elseif method.GetType() == 4 %}
+                                            Inne
+                                        {% endif %}
+                                    </span>
+                                </p>
+                                <div class="w-15 w-sm-100">
+                                    <button type="button" data-toggle="modal" data-target="#edit-{{ method.GetId() }}" class="btn btn-primary btn-sm mr-1">Edytuj</button>
+                                    <button type="button" onclick="confirmDelete({{ method.GetId() }})" class="btn btn-primary btn-sm mr-1">Usuń</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="clearfix"></div>
                     </div>
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <p>W tym miejscu możesz edytować szczegóły metod płatności w sklepie.</p>
+
+                    <!-- Edit Modal -->
+                    <!--?php if(CheckAccess('can_edit_pm')) {?-->
+                    <div class="modal fade modal-right" id="edit-{{ method.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="edit-{{ method.GetId() }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="edit-{{ method.GetId() }}">Edycja metody {{ method.GetName() }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
                                 </div>
-                                <div class="col-md-2 col-md-offset-2">
-                                    <!-- check for "add_pm" access -->
-                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ METODĘ</button>
-                                    <div class="modal fade" id="add0" tabindex="-1" role="dialog" aria-labelledby="add0">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add0">Dodaj metodę <b>1shot1kill</b></h4>
-                                                </div>
-                                                {{ form_start(form_1s1k) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_1s1k.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>APIKey </label>
-                                                            {{ form_widget(form_1s1k.apikey) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_1s1k.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_1s1k) }}
-                                            </div>
-                                        </div>
+                                {% set edit_form = form_edit.createView %}
+                                {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_pm', { 'pm' : method.GetId() })}) }}
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>NAZWA:</label>
+                                        {{ form_row(edit_form.name, {'value' : method.GetName()}) }}
                                     </div>
-
-                                    <div class="modal fade" id="add1" tabindex="-1" role="dialog" aria-labelledby="add1">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add1">Dodaj metodę <b>Pukawka</b></h4>
-                                                </div>
-                                                {{ form_start(form_pukawka) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_pukawka.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>APIKey </label>
-                                                            {{ form_widget(form_pukawka.apikey) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_pukawka.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_pukawka) }}
-                                            </div>
-                                        </div>
+                                    <div class="form-group" {% if method.GetSmskey() == null %}style="display: none"{% endif %}>
+                                        <label>Klucz SMS:</label>
+                                        {{ form_row(edit_form.smskey, {'value' : method.GetSmskey()}) }}
                                     </div>
-
-                                    <div class="modal fade" id="add2" tabindex="-1" role="dialog" aria-labelledby="add2">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add2">Dodaj metodę <b>HostPlay</b></h4>
-                                                </div>
-                                                {{ form_start(form_hostplay) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_hostplay.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>UserID </label>
-                                                            {{ form_widget(form_hostplay.serviceid) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_hostplay.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_hostplay) }}
-                                            </div>
-                                        </div>
+                                    <div class="form-group" {% if method.GetApikey() == null %}style="display: none"{% endif %}>
+                                        <label>Api Key:</label>
+                                        {{ form_row(edit_form.apikey, {'value' : method.GetApikey()}) }}
                                     </div>
-
-                                    <div class="modal fade" id="add3" tabindex="-1" role="dialog" aria-labelledby="add3">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add3">Dodaj metodę <b>CSSetti</b></h4>
-                                                </div>
-                                                {{ form_start(form_cssetti) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_cssetti.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>UserID </label>
-                                                            {{ form_widget(form_cssetti.serviceid) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_cssetti.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_cssetti) }}
-                                            </div>
-                                        </div>
+                                    <div class="form-group" {% if method.GetApisecret() == null %}style="display: none"{% endif %}>
+                                        <label>{% if method.getMethodName() == "przelewy24" %}Klucz CRC{% else %}APISecret{% endif %}:</label>
+                                        {{ form_row(edit_form.apisecret, {'value' : method.GetApisecret()}) }}
                                     </div>
-
-                                    <div class="modal fade" id="add4" tabindex="-1" role="dialog" aria-labelledby="add4">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add4">Dodaj metodę <b>GOSetti</b></h4>
-                                                </div>
-                                                {{ form_start(form_gosetti) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_gosetti.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>UserID </label>
-                                                            {{ form_widget(form_gosetti.serviceid) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_gosetti.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_gosetti) }}
-                                            </div>
-                                        </div>
+                                    <div class="form-group" {% if method.GetServiceid() == null %}style="display: none"{% endif %}>
+                                        <label>{% if method.getMethodName() == "przelewy24" %}ID Sprzedającego{% else %}ServiceID{% endif %}:</label>
+                                        {{ form_row(edit_form.serviceid, {'value' : method.GetServiceid()}) }}
                                     </div>
-
-                                    <div class="modal fade" id="add5" tabindex="-1" role="dialog" aria-labelledby="add5">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add5">Dodaj metodę <b>MicroSMS</b></h4>
-                                                </div>
-                                                {{ form_start(form_microsms) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_microsms.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>UserID </label>
-                                                            {{ form_widget(form_microsms.apikey) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>ServiceID </label>
-                                                            {{ form_widget(form_microsms.serviceid) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_microsms.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_microsms) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="add6" tabindex="-1" role="dialog" aria-labelledby="add6">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add6">Dodaj metodę <b>Tpay</b></h4>
-                                                </div>
-                                                {{ form_start(form_tpay) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_tpay.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Hash </label>
-                                                            {{ form_widget(form_tpay.apikey) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_tpay.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_tpay) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="add7" tabindex="-1" role="dialog" aria-labelledby="add7">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add7">Dodaj metodę <b>LiveServer</b></h4>
-                                                </div>
-                                                {{ form_start(form_liveserver) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_liveserver.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>ID Klienta </label>
-                                                            {{ form_widget(form_liveserver.serviceid) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>PIN </label>
-                                                            {{ form_widget(form_liveserver.apikey) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_liveserver.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_liveserver) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="add8" tabindex="-1" role="dialog" aria-labelledby="add8">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add8">Dodaj metodę <b>Przelewy24 - SMS</b></h4>
-                                                </div>
-                                                {{ form_start(form_p24_sms) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_p24_sms.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>ServiceID </label>
-                                                            {{ form_widget(form_p24_sms.serviceid) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>SMSKey </label>
-                                                            {{ form_widget(form_p24_sms.smskey) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_p24_sms) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="add9" tabindex="-1" role="dialog" aria-labelledby="add9">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add9">Dodaj metodę <b>Przelewy24 - PSC</b></h4>
-                                                </div>
-                                                {{ form_start(form_p24_psc) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_p24_psc.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>APISecret </label>
-                                                            {{ form_widget(form_p24_psc.apisecret) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>ServiceID </label>
-                                                            {{ form_widget(form_p24_psc.serviceid) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_p24_psc) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="add10" tabindex="-1" role="dialog" aria-labelledby="add10">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add10">Dodaj metodę <b>Przelewy24 - Przelew</b></h4>
-                                                </div>
-                                                {{ form_start(form_p24_transfer) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Nazwa </label>
-                                                            {{ form_widget(form_p24_transfer.name) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>APISecret </label>
-                                                            {{ form_widget(form_p24_transfer.apisecret) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>ServiceID </label>
-                                                            {{ form_widget(form_p24_transfer.serviceid) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                        <button type="sumbit" class="btn btn-primary">Dodaj</button>
-                                                    </div>
-                                                {{ form_end(form_p24_transfer) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add1">Dodaj metodę płatności</h4>
-                                                </div>
-                                                <form action="" method="post">
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Metoda Płatności:</label>
-                                                            <select name="payment_method" class="form-control round-input" onChange="$('#add').modal('hide'); $('#add'+this.options[this.selectedIndex].value).modal('toggle');" required>
-                                                                <option selected disabled>-- SMS --</option>
-                                                                <option value="0">1shot1kill</option>
-                                                                <option value="1">Pukawka</option>
-                                                                <option value="2">HostPlay</option>
-                                                                <option value="3">CSSetti</option>
-                                                                <option value="4">GOSetti</option>
-                                                                <option value="5">MicroSMS</option>
-                                                                <option value="6">Tpay</option>
-                                                                <option value="7">LiveServer</option>
-                                                                <option value="8">Przelewy24</option>
-                                                                <option disabled>-- PaySafeCard --</option>
-                                                                <option value="9">Przelewy24</option>
-                                                                <option disabled>-- Przelew --</option>
-                                                                <option value="10">Przelewy24</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- / check for "add_pm" access -->
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                                    <button type="submit" class="btn btn-primary">Edytuj</button>
+                                </div>
+                                {{ form_end(edit_form) }}
                             </div>
+                        </div>
+                    </div>
+                {% endfor %}
 
-                            <div class="table-wrap">
-                                <div class="table-responsive">
-                                    <table class="table display product-overview mb-30" id="support_table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>NAZWA</th>
-                                                <th>TYP</th>
-                                                <th>AKCJE</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% if pm_methods|length > 0 %}
-                                                {% for method in pm_methods %}
-                                                    <tr>
-                                                        <td>{{ method.GetId() }}</td>
-                                                        <td>{{ method.GetName() }}</td>
-                                                        <td>
-										    		        <span class="label label-success">
-                                                                {% if method.GetType() == 1 %}
-                                                                    SMS
-                                                                {% elseif method.GetType() == 2 %}
-                                                                    Przelew
-                                                                {% elseif method.GetType() == 3 %}
-                                                                    PSC
-                                                                {% elseif method.GetType() == 4 %}
-                                                                    Inne
-                                                                {% endif %}
-										    		        </span>
-                                                        </td>
-                                                        <td>
-                                                            <!--php if(CheckAccess('can_edit_pm')) {?--><a href="#" data-toggle="modal" data-target="#edit-{{ method.GetId() }}" class=""><i class="fa fa-check"></i></a>
-                                                            <!--?php } if(CheckAccess('can_delete_pm')) {?--><a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ method.GetId() }}"><i class="fa fa-trash"></i></a>
-                                                        </td>
-
-                                                        <!-- Modal -->
-                                                        <!--?php if(CheckAccess('can_edit_pm')) {?-->
-                                                        <div class="modal fade" id="edit-{{ method.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ method.GetId() }}">
-                                                            <div class="modal-dialog modal-lg" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                        <h4 class="modal-title" id="editlabel1">Edycja metody <b>{{ method.GetName() }}</b></h4>
-                                                                    </div>
-                                                                    {% set edit_form = form_edit.createView %}
-                                                                    {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_pm', { 'pm' : method.GetId() })}) }}
-                                                                        <div class="modal-body">
-                                                                            <div class="form-group">
-                                                                                <label>NAZWA:</label>
-                                                                                {{ form_row(edit_form.name, {'value' : method.GetName()}) }}
-                                                                            </div>
-                                                                            <div class="form-group" {% if method.GetSmskey() == null %}style="display: none"{% endif %}>
-                                                                                <label>Klucz SMS:</label>
-                                                                                {{ form_row(edit_form.smskey, {'value' : method.GetSmskey()}) }}
-                                                                            </div>
-                                                                            <div class="form-group" {% if method.GetApikey() == null %}style="display: none"{% endif %}>
-                                                                                <label>Api Key:</label>
-                                                                                {{ form_row(edit_form.apikey, {'value' : method.GetApikey()}) }}
-                                                                            </div>
-                                                                            <div class="form-group" {% if method.GetApisecret() == null %}style="display: none"{% endif %}>
-                                                                                <label>{% if method.getMethodName() == "przelewy24" %}Klucz CRC{% else %}APISecret{% endif %}:</label>
-                                                                                {{ form_row(edit_form.apisecret, {'value' : method.GetApisecret()}) }}
-                                                                            </div>
-                                                                            <div class="form-group" {% if method.GetServiceid() == null %}style="display: none"{% endif %}>
-                                                                                <label>{% if method.getMethodName() == "przelewy24" %}ID Sprzedającego{% else %}ServiceID{% endif %}:</label>
-                                                                                {{ form_row(edit_form.serviceid, {'value' : method.GetServiceid()}) }}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="submit" class="btn btn-primary">Edytuj</button>
-                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                                        </div>
-                                                                    {{ form_end(edit_form) }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="modal fade" id="delete-{{ method.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ method.GetId() }}">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                        <h4 class="modal-title" id="deletelabel{{ method.GetId() }}">Usuń metode - {{ method.GetName() }}</h4>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Czy jesteś pewny, że chcesz usunąć tą metode płatności ? <br />
-                                                                        <b>Uwaga, zmian nie da się cofnąć!</b>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <a class="btn btn-primary" href="{{ path('delete_pm', {'id': method.GetId()}) }}" role="button">Usuń !</a>
-                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </tr>
-
-                                                {% endfor %}
-                                            {% endif %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                {% include('frontend/common/widgets/pagination.html.twig') %}
+            {% else %}
+                <div class="card flex-row mb-3 active">
+                    <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                        <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                            <p class="list-item-heading mb-1 w-25">Brak wyników</p>
                         </div>
                     </div>
                 </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add0" tabindex="-1" role="dialog" aria-labelledby="add0" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Dodaj metodę <b>1shot1kill</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_1s1k) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_1s1k.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>APIKey </label>
+                            {{ form_widget(form_1s1k.apikey) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_1s1k.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_1s1k) }}
             </div>
         </div>
     </div>
+
+    <div class="modal fade modal-right" id="add1" tabindex="-1" role="dialog" aria-labelledby="add1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>Pukawka</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_pukawka) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_pukawka.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>APIKey </label>
+                            {{ form_widget(form_pukawka.apikey) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_pukawka.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_1s1k) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add2" tabindex="-1" role="dialog" aria-labelledby="add2" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>HostPlay</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_hostplay) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_hostplay.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>UserID </label>
+                            {{ form_widget(form_hostplay.serviceid) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_hostplay.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_hostplay) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add3" tabindex="-1" role="dialog" aria-labelledby="add3" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>CSSetti</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_cssetti) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_cssetti.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>UserID </label>
+                            {{ form_widget(form_cssetti.serviceid) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_cssetti.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_cssetti) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add4" tabindex="-1" role="dialog" aria-labelledby="add4" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>GOSetti</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_gosetti) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_gosetti.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>UserID </label>
+                            {{ form_widget(form_gosetti.serviceid) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_gosetti.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_gosetti) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add5" tabindex="-1" role="dialog" aria-labelledby="add5" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Dodaj metodę <b>MicroSMS</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_microsms) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_microsms.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>UserID </label>
+                            {{ form_widget(form_microsms.apikey) }}
+                        </div>
+                        <div class="form-group">
+                            <label>ServiceID </label>
+                            {{ form_widget(form_microsms.serviceid) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_microsms.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_microsms) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add6" tabindex="-1" role="dialog" aria-labelledby="add6" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>Tpay</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_tpay) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_tpay.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>Hash </label>
+                            {{ form_widget(form_tpay.apikey) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_tpay.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_tpay) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add7" tabindex="-1" role="dialog" aria-labelledby="add7" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>LiveServer</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_liveserver) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_liveserver.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>ID Klienta </label>
+                            {{ form_widget(form_liveserver.serviceid) }}
+                        </div>
+                        <div class="form-group">
+                            <label>PIN </label>
+                            {{ form_widget(form_liveserver.apikey) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_liveserver.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_liveserver) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add8" tabindex="-1" role="dialog" aria-labelledby="add8" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>Przelewy24 - SMS</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_p24_sms) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_p24_sms.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>ServiceID </label>
+                            {{ form_widget(form_p24_sms.serviceid) }}
+                        </div>
+                        <div class="form-group">
+                            <label>SMSKey </label>
+                            {{ form_widget(form_p24_sms.smskey) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_p24_sms) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add9" tabindex="-1" role="dialog" aria-labelledby="add9" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>Przelewy24 - PSC</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_p24_psc) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_p24_psc.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>APISecret </label>
+                            {{ form_widget(form_p24_psc.apisecret) }}
+                        </div>
+                        <div class="form-group">
+                            <label>ServiceID </label>
+                            {{ form_widget(form_p24_psc.serviceid) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_p24_psc) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-right" id="add10" tabindex="-1" role="dialog" aria-labelledby="add10" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę <b>Przelewy24 - Przelew</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                {{ form_start(form_p24_transfer) }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nazwa </label>
+                            {{ form_widget(form_p24_transfer.name) }}
+                        </div>
+                        <div class="form-group">
+                            <label>APISecret </label>
+                            {{ form_widget(form_p24_transfer.apisecret) }}
+                        </div>
+                        <div class="form-group">
+                            <label>ServiceID </label>
+                            {{ form_widget(form_p24_transfer.serviceid) }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                {{ form_end(form_p24_transfer) }}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
-{% block javascript %}{% endblock %}
+{% block modal_add %}
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Dodaj metodę płatności</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Metoda Płatności:</label>
+            <select name="payment_method" class="form-control round-input" onChange="$('#modal_add').modal('hide'); $('.modal-backdrop').remove(); $('#add'+this.options[this.selectedIndex].value).modal('toggle');" required>
+                <option selected disabled>-- SMS --</option>
+                <option value="0">1shot1kill</option>
+                <option value="1">Pukawka</option>
+                <option value="2">HostPlay</option>
+                <option value="3">CSSetti</option>
+                <option value="4">GOSetti</option>
+                <option value="5">MicroSMS</option>
+                <option value="6">Tpay</option>
+                <option value="7">LiveServer</option>
+                <option value="8">Przelewy24</option>
+                <option disabled>-- PaySafeCard --</option>
+                <option value="9">Przelewy24</option>
+                <option disabled>-- Przelew --</option>
+                <option value="10">Przelewy24</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function confirmDelete(id) {
+            swal({
+                    title: "Jesteś pewien?",
+                    text: "Tej operacji nie będzie można cofnąć!",
+                    type: "warning",
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    confirmButtonClass: "btn-primary",
+                    cancelButtonClass: "btn-outline-primary",
+                    confirmButtonText: "Tak, usuń!",
+                    cancelButtonText: "Anuluj",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        url:        '/admin/payment_methods/delete/' + id + '/',
+                        type:       'GET',
+                        dataType:   'json',
+                        async:      true,
+
+                        success: function(data, status) {
+                            if(data[1]) {
+                                swal("Usunięto!", "Poprawnie usunięto metode płatności " + data[0] + ".", "success");
+                                $('#method-' + id).hide();
+                            }
+                        },
+                        error : function(xhr, textStatus, errorThrown) {
+                            swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
+                        }
+                    });
+                });
+        }
+    </script>
+{% endblock %}

@@ -27,8 +27,10 @@
         {% include('frontend/common/widgets/pageTitle.html.twig') %}
         {% block body %}{% endblock %}
         {% include('frontend/common/widgets/chargeWallet.html.twig') %}
-        {% if app.request.get('_route') == 'admin_services' %}
-            <div class="modal fade modal-right" id="modal_add" tabindex="-1" role="dialog" aria-labelledby="modal_add" aria-hidden="true">
+        {% if app.request.get('_route') == 'admin_pm'
+            or app.request.get('_route') == 'admin_tariffs'
+            or app.request.get('_route') == 'admin_services' %}
+            <div class="modal modal-right" id="modal_add" tabindex="-1" role="dialog" aria-labelledby="modal_add" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         {% block modal_add %}{% endblock %}
