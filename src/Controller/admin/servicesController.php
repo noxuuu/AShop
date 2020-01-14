@@ -67,7 +67,8 @@ class servicesController extends AbstractController
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],
                 ['Sklep', '#'],
-                ['Zarządzanie usługami', $this->generateUrl('admin_services')]
+                ['Zarządzanie', '#'],
+                ['Usługi', $this->generateUrl('admin_services')]
             ],
             'services' => $servicesRepo->findAll(),
             'servers' => $serversRepo->findAll(),

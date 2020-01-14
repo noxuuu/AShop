@@ -9,10 +9,12 @@
 namespace App\Controller\admin;
 
 use App\Entity\Servers;
+use App\Entity\Services;
 use App\Form\admin\serversType;
 use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -37,6 +39,7 @@ class serversController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // === Get repo for query ===
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
         // === Create Form ===
@@ -62,6 +65,15 @@ class serversController extends AbstractController
         }
 
         return $this->render('admin/servers.html.twig', [
+            'title' => 'Serwery',
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie', '#'],
+                ['Serwery', $this->generateUrl('admin_servers')]
+            ],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
             'form_add' => $form_add->createView(),
             'form_edit' => $form_edit,
             'pagination' => $paginator->paginate($serversRepo->findAll(),$request->query->getInt('page', 1),30)
@@ -100,13 +112,12 @@ class serversController extends AbstractController
         return $this->redirectToRoute('admin_servers');
     }
 
-
     /**
-     * @Route("/admin/servers/delete/{id}", name="delete_server", requirements={"id"="\d+"})
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/admin/servers/delete/{id}", name="delete_server")
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function deleteServer($id)
+    public function deleteServer(Request $request, $id)
     {
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -115,18 +126,25 @@ class serversController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $server = $this->getDoctrine()->getRepository(Servers::class)->find($id);
 
-            $serverName = $server->getName();
+            if($server)
+            {
+                $data[0] = $server->getName();
+                $entityManager->remove($server);
+                $entityManager->flush();
 
-            $entityManager->remove($server);
-            $entityManager->flush();
-
-            $this->addFlash('delete_success', 'Usunięto '.$serverName.'!');
-            $this->logService->logAction('delete', 'Usunięto serwer [#'.$serverName.']');
+                $data[1] = true;
+                $this->logService->logAction('delete', 'Usunięto serwer [#'.$data[0].']');
+            }
+            else
+                $data[1] = false;
 
         } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+            $data[1] = false;
         }
 
-        return $this->redirectToRoute('admin_servers');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
 }
