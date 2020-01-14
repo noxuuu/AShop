@@ -1,82 +1,29 @@
-{% extends 'frontend/admin/base.html.twig' %}
+{% extends 'frontend/common/index.html.twig' %}
 
-{% block title %}Logi Płatności Przelewem{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <!-- Title -->
-        <div class="row heading-bg  bg-blue">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h5 class="txt-light">Logi Płatności Przelewem</h5>
-            </div>
-
-        </div>
-        <!-- /Title -->
-        <!-- Row -->
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-heading">
-                        <div class="pull-left">
-                            <h6 class="panel-title txt-dark">Logi Płatności Przelewem</h6>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <div class="table-wrap">
-                                <div class="table-responsive">
-                                    <table class="table display product-overview mb-30" id="support_table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Koszt</th>
-                                                <th>IP</th>
-                                                <th>Metoda płatności</th>
-                                                <th>Data</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for log in pagination %}
-                                            <tr>
-                                                <td>{{ log.getId() }}</td>
-                                                <td>
-                                                    <span class="label label-success">{{ log.getCost() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="label label-success">{{ log.getIp() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="label label-danger">{{ log.getPaymentMethodId().getName() }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="label label-success">{{ log.getDate()|date("d/m/Y H:i:s") }}</span>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
+    <div class="row">
+        <div class="col-12 list">
+            {% for log in pagination %}
+                <div class="card flex-row mb-3 active">
+                    <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                        <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                            <div class="w-15">
+                                <span class="badge badge-pill badge-primary mb-1">#{{ log.getId() }}</span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <div class="row">
-                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }}
-                                z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}
-                                , {{ pagination.getTotalItemCount }} wyników ogółem.
-                            </div>
-                            <div class="col col-xs-8">
-                                <ul class="pagination hidden-xs pull-right">
-                                    <div class="navigation">
-                                        {{ knp_pagination_render(pagination) }}
-                                    </div>
-                                </ul>
+                            <p class="mb-1 w-20 w-sm-50"><span class="badge badge-pill badge-info mb-1">{{ log.getCost() }}</span></p>
+                            <p class="mb-1 w-15 w-sm-50"><span class="badge badge-pill badge-secondary mb-1">{{ log.getIp() }}</span></p>
+                            <p class="mb-1 w-15 w-sm-50"><span class="label label-warning">{{ log.getPaymentMethodId().getName() }}</span></p>
+                            <div class="w-15 w-sm-100">
+                                <span class="label label-success">{{ log.getDate()|date("d/m/Y H:i:s") }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
+
+            {% include('frontend/common/widgets/pagination.html.twig') %}
         </div>
     </div>
 {% endblock %}

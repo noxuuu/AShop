@@ -1,5 +1,9 @@
 {% if app.request.get('_route') == 'admin_services'
-    or app.request.get('_route') == 'admin_logs' %}
+    or app.request.get('_route') == 'admin_logs'
+    or app.request.get('_route') == 'admin_bslogs'
+    or app.request.get('_route') == 'admin_logs_sms'
+    or app.request.get('_route') == 'admin_logs_psc'
+    or app.request.get('_route') == 'admin_logs_transfer' %}
     <div class="mb-2">
         <div class="collapse d-md-block" id="displayOptions">
 

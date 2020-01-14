@@ -38,8 +38,11 @@
                             or app.request.get('_route') == 'admin_services'
                             or app.request.get('_route') == 'admin_services'
                             or app.request.get('_route') == 'admin_services'
-                            or app.request.get('_route') == 'admin_services'
                             or app.request.get('_route') == 'admin_logs'
+                            or app.request.get('_route') == 'admin_bslogs'
+                            or app.request.get('_route') == 'admin_logs_sms'
+                            or app.request.get('_route') == 'admin_logs_psc'
+                            or app.request.get('_route') == 'admin_logs_transfer'
                         %}class="active"{% endif %}>
                         <a href="{% if 'admin' in app.request.requestUri %}#acp{% else %}{{ path('admin') }}{% endif %}">
                         <i class="iconsmind-Gear"></i> Panel Admina
