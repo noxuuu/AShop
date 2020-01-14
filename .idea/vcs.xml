@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../NWXStudio" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../PortfolioKasia" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../RankMe-NOX" vcs="Git" />
   </component>

@@ -1,0 +1,25 @@
+{% if app.request.get('_route') == 'admin_services'
+    or app.request.get('_route') == 'admin_logs' %}
+    <div class="mb-2">
+        <div class="collapse d-md-block" id="displayOptions">
+
+            <div class="d-block d-md-inline-block">
+                <!--<div class="btn-group float-md-left mr-1 mb-1">
+                    <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sortuj wg
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                </div>-->
+                <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
+                    <input placeholder="Szukaj..">
+                </div>
+            </div>
+            <div class="float-md-right">
+                <span class="text-muted text-small">Wyświetla {{ (pagination.currentPageNumber-1)*20 + 1 }}-{% if pagination.getTotalItemCount < 20 %}{{ pagination.getTotalItemCount }}{% else %}{{ pagination.currentPageNumber*20 }}{% endif %} z {{ pagination.getTotalItemCount }} wyników. </span>
+            </div>
+        </div>
+    </div>
+{% endif %}

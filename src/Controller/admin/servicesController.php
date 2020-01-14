@@ -62,14 +62,14 @@ class servicesController extends AbstractController
             return $this->redirectToRoute('admin_services');
         }
 
-        return $this->render('admin/new/services.html.twig', [
+        return $this->render('admin/services.html.twig', [
             'title' => 'Usługi',
             'breadcrumbs' => [['Panel Administracyjny', $this->generateUrl('admin')], ['Sklep', '#'], ['Zarządzanie usługami', $this->generateUrl('admin_services')]],
             'services' => $servicesRepo->findAll(),
             'servers' => $serversRepo->findAll(),
             'form_add' => $form_add->createView(),
             'form_edit' => $form_edit,
-            'pagination' => $paginator->paginate($servicesRepo->findAll(),$request->query->getInt('page', 1),30)
+            'pagination' => $paginator->paginate($servicesRepo->findAll(),$request->query->getInt('page', 1),20)
         ]);
     }
 
@@ -117,13 +117,17 @@ class servicesController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $service = $this->getDoctrine()->getRepository(Services::class)->find($id);
 
-            $data[0] = $service->getName();
+            if($service)
+            {
+                $data[0] = $service->getName();
+                $entityManager->remove($service);
+                $entityManager->flush();
 
-            $entityManager->remove($service);
-            $entityManager->flush();
-
-            $data[1] = true;
-            $this->logService->logAction('delete', 'Usunięto usługę [#'.$data[0].']');
+                $data[1] = true;
+                $this->logService->logAction('delete', 'Usunięto usługę [#'.$data[0].']');
+            }
+            else
+               $data[1] = false;
 
         } catch (\Exception $e) {
             $data[1] = false;

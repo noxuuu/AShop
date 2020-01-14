@@ -17,6 +17,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="VPS-GODZIU">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../PortfolioKasia" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
   </component>
 </project>

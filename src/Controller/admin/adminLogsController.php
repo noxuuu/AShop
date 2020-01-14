@@ -9,6 +9,8 @@
 namespace App\Controller\admin;
 
 use App\Entity\AdminLogs;
+use App\Entity\Servers;
+use App\Entity\Services;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,11 +30,19 @@ class adminLogsController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         // === Get repo for query ===
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+
+        // === Get repo for query ===
         $logsRepo = $this->getDoctrine()->getRepository(AdminLogs::class);
 
 
         return $this->render('admin/logs/adminlogs.html.twig', [
-            'pagination' => $paginator->paginate($logsRepo->findAll(), $request->query->getInt('page', 1), 30)
+            'title' => 'Logi Administracyjne',
+            'breadcrumbs' => [['Panel Administracyjny', $this->generateUrl('admin')], ['Sklep', '#'], ['Logi Administracyjne', $this->generateUrl('admin_logs')]],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
+            'pagination' => $paginator->paginate($logsRepo->findAll(), $request->query->getInt('page', 1), 20)
         ]);
     }
 }

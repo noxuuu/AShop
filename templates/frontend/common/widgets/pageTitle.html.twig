@@ -20,30 +20,7 @@
                 </ol>
             </nav>
         </div>
-        {% if app.request.get('_route') == 'admin_services' %}
-                <div class="mb-2">
-                <div class="collapse d-md-block" id="displayOptions">
-
-                    <div class="d-block d-md-inline-block">
-                        <!--<div class="btn-group float-md-left mr-1 mb-1">
-                            <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Sortuj wg
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                            </div>
-                        </div>-->
-                        <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
-                            <input placeholder="Szukaj..">
-                        </div>
-                    </div>
-                    <div class="float-md-right">
-                        <span class="text-muted text-small">Wyświetla {{ (pagination.currentPageNumber-1)*30 + 1 }}-{% if pagination.getTotalItemCount < 30 %}{{ pagination.getTotalItemCount }}{% else %}{{ pagination.currentPageNumber*30 }}{% endif %} z {{ pagination.getTotalItemCount }} wyników. </span>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
+        {% include('frontend/common/widgets/content-sort.html.twig') %}
         <div class="separator mb-5"></div>
     </div>
 </div>

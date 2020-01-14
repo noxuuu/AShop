@@ -3,13 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/AShop-www-side.iml" filepath="$PROJECT_DIR$/.idea/AShop-www-side.iml" />
-      <module fileurl="file://$USER_HOME$/Desktop/Web Projects/AlfaShop/.idea/AlfaShop.iml" filepath="$USER_HOME$/Desktop/Web Projects/AlfaShop/.idea/AlfaShop.iml" />
-      <module fileurl="file://C:/wamp64/www/AlfaBase/.idea/AlfaShop.iml" filepath="C:/wamp64/www/AlfaBase/.idea/AlfaShop.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../AlfaSystem/.idea/AlfaSystem.iml" filepath="$PROJECT_DIR$/../AlfaSystem/.idea/AlfaSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../NWXStudio/.idea/NWXStudio.iml" filepath="$PROJECT_DIR$/../NWXStudio/.idea/NWXStudio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../PortfolioKasia/.idea/PortfolioKasia.iml" filepath="$PROJECT_DIR$/../PortfolioKasia/.idea/PortfolioKasia.iml" />
       <module fileurl="file://$PROJECT_DIR$/../RankMe-NOX/.idea/RankMe-NOX.iml" filepath="$PROJECT_DIR$/../RankMe-NOX/.idea/RankMe-NOX.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../RankMe-NOX/.idea/RankMe-NOX.iml" filepath="$PROJECT_DIR$/../RankMe-NOX/.idea/RankMe-NOX.iml" />
-      <module fileurl="file://D:/Zlecenia/nsc-master/.idea/nsc-master.iml" filepath="D:/Zlecenia/nsc-master/.idea/nsc-master.iml" />
-      <module fileurl="file://C:/wamp64/www/.idea/www.iml" filepath="C:/wamp64/www/.idea/www.iml" />
     </modules>
   </component>
 </project>
