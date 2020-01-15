@@ -16,6 +16,7 @@ use App\Form\admin\pricesType;
 use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -40,7 +41,7 @@ class pricesController extends AbstractController
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // === Get some data ===
+        // === Get repo for queries ===
         $pricesRepo = $this->getDoctrine()->getRepository(Prices::class);
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
@@ -90,7 +91,14 @@ class pricesController extends AbstractController
 
 
         return $this->render('admin/prices.html.twig', [
-            'pagination' => $paginator->paginate($pricesRepo->findAll(), $request->query->getInt('page', 1), 30),
+            'title' => 'Cennik',
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie', '#'],
+                ['Cennik', $this->generateUrl('admin_prices')]
+            ],
+            'pagination' => $paginator->paginate($pricesRepo->findAll(), $request->query->getInt('page', 1), 20),
             'tariffs' => $tariffsRepo->findAll(),
             'servers' => $serversRepo->findAll(),
             'services' => $servicesRepo->findAll(),
@@ -158,11 +166,11 @@ class pricesController extends AbstractController
     }
 
     /**
-     * @Route("/admin/prices/delete/{id}", name="delete_price", requirements={"id"="\d+"})
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/admin/prices/delete/{id}", name="delete_price")
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function deletePrice($id)
+    public function deletePrice(Request $request, $id)
     {
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -171,16 +179,24 @@ class pricesController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $price = $this->getDoctrine()->getRepository(Prices::class)->find($id);
 
-            $entityManager->remove($price);
-            $entityManager->flush();
+            if($price)
+            {
+                $entityManager->remove($price);
+                $entityManager->flush();
 
-            $this->addFlash('delete_success', 'Usunięto cenę!');
-            $this->logService->logAction('delete', 'Usunięto cenę');
+                $data[1] = true;
+                $this->logService->logAction('delete', 'Usunięto cene.');
+            }
+            else
+                $data[1] = false;
 
         } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+            $data[1] = false;
         }
 
-        return $this->redirectToRoute('admin_prices');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
 }

@@ -1,187 +1,158 @@
-{% extends 'frontend/admin/base.html.twig' %}
- 
-{% block title %}Cennik{% endblock %}
+{% extends 'frontend/common/index.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
+    <div class="row">
+        <div class="col-12 list">
 
-        <!-- Title -->
-        <div class="row heading-bg  bg-blue">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h5 class="txt-light">Cennik</h5>
-            </div>
-        </div>
-        <!-- /Title -->
-        <!-- Row -->
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-heading">
-                        <div class="pull-left">
-                            <h6 class="panel-title txt-dark">Cennik</h6>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <p>W tym miejscu możesz zarządzać cennikiem usług dostępnych w sklepie.</p>
-                                </div>
-                                <div class="col-md-2 col-md-offset-2">
-                                    <?php if(CheckAccess('can_add_prices')) {?>
-                                    <button type="button" data-toggle="modal" data-target="#add" class="btn btn-success">DODAJ CENĘ</button>
-                                    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="add1">
-                                        <div class="modal-dialog modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title" id="add1">Dodaj cenę</h4>
-                                                </div>
-                                                {{ form_start(form_add) }}
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label>Usługa:</label>
-                                                            {{ form_widget(form_add.serviceId) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Serwer:</label>
-                                                            {{ form_widget(form_add.serverId) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Taryfa:</label>
-                                                            {{ form_widget(form_add.tariffId) }}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Ilość:</label>
-                                                            {{ form_widget(form_add.value) }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Dodaj</button>
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                    </div>
-                                                {{ form_end(form_add) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php } ?>
-                                </div>
+            {% for price in pagination %}
+                <div class="card flex-row mb-3 active" id="price-{{ price.GetId() }}">
+                    <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                        <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                            <div class="w-10 w-sm-50">
+                                <span class="badge badge-pill badge-primary">#{{ price.getId() }}</span>
                             </div>
-                            <div class="table-wrap">
-                                <div class="table-responsive">
-                                    <table class="table display product-overview mb-30" id="support_table">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th style="width: 700px;">Serwer</th>
-                                            <th>Usługa</th>
-                                            <th>Taryfa</th>
-                                            <th>Wartość</th>
-                                            <?php if(CheckAccess('can_edit_prices') || CheckAccess('can_delete_prices')) {?><th>AKCJE</th><?php } ?>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for price in pagination %}
-                                                <tr>
-                                                    <td>{{ price.getId() }}</td>
-                                                    <td>
-                                                        {% for server in price.getServerId()|split('-') %}
-                                                            <span class="label label-success">{{ server|get_server.getName() }}</span>
-                                                        {% endfor %}
-                                                    </td>
-                                                    <td><span class="label label-warning">{{ price.getServiceId().getName() }}</span></td>
-                                                    <td>
-                                                        <span class="label label-danger">{{ price.getTariffId().getPaymentMethodId().getName() }} - {{ price.getTariffId().getBrutto }}{% if price.getTariffId().getPaymentMethodId().getType() == 1 %}  - {{ price.getTariffId().getSmsNumber() }}{% endif %}</span>
-                                                    </td>
-                                                    <td>{{ price.getValue() }}</td>
-                                                    <td>
-                                                        <?php if(CheckAccess('can_edit_prices')) { ?><a href="#" data-toggle="modal" data-target="#edit-{{ price.GetId() }}" class=""><i class="fa fa-check"></i></a>
-                                                        <?php } if(CheckAccess('can_delete_prices')) {?><a href="#" class="text-inverse" data-toggle="modal" data-target="#delete-{{ price.GetId() }}"><i class="fa fa-trash"></i></a></td>
-
-                                                    <!-- Modal -->
-                                                    <?php if(CheckAccess('can_edit_prices')) {?>
-                                                    <div class="modal fade" id="edit-{{ price.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="editlabel{{ price.GetId() }}">
-                                                        <div class="modal-dialog modal-lg" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                    <h4 class="modal-title" id="editlabel1">Edytuj usługę</h4>
-                                                                </div>
-                                                                {% set edit_form = form_edit.createView %}
-                                                                {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_price', { 'price' : price.GetId() })}) }}
-                                                                    <div class="modal-body">
-                                                                        <div class="form-group">
-                                                                            <label>Usługa:</label>
-                                                                            {{ form_widget(edit_form.serviceId) }}
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label>Serwer:</label>
-                                                                            {{ form_widget(edit_form.serverId) }}
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label>Taryfa:</label>
-                                                                            {{ form_widget(edit_form.tariffId) }}
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label>Ilość:</label>
-                                                                            {{ form_widget(edit_form.value, {'value' : price.GetValue()}) }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="submit" class="btn btn-primary">Edytuj</button>
-                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                                    </div>
-                                                                {{ form_end(edit_form) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <?php } if(CheckAccess('can_delete_prices')) {?>
-                                                    <div class="modal fade" id="delete-{{ price.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="deletelabel{{ price.GetId() }}">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                    <h4 class="modal-title" id="deletelabel{{ price.GetId() }}">Usuń cenę #{{ price.GetId() }}</h4>
-                                                                </div>
-                                                                <form action="" method="post">
-                                                                    <div class="modal-body">
-                                                                        Czy jesteś pewny, że chcesz usunąć cenę ze sklepu?
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <a class="btn btn-primary" href="{{ path('delete_price', {'id': price.GetId()}) }}" role="button">Usuń !</a>
-                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <?php } ?>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="w-30 w-sm-50">
+                                {% for server in price.getServerId()|split('-') %}
+                                    <span class="badge badge-pill badge-outline-primary">{{ server|get_server.getName() }}</span>
+                                {% endfor %}
                             </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <div class="row">
-                            <div class="col col-xs-4"><br/><br/>Strona {{ pagination.currentPageNumber }} z {{ (pagination.getTotalItemCount/30)|round(0, 'ceil') }}, {{ pagination.getTotalItemCount }} wyników ogółem.</div>
-                            <div class="col col-xs-8">
-                                <ul class="pagination hidden-xs pull-right">
-                                    <div class="navigation">
-                                        {{ knp_pagination_render(pagination) }}
-                                    </div>
-                                </ul>
+                            <div class="w-15 w-sm-50">
+                                <span class="badge badge-pill badge-secondary">
+                                    {{ price.getServiceId().getName() }}
+                                </span>
+                            </div>
+                            <div class="w-20 w-sm-50">
+                                <span class="badge badge-pill badge-secondary">
+                                    {{ price.getTariffId().getPaymentMethodId().getName() }} - {{ price.getTariffId().getBrutto }}
+                                    {% if price.getTariffId().getPaymentMethodId().getType() == 1 %}
+                                        - {{ price.getTariffId().getSmsNumber() }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="w-15 w-sm-50">
+                                {{ price.getValue() }} {{ price.getServiceId().getSufix() }}
+                            </div>
+                            <div class="w-15 w-sm-100">
+                                <button type="button" data-toggle="modal" data-target="#edit-{{ price.GetId() }}" class="btn btn-primary btn-sm mr-1">Edytuj</button>
+                                <button type="button" onclick="confirmDelete({{ price.GetId() }})" class="btn btn-primary btn-sm mr-1">Usuń</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Modal -->
+                <div class="modal fade modal-right" id="edit-{{ price.GetId() }}" tabindex="-1" role="dialog" aria-labelledby="edit-{{ price.GetId() }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="edit-{{ price.GetId() }}">Edycja ceny</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            {% set edit_form = form_edit.createView %}
+                            {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_price', { 'price' : price.GetId() })}) }}
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Usługa:</label>
+                                    {{ form_widget(edit_form.serviceId) }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Serwer:</label>
+                                    {{ form_widget(edit_form.serverId) }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Taryfa:</label>
+                                    {{ form_widget(edit_form.tariffId) }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Ilość:</label>
+                                    {{ form_widget(edit_form.value, {'value' : price.GetValue()}) }}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Zapisz</button>
+                                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+                            </div>
+                            {{ form_end(edit_form) }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% include('frontend/common/widgets/pagination.html.twig') %}
         </div>
-        <!-- /Row -->
     </div>
 {% endblock %}
 
-{% block javascript %}{% endblock %}
+{% block modal_add %}
+    <div class="modal-header">
+        <h5 class="modal-title">Dodaj nową cene</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    {{ form_start(form_add) }}
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Usługa:</label>
+            {{ form_widget(form_add.serviceId) }}
+        </div>
+        <div class="form-group">
+            <label>Serwer:</label>
+            {{ form_widget(form_add.serverId) }}
+        </div>
+        <div class="form-group">
+            <label>Taryfa:</label>
+            {{ form_widget(form_add.tariffId) }}
+        </div>
+        <div class="form-group">
+            <label>Ilość:</label>
+            {{ form_widget(form_add.value) }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+        <button type="submit" class="btn btn-primary">Dodaj</button>
+    </div>
+    {{ form_end(form_add) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function confirmDelete(id) {
+            swal({
+                    title: "Jesteś pewien?",
+                    text: "Tej operacji nie będzie można cofnąć!",
+                    type: "warning",
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    confirmButtonClass: "btn-primary",
+                    cancelButtonClass: "btn-outline-primary",
+                    confirmButtonText: "Tak, usuń!",
+                    cancelButtonText: "Anuluj",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        url:        '/admin/prices/delete/' + id + '/',
+                        type:       'GET',
+                        dataType:   'json',
+                        async:      true,
+
+                        success: function(data, status) {
+                            if(data[1]) {
+                                swal("Usunięto!", "Poprawnie usunięto cene.", "success");
+                                $('#price-' + id).hide();
+                            }
+                        },
+                        error : function(xhr, textStatus, errorThrown) {
+                            swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
+                        }
+                    });
+                });
+        }
+    </script>
+{% endblock %}

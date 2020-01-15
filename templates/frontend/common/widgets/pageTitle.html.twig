@@ -5,7 +5,8 @@
             {% if app.request.get('_route') == 'admin_pm'
                 or app.request.get('_route') == 'admin_tariffs'
                 or app.request.get('_route') == 'admin_servers'
-                or app.request.get('_route') == 'admin_services' %}
+                or app.request.get('_route') == 'admin_services'
+                or app.request.get('_route') == 'admin_prices' %}
                 <div class="float-sm-right text-zero">
                     <button type="button" class="btn btn-primary btn-lg mr-1" data-toggle="modal" data-backdrop="static" data-target="#modal_add">Dodaj</button>
                 </div>
