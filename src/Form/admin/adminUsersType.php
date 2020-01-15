@@ -38,14 +38,16 @@ class adminUsersType extends AbstractType
                 'required' => true,
                 'label' => false,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'autocomplete' => 'off'
                 ]
             ])
             ->add('username', TextType::class, [
                 'required' => true,
                 'label' => false,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'autocomplete' => 'off'
                 ]
             ])
             ->add('plainPassword', RepeatedType::class, array(
@@ -53,13 +55,15 @@ class adminUsersType extends AbstractType
                 'first_options'  => [
                     'label' => false,
                     'attr' => [
-                        'class' => 'form-control'
+                        'class' => 'form-control',
+                        'autocomplete' => 'off'
                     ]
                 ],
                 'second_options' => [
                     'label' => false,
                     'attr' => [
-                        'class' => 'form-control'
+                        'class' => 'form-control',
+                        'autocomplete' => 'off'
                     ]
                 ],
                 'constraints' => [

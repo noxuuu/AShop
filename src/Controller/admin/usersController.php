@@ -9,19 +9,30 @@
 namespace App\Controller\admin;
 
 use App\Entity\Groups;
+use App\Entity\Servers;
+use App\Entity\Services;
 use App\Entity\UsersEntity;
 use App\Form\admin\adminUsersType;
 use App\Form\admin\userWalletType;
+use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
-class adminUsersController extends AbstractController
+class usersController extends AbstractController
 {
+    private $logService;
+
+    public function __construct(logService $logService)
+    {
+        $this->logService = $logService; // we need to get service and log features happen in this controller :)
+    }
+
     /**
      * @Route("/admin/users", name="admin_users")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -35,6 +46,8 @@ class adminUsersController extends AbstractController
         // === Get repo for query ===
         $usersRepo = $this->getDoctrine()->getRepository(UsersEntity::class);
         $groupsRepo = $this->getDoctrine()->getRepository(Groups::class);
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
         // === Create Form ===
         $user = new UsersEntity();
@@ -44,6 +57,7 @@ class adminUsersController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $form_add = $this->createForm(adminUsersType::class, $user);
+        $form_edit = $this->createForm(adminUsersType::class, $user);
         $form_wallet = $this->createForm(userWalletType::class, $defaultData);
         $form_add->handleRequest($request);
 
@@ -65,10 +79,62 @@ class adminUsersController extends AbstractController
         }
 
         return $this->render('admin/users.html.twig', [
+            'title' => 'Użytkownicy',
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie', '#'],
+                ['Konta użytkowników', $this->generateUrl('admin_users')]
+            ],
+            'services' => $servicesRepo->findAll(),
+            'servers' => $serversRepo->findAll(),
             'form_add' => $form_add->createView(),
+            'form_edit' => $form_edit,
             'form_wallet' => $form_wallet,
-            'pagination' => $paginator->paginate($usersRepo->findAll(), $request->query->getInt('page', 1), 30)
+            'pagination' => $paginator->paginate($usersRepo->findAll(), $request->query->getInt('page', 1), 20)
         ]);
+    }
+
+    /**
+     * @Route("/admin/users/{user}/edit", name="edit_user")
+     * @Entity("user", expr="repository.find(user)")
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function editUser(Request $request, UsersEntity $user, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // get repo access
+        $groupsRepo = $this->getDoctrine()->getRepository(Groups::class);
+
+        // we need to reset group id cuz form handler gives us shit..
+        $user->setGroupId(1);
+
+        // handle form
+        $editForm = $this->createForm(adminUsersType::class, $user);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            try {
+                // encode password
+                $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($password);
+
+                // set group id
+                $user->setGroupId($groupsRepo->find($editForm->getData()->getGroupId()));
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+
+                $this->addFlash('edit_success', 'Edytowano użytkownika ['.$user->getUsername().']!');
+                $this->logService->logAction('edit', 'Edytowano użytkownika [#'.$user->getUsername().'].');
+
+            } catch (\Exception $e) {
+                $this->addFlash('edit_error', 'Wystąpił niespodziewany błąd.');
+            }
+        }
+        return $this->redirectToRoute('admin_users');
     }
 
     /**
@@ -79,6 +145,9 @@ class adminUsersController extends AbstractController
      */
     public function editWallet(Request $request, UsersEntity $username)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         // get form type to handle it
         $defaultData = [];
         $editForm = $this->createForm(userWalletType::class, $defaultData);
@@ -111,42 +180,50 @@ class adminUsersController extends AbstractController
     }
 
     /**
-     * @Route("/admin/users/delete/{username}", name="delete_user")
-     * @param int $username
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/admin/users/delete/{id}", name="delete_user")
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function deleteUser($username)
+    public function deleteUser(Request $request, $id)
     {
+        // deny access for non-admin users
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         try {
             $entityManager = $this->getDoctrine()->getManager();
-            $user = $this->getDoctrine()->getRepository(UsersEntity::class)->find($username);
+            $user = $this->getDoctrine()->getRepository(UsersEntity::class)->find($id);
 
             if($user) {
                 $admin = $this->getUser();
-                if($username != $admin->getUsername())
+                if($id != $admin->getUsername())
                 {
+                    // save data ( we need to send it in json later)
+                    $data[0] = $id;
+
+                    // remove object
                     $entityManager->remove($user);
                     $entityManager->flush();
+
+                    $data[1] = true;
+                    $this->logService->logAction('delete', 'Usunięto użytkownika ['.$data[0].'].');
                 }
                 else{
-                    $this->addFlash('delete_error', 'Nie możesz usunąć własnego konta!');
-                    return $this->redirectToRoute('admin_users');
+                    $data[1] = false;
                 }
             } else {
-                $this->addFlash('delete_error', 'Nie ma takiego użytkownika!');
-                return $this->redirectToRoute('admin_users');
+                $data[1] = false;
             }
-
-            $this->addFlash('delete_success', 'Usunięto konto użytkownika!');
-
         } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+            $data[1] = false;
         }
 
-        return $this->redirectToRoute('admin_users');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
+
     // todo add edit user form
     // todo add search filter
-    // fix modal will not show when user have special chars in name -- need to change modal identification type
     // fix form_add errors validation
 }

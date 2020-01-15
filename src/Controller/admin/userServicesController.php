@@ -16,6 +16,7 @@ use App\Form\admin\usersServicesEditType;
 use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -46,7 +47,7 @@ class userServicesController extends AbstractController
 
         // === Load data ===
         $serverSelection = $request->query->getInt('svr', 0); // filter by server
-        $rows = $serverSelection > 0 ? $usRepo->findBy(['server' => $serverSelection]) : $usRepo->findAll(); // load all rows when server == 0 (all servers)
+        $rows = $serverSelection > 0 ? $usRepo->findBy(['server' => $serverSelection], ['id' => 'DESC']) : $usRepo->findBy(array(), ['id' => 'DESC']); // load all rows when server == 0 (all servers)
 
         // === Create Forms ===
         $defaultData = [];
@@ -99,9 +100,17 @@ class userServicesController extends AbstractController
         }
 
         return $this->render('admin/usersservices.html.twig', [
+            'title' => 'Usługi graczy',
+            'breadcrumbs' => [
+                ['Panel Administracyjny', $this->generateUrl('admin')],
+                ['Sklep', '#'],
+                ['Zarządzanie', '#'],
+                ['Usługi graczy', $this->generateUrl('admin_usersServices')]
+            ],
             'selected_server' => $serverSelection,
-            'pagination' => $paginator->paginate($rows, $request->query->getInt('page', 1), 30),
+            'pagination' => $paginator->paginate($rows, $request->query->getInt('page', 1), 20),
             'servers' => $serversRepo->findAll(),
+            'services' => $servicesRepo->findAll(),
             'form_add' => $form_add->createView(),
             'form_edit' => $form_edit,
             'search_results' => false
@@ -159,29 +168,37 @@ class userServicesController extends AbstractController
 
     /**
      * @Route("/admin/users_services/delete/{id}", name="delete_userservice", requirements={"id"="\d+"})
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function deleteService($id)
+    public function deletePrice(Request $request, $id)
     {
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         try {
-
             $entityManager = $this->getDoctrine()->getManager();
             $service = $this->getDoctrine()->getRepository(UserServices::class)->find($id);
-            $this->logService->logAction('delete', 'Usunięto usługę gracza [#'.$service->getAuthData().']');
 
-            $entityManager->remove($service);
-            $entityManager->flush();
+            if($service)
+            {
+                $data[0] = $service->getAuthData();
+                $entityManager->remove($service);
+                $entityManager->flush();
 
-            $this->addFlash('delete_success', 'Usunięto poprawnie!');
+                $data[1] = true;
+                $this->logService->logAction('delete', 'Usunięto usługę gracza [#'.$data[0].']');
+            }
+            else
+                $data[1] = false;
 
         } catch (\Exception $e) {
-            $this->addFlash('delete_error', 'Wystąpił niespodziewany błąd.');
+            $data[1] = false;
         }
 
-        return $this->redirectToRoute('admin_usersServices');
+        if ($request->isXmlHttpRequest() || $request->query->get('showJson') == 1)
+            return new JsonResponse($data);
+        else
+            throw new \Exception('Not allowed usage');
     }
 }

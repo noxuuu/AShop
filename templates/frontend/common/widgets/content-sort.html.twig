@@ -3,6 +3,8 @@
     or app.request.get('_route') == 'admin_servers'
     or app.request.get('_route') == 'admin_services'
     or app.request.get('_route') == 'admin_prices'
+    or app.request.get('_route') == 'admin_usersServices'
+    or app.request.get('_route') == 'admin_users'
     or app.request.get('_route') == 'admin_logs'
     or app.request.get('_route') == 'admin_bslogs'
     or app.request.get('_route') == 'admin_logs_sms'
@@ -12,15 +14,23 @@
         <div class="collapse d-md-block" id="displayOptions">
 
             <div class="d-block d-md-inline-block">
-                <!--<div class="btn-group float-md-left mr-1 mb-1">
-                    <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Sortuj wg
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
+                {% if app.request.get('_route') == 'admin_usersServices' %}
+                    <div class="btn-group float-md-left mr-1 mb-1">
+                        <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if selected_server %}
+                                {{ selected_server|get_server.getName() }}
+                            {% else %}
+                                Wszystkie serwery
+                            {% endif %}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ path('admin_usersServices') }}">Wszystkie serwery</a>
+                            {% for server in servers %}
+                                <a class="dropdown-item" href="{{ path('admin_usersServices', { 'svr': server.getId() }) }}">{{ server.getName() }}</a>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>-->
+                {% endif %}
                 <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
                     <input placeholder="Szukaj..">
                 </div>

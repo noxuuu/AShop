@@ -31,7 +31,9 @@
             or app.request.get('_route') == 'admin_tariffs'
             or app.request.get('_route') == 'admin_servers'
             or app.request.get('_route') == 'admin_services'
-            or app.request.get('_route') == 'admin_prices' %}
+            or app.request.get('_route') == 'admin_prices'
+            or app.request.get('_route') == 'admin_usersServices'
+            or app.request.get('_route') == 'admin_users' %}
             <div class="modal modal-right" id="modal_add" tabindex="-1" role="dialog" aria-labelledby="modal_add" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -43,6 +45,7 @@
     </div>
 </main>
 
+<script src="https://dore-jquery.coloredstrategies.com/js/vendor/bootstrap.bundle.min.js"></script> <!-- add this to encore -->
 {{ encore_entry_script_tags('app') }}
 {{ encore_entry_script_tags('mousetrap') }}
 {{ encore_entry_script_tags('nouislider') }}
@@ -50,8 +53,6 @@
 {{ encore_entry_script_tags('scripts') }}
 
 <script src="https://dore-jquery.coloredstrategies.com/js/vendor/jquery-3.3.1.min.js"></script>
-<script src="https://dore-jquery.coloredstrategies.com/js/vendor/bootstrap.bundle.min.js"></script> <!-- add this to encore -->
-
 <script> var pathToUserServices = "{{ path('user_services') }}";</script>
 <script src="{{ asset('/js/sweetalert.js') }}"></script>
 <script src="{{ asset('/js/ajax.js') }}"></script>
