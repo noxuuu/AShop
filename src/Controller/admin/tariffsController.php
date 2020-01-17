@@ -11,6 +11,7 @@ namespace App\Controller\admin;
 use App\Entity\PaymentMethod;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Entity\Tariffs;
 use App\Form\admin\tariffType;
 use App\Service\logService;
@@ -44,6 +45,7 @@ class tariffsController extends AbstractController
         // === Get repo for query ===
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
 
         // === Get some data ===
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
@@ -55,6 +57,7 @@ class tariffsController extends AbstractController
         $form_edit = $this->createForm(tariffType::class, $tariff);
 
         return $this->render('admin/tariffs.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Usługi',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

@@ -2349,6 +2349,7 @@ div[data-notify="container"] {
 .form-control,
 .bootstrap-tagsinput {
   border-radius: 0.1rem;
+  height: auto!important;
   outline: initial !important;
   box-shadow: initial !important;
   font-size: 0.8rem;
@@ -4939,4 +4940,20 @@ a.ck.ck-button.ck-on:not(.ck-disabled):hover {
   line-height: 1.4;
   font-family: Courier New, Courier, monospace;
   margin-top:0;
+}
+
+/* easypie charts */
+.monthly-progress-chart {
+    position: relative;
+    display: inline-block;
+    width: 110px;
+    height: 110px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.monthly-progress-chart canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }

@@ -11,6 +11,7 @@ namespace App\Controller\admin;
 use App\Entity\Prices;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Entity\Tariffs;
 use App\Form\admin\pricesType;
 use App\Service\logService;
@@ -46,6 +47,7 @@ class pricesController extends AbstractController
         $tariffsRepo = $this->getDoctrine()->getRepository(Tariffs::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
 
         // === Create forms ===
         $price = new Prices();
@@ -91,6 +93,7 @@ class pricesController extends AbstractController
 
 
         return $this->render('admin/prices.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Cennik',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

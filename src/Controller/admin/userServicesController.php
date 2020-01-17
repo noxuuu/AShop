@@ -10,6 +10,7 @@ namespace App\Controller\admin;
 
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Entity\UserServices;
 use App\Form\admin\usersServicesAddType;
 use App\Form\admin\usersServicesEditType;
@@ -42,6 +43,7 @@ class userServicesController extends AbstractController
 
         // === Get repo for query ===
         $usRepo = $this->getDoctrine()->getRepository(UserServices::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
 
@@ -77,7 +79,6 @@ class userServicesController extends AbstractController
 
                     // notify admin
                     $this->addFlash('edit_success', 'Przedłużono poprawnie!');
-                    return $this->redirectToRoute('admin_usersServices');
 
                 } else { // create new user service
                     $newDate = new \DateTime();
@@ -87,19 +88,20 @@ class userServicesController extends AbstractController
                     $userService->setAuthData($formData['authData']);
                     $userService->setValue($formData['value']);
                     $userService->setBoughtDate($currentDate);
-                    $userService->setExpires($newDate->setTimestamp($currentDate->getTimestamp() + ($formData['value'] * 86400)));
+                    $userService->setExpires($newDate->setTimestamp((int)($currentDate->getTimestamp() + ($formData['value'] * 86400))));
 
                     $entityManager->persist($userService);
                     $entityManager->flush();
 
                     $this->addFlash('add_success', 'Dodano usługę!');
                     $this->logService->logAction('add', 'Dodano usługę graczowi [#'.$formData['authData'].'] [#'.$servicesRepo->findOneBy(['id' => $formData['service']])->getName().'] [#'.$serversRepo->findOneBy(['id' => $server])->getName().']');
-                    return $this->redirectToRoute('admin_usersServices');
                 }
             }
+            return $this->redirectToRoute('admin_usersServices');
         }
 
         return $this->render('admin/usersservices.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Usługi graczy',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

@@ -2,6 +2,7 @@
 namespace App\Controller\shop;
 
 use App\Entity\Groups;
+use App\Entity\Settings;
 use App\Entity\UsersEntity;
 use App\Form\UsersType;
 use App\Service\logService;
@@ -32,9 +33,11 @@ class securityController extends AbstractController
 
     public function login(AuthenticationUtils $authenticationUtils, SecurityService $securityService)
     {
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $login = $securityService->login($authenticationUtils);
 
         return $this->render('common/security/login.html.twig', array(
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'last_username' => $login['lastUsername'],
             'error' => $login['error'],
         ));
@@ -58,6 +61,8 @@ class securityController extends AbstractController
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
+
         $user = new UsersEntity();
         $form = $this->createForm(UsersType::class, $user);
         $form->handleRequest($request);
@@ -75,6 +80,7 @@ class securityController extends AbstractController
         }
 
         return $this->render('common/security/register.html.twig', [
+                'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
                 'form' => $form->createView()
             ]
         );

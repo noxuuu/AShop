@@ -14,6 +14,7 @@ use App\Entity\BoughtServicesLogs;
 use App\Entity\PaymentsPSC;
 use App\Entity\PaymentsSMS;
 use App\Entity\PaymentsTransfer;
+use App\Entity\UsersEntity;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class logService
 {
     private $entityManager;
+    private $usersRepo;
     private $user;
     private $userIp;
 
@@ -43,14 +45,15 @@ class logService
         $this->pmSMS = $entityManager->getRepository(PaymentsSMS::class);
         $this->pmPSC = $entityManager->getRepository(PaymentsPSC::class);
         $this->pmTransfer = $entityManager->getRepository(PaymentsTransfer::class);
+        $this->usersRepo = $entityManager->getRepository(UsersEntity::class);
     }
 
     function logAction($type, $content){
 
         $action = new AdminLogs();
         $action->setContent($content);
-        $action->setAdminIp($this->userIp);
-        $action->setAdminName($this->user);
+        $action->setAdminIp($type == "servicesManager" ? "SYSTEM" : $this->userIp);
+        $action->setAdminName($type == "servicesManager" ? $this->usersRepo->findOneBy(['username' => 'SYSTEM']) : $this->user);
         $action->setDate(new \Datetime());
 
         try {

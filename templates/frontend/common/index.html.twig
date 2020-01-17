@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %} :: ASHOP system sklepu automatycznego</title>
+    <title>{% block title %}{% endblock %} :: {{ mainTitle }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="icon" href="{{ asset('/img/favicon.ico') }}" type="image/x-icon" />
     <link rel="stylesheet" href="{{ asset('/font/iconsmind/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('/font/simple-line-icons/css/simple-line-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('/css/sweetalert.css') }}" />
@@ -32,6 +33,7 @@
             or app.request.get('_route') == 'admin_servers'
             or app.request.get('_route') == 'admin_services'
             or app.request.get('_route') == 'admin_prices'
+            or app.request.get('_route') == 'admin_vouchers'
             or app.request.get('_route') == 'admin_usersServices'
             or app.request.get('_route') == 'admin_users' %}
             <div class="modal modal-right" id="modal_add" tabindex="-1" role="dialog" aria-labelledby="modal_add" aria-hidden="true">
@@ -45,6 +47,8 @@
     </div>
 </main>
 
+<footer class="footer">test</footer>
+
 <script src="https://dore-jquery.coloredstrategies.com/js/vendor/bootstrap.bundle.min.js"></script> <!-- add this to encore -->
 {{ encore_entry_script_tags('app') }}
 {{ encore_entry_script_tags('mousetrap') }}
@@ -53,9 +57,52 @@
 {{ encore_entry_script_tags('scripts') }}
 
 <script src="https://dore-jquery.coloredstrategies.com/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="https://dore-jquery.coloredstrategies.com/js/vendor/bootstrap.bundle.min.js"></script> <!-- bs collapse don't want to work now.. -->
 <script> var pathToUserServices = "{{ path('user_services') }}";</script>
 <script src="{{ asset('/js/sweetalert.js') }}"></script>
 <script src="{{ asset('/js/ajax.js') }}"></script>
+
+<!-- Success notifications -->
+{% for message in app.flashes('add_success') %}
+    <script>
+        $(window).on('load', function () {
+            window.setTimeout(function () {
+                swal("Sukces", "{{ message }}.", "success");
+            }, 1000);
+        });
+    </script>
+{% endfor %}
+
+{% for message in app.flashes('edit_success') %}
+    <script>
+        $(window).on('load', function () {
+            window.setTimeout(function () {
+                swal("Sukces", "{{ message }}.", "success");
+            }, 1000);
+        });
+    </script>
+{% endfor %}
+
+<!-- Error notifications -->
+{% for message in app.flashes('add_error') %}
+    <script>
+        $(window).on('load', function () {
+            window.setTimeout(function () {
+                swal("Błąd", "{{ message }}.", "error");
+            }, 1000);
+        });
+    </script>
+{% endfor %}
+
+{% for message in app.flashes('edit_error') %}
+    <script>
+        $(window).load(function () {
+            window.setTimeout(function () {
+                swal("Błąd", "{{ message }}.", "error");
+            }, 1000);
+        });
+    </script>
+{% endfor %}
 
 {% block javascripts %}{% endblock %}
 </body>

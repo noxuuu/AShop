@@ -10,6 +10,7 @@ namespace App\Service\admin;
 
 
 use App\Entity\Groups;
+use App\Entity\Prices;
 use App\Entity\Servers;
 use App\Entity\Services;
 use App\Entity\Tariffs;
@@ -27,6 +28,7 @@ class typeFunctions
         $this->serversRepo = $entityManager->getRepository(Servers::class);
         $this->servicesRepo = $entityManager->getRepository(Services::class);
         $this->tariffsRepo = $entityManager->getRepository(Tariffs::class);
+        $this->pricesRepo = $entityManager->getRepository(Prices::class);
         $this->groupsRepo = $entityManager->getRepository(Groups::class);
     }
 
@@ -37,6 +39,31 @@ class typeFunctions
         $choiceList = array();
         foreach ($servers as $server)
             $choiceList[$server['name']] = $server['id'];
+
+        return $choiceList;
+    }
+
+    function loadPricesToChoiceList()
+    {
+        $prices = $this->pricesRepo->getPricesInfoAndId();
+
+        $choiceList = array();
+        foreach ($prices as $price) {
+            // parse servers string
+            $serversNames = "";
+            $servers = explode("-" ,$price['server']);
+
+            // loop servers to prepare names
+            foreach($servers as $server) {
+                if($serversNames == "")
+                    $serversNames = $this->serversRepo->find($server)->getName();
+                else
+                    $serversNames = $serversNames.' - '.$this->serversRepo->find($server)->getName();
+            }
+
+
+            $choiceList[$serversNames.' - '.$price['service'].' - '.$price['value'].' '.$price['sufix']] = $price['id'];
+        }
 
         return $choiceList;
     }

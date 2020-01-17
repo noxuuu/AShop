@@ -10,6 +10,7 @@ namespace App\Controller\admin;
 
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Form\admin\servicesType;
 use App\Service\logService;
 use Knp\Component\Pager\PaginatorInterface;
@@ -40,6 +41,7 @@ class servicesController extends AbstractController
 
         // === Get repo for query ===
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
         // === Create Form ===
@@ -63,6 +65,7 @@ class servicesController extends AbstractController
         }
 
         return $this->render('admin/services.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Usługi',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

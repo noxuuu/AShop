@@ -11,6 +11,7 @@ namespace App\Controller\admin;
 use App\Entity\BoughtServicesLogs;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,10 +32,12 @@ class boughtServicesLogsController extends AbstractController
 
         // === Get repo for query ===
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
-        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Settings::class);
 
 
         return $this->render('admin/logs/adminbsl.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Logi: Kupione Usługi',
             'breadcrumbs' => [['Panel Administracyjny', $this->generateUrl('admin')], ['Sklep', '#'], ['Logi Kupionych Usług', $this->generateUrl('admin_bslogs')]],
             'services' => $servicesRepo->findAll(),

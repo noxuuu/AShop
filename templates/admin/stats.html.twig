@@ -1,9 +1,519 @@
-{% extends 'admin/base.html.twig' %}
- 
-{% block title %}{% endblock %}
+{% extends 'frontend/common/index.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Coins mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['monthly_income']|number_format(2) }} zł </p>
+                            <p class="text-small text-white">Miesięczny dochód</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Checkout mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['month_bought_services'] }}</p>
+                            <p class="text-small text-white">Zakupione usługi (miesiąc)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="simple-icon-star mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['active_services'] }}</p>
+                            <p class="text-small text-white">Aktywne usługi</p>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6 col-sm-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Miesięczne cele sklepu</h5>
+                    <div class="row">
+                        <div class="col-sm-4 mb-15 text-center">
+                            <span class="skill-head mb-20 d-block">Przychód ~ {{ stats['monthly_income'] }} zł</span>
+                            <div class="monthly-progress-chart easyPieChart" data-percent="{{ stats['target_income_percent'] }}" style="line-height: 110px;">
+                                <span class="mt-n1 ml-n1 font-weight-bold">{{ stats['target_income_percent'] }}%</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 mb-15 text-center">
+                            <span class="skill-head mb-20 d-block">Sprzedane usługi ~ {{ stats['month_bought_services'] }}</span>
+                            <div class="monthly-progress-chart easyPieChart" data-percent="{{ stats['target_bought_services_percent'] }}" style="line-height: 110px;">
+                                <span class="mt-n1 ml-n1 font-weight-bold">{{ stats['target_bought_services_percent'] }}%</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 text-center">
+                            <span class="skill-head mb-20 d-block">Wysłane sms ~ {{ stats['sent_sms_monthly'] }}</span>
+                            <div class="monthly-progress-chart easyPieChart" data-percent="{{ stats['target_sent_sms_percent'] }}" style="line-height: 110px;">
+                                <span class="mt-n1 ml-n1 font-weight-bold">{{ stats['target_sent_sms_percent'] }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-sm-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Statystyki na tle poprzedniego miesiąca</h5>
+
+                    <p class="card-text font-weight-semibold mt-3"><i class="fa fa-shopping-bag mr-10"></i>Przychód <span class="float-right">{{ stats['monthly_income'] }}/{{ stats['last_month_income'] }} zł ({{ stats['income_percent'] }} %)</span></p>
+                    <div class="progress" style="height: 15px;">
+                        <div class="progress-bar progress-bar-success active progress-bar-striped" aria-valuenow="{{ stats['income_percent'] }}" aria-valuemin="0" aria-valuemax="{{ stats['last_month_income'] }}" style="width: {{ stats['income_percent'] }}%" role="progressbar"></div>
+                    </div>
+
+                    <p class="card-text font-weight-semibold mt-3"><i class="fa fa-shopping-bag mr-10"></i>Sprzedane usługi <span class="float-right">{{ stats['month_bought_services'] }}/{{ stats['bought_services_last_month'] }} zł ({{ stats['bought_services_percent'] }} %)</span></p>
+                    <div class="progress" style="height: 15px;">
+                        <div class="progress-bar progress-bar-success active progress-bar-striped" aria-valuenow="{{ stats['bought_services_percent'] }}" aria-valuemin="0" aria-valuemax="{{ stats['bought_services_last_month'] }}" style="width: {{ stats['bought_services_percent'] }}%" role="progressbar"></div>
+                    </div>
+
+                    <p class="card-text font-weight-semibold mt-3"><i class="fa fa-shopping-bag mr-10"></i>Wysłane sms <span class="float-right">{{ stats['sent_sms_monthly'] }}/{{ stats['sent_sms_last_month'] }} zł ({{ stats['sent_sms_percent'] }} %)</span></p>
+                    <div class="progress" style="height: 15px;">
+                        <div class="progress-bar progress-bar-success active progress-bar-striped" aria-valuenow="{{ stats['sent_sms_percent'] }}" aria-valuemin="0" aria-valuemax="{{ stats['sent_sms_last_month'] }}" style="width: {{ stats['sent_sms_percent'] }}%" role="progressbar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-xl-12">
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" id="salesTitle">Wykres sprzedaży miesięcznej<span></span></h5>
+                            <div class="dashboard-line-chart">
+                                <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                                    <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                                    </div>
+                                    <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                                    </div>
+                                </div>
+                                <canvas id="_salesChart" width="646" height="283" class="chartjs-render-monitor" style="display: block; width: 646px; height: 283px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Phone-SMS ml-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['sent_sms'] }}</p>
+                            <p class="text-small text-white">Wysłane sms</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Checkout mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['alltime_bought_services'] }}</p>
+                            <p class="text-small text-white">Zakupione usługi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Coins mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['alltime_income']|number_format(2) }} zł </p>
+                            <p class="text-small text-white">Całkowity dochód</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-sm-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Najczęściej kupowane usługi</h5>
+                    <div class="dashboard-donut-chart">
+                        <canvas id="servicesChart" style="display: block; margin-top: 33%; width: 402px; height: 200px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8 col-sm-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Serwery według największego zbytu</h5>
+                    <div class="dashboard-donut-chart">
+                        <canvas id="serversChart" style="display: block; width: 402px; height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-Cloud-Computer ml-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['servers'] }}</p>
+                            <p class="text-small text-white">Serwery</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="iconsmind-User mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['users'] }}</p>
+                            <p class="text-small text-white">Użytkownicy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-4 progress-banner">
+                <div class="card-body justify-content-between align-items-center text-center">
+                    <div>
+                        <i class="simple-icon-people mr-2 text-white align-text-bottom d-inline-block"></i>
+                        <div>
+                            <p class="lead text-white">{{ stats['groups'] }}</p>
+                            <p class="text-small text-white">Grupy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
-{% block javascript %}{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('/js/chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('/js/easypiechart.js') }}"></script>
+    <script src="{{ asset('/js/chartjs-plugin-datalabels.js') }}"></script>
+
+    <script>
+        window.onload = function(){
+            const monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+            ];
+            const d = new Date();
+
+            $('#salesTitle span').text(" ~ " + monthNames[d.getMonth()] + " " + d.getFullYear());
+        }
+
+        $(document).ready(function(){
+            // month progress chart
+            $('.monthly-progress-chart').easyPieChart({
+                size: 100,
+                barColor: "#145388",
+                scaleLength: 0,
+                lineWidth: 15,
+                trackColor: "#d1e5f3",
+                lineCap: "circle",
+                animate: 2000,
+            });
+
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.global.defaultFontFamily = "'Nunito', sans-serif";
+
+                Chart.defaults.LineWithShadow = Chart.defaults.line;
+                Chart.controllers.LineWithShadow = Chart.controllers.line.extend({
+                    draw: function(ease) {
+                        Chart.controllers.line.prototype.draw.call(this, ease);
+                        var ctx = this.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.15)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        ctx.stroke();
+                        Chart.controllers.line.prototype.draw.apply(this, arguments);
+                        ctx.restore();
+                    }
+                });
+
+                Chart.defaults.PolarWithShadow = Chart.defaults.polarArea;
+                Chart.controllers.PolarWithShadow = Chart.controllers.polarArea.extend({
+                    draw: function(ease) {
+                        Chart.controllers.polarArea.prototype.draw.call(this, ease);
+                        let ctx = this.chart.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.2)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 5;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        Chart.controllers.polarArea.prototype.draw.apply(this, arguments);
+                        ctx.restore();
+                    }
+                });
+
+                var chartTooltip = {
+                    backgroundColor: 'white',
+                    titleFontColor: '#212121',
+                    borderColor: '#d7d7d7',
+                    borderWidth: 0.5,
+                    bodyFontColor: '#212121',
+                    bodySpacing: 10,
+                    xPadding: 15,
+                    yPadding: 15,
+                    cornerRadius: 0.15,
+                    displayColors: false
+                };
+
+                if (document.getElementById("_salesChart")) {
+                    var salesChart = document.getElementById("_salesChart").getContext("2d");
+
+                    // date for month names
+                    const monthNames = ["sty.", "lut.", "mar.", "kwi.", "maj", "cze.",
+                        "lip.", "sie.", "wrz.", "paz.", "lis.", "gru."
+                    ];
+                    const d = new Date();
+
+                    var myChart = new Chart(salesChart, {
+                        type: "LineWithShadow",
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    display: false
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                yAxes: [
+                                    {
+                                        gridLines: {
+                                            display: true,
+                                            lineWidth: 1,
+                                            color: "rgba(0,0,0,0.1)",
+                                            drawBorder: false
+                                        },
+                                        ticks: {
+                                            beginAtZero: true,
+                                            stepSize: 5,
+                                            padding: 20
+                                        }
+                                    }
+                                ],
+                                xAxes: [
+                                    {
+                                        gridLines: {
+                                            display: false
+                                        }
+                                    }
+                                ]
+                            },
+                            legend: {
+                                display: false
+                            },
+                            tooltips: chartTooltip
+                        },
+                        data: {
+                            labels: [
+                                {% for i in range(1, days) %}
+                                {% if i < 10 %}
+                                "0{{ i }}" + monthNames[d.getMonth()],
+                                {% else %}
+                                "{{ i }}" + monthNames[d.getMonth()],
+                                {% endif %}
+                                {% endfor %}
+                            ],
+                            datasets: [
+                                {
+                                    label: "",
+                                    data: [
+                                        {% for i in stats['salesMonthly'] %}
+                                        "{{ i }}",
+                                        {% endfor %}
+                                    ],
+                                    borderColor: "#145388",
+                                    pointBackgroundColor: "white",
+                                    pointBorderColor: "#145388",
+                                    pointHoverBackgroundColor: "#145388",
+                                    pointHoverBorderColor: "white",
+                                    pointRadius: 6,
+                                    pointBorderWidth: 2,
+                                    pointHoverRadius: 8,
+                                    fill: false
+                                }
+                            ]
+                        }
+                    });
+                }
+
+                if (document.getElementById("servicesChart")) {
+                    var polarChart2 = document.getElementById("servicesChart").getContext("2d");
+                    var myChart = new Chart(polarChart2, {
+                        type: "PolarWithShadow",
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    display: false
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scale: {
+                                ticks: {
+                                    display: false
+                                }
+                            },
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    padding: 30,
+                                    usePointStyle: true,
+                                    fontSize: 12
+                                }
+                            },
+                            tooltips: chartTooltip
+                        },
+                        data: {
+                            datasets: [
+                                {
+                                    label: "Stock",
+                                    borderWidth: 2,
+                                    pointBackgroundColor: '#145388',
+                                    borderColor: ['#145388', '#2a93d5', '#6c90a1', '#145388', '#2a93d5', '#6c90a1', '#145388', '#2a93d5', '#6c90a1'],
+                                    backgroundColor: [
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)',
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)',
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)'
+                                    ],
+                                    data: [
+                                        {% for service in chart_services %}
+                                        "{{ service['name']|bs_countEmByService }}",
+                                        {% endfor %}
+                                    ]
+                                }
+                            ],
+                            labels: [
+                                {% for service in chart_services %}
+                                "{{ service['name'] }}",
+                                {% endfor %}
+                            ]
+                        }
+                    });
+                }
+
+                if (document.getElementById("serversChart")) {
+                    var polarChart2 = document.getElementById("serversChart").getContext("2d");
+                    var myChart = new Chart(polarChart2, {
+                        type: "PolarWithShadow",
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    display: false
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scale: {
+                                ticks: {
+                                    display: false
+                                }
+                            },
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    padding: 30,
+                                    usePointStyle: true,
+                                    fontSize: 12
+                                }
+                            },
+                            tooltips: chartTooltip
+                        },
+                        data: {
+                            datasets: [
+                                {
+                                    label: "Stock",
+                                    borderWidth: 2,
+                                    pointBackgroundColor: '#145388',
+                                    borderColor: ['#145388', '#2a93d5', '#6c90a1', '#145388', '#2a93d5', '#6c90a1', '#145388', '#2a93d5', '#6c90a1'],
+                                    backgroundColor: [
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)',
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)',
+                                        'rgba(20, 83, 136, 0.1)',
+                                        'rgba(42, 147, 213, 0.1)',
+                                        'rgba(108, 144, 161, 0.1)'
+                                    ],
+                                    data: [
+                                        {% for server in chart_servers %}
+                                        "{{ server['name']|bs_countEmByServer }}",
+                                        {% endfor %}
+                                    ]
+                                }
+                            ],
+                            labels: [
+                                {% for server in chart_servers %}
+                                "{{ server['name'] }}",
+                                {% endfor %}
+                            ]
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

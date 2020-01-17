@@ -51,4 +51,20 @@ class UsersRepository extends EntityRepository implements UserLoaderInterface
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * returns users from specified group id
+     * @param $groupId
+     * @return array
+     */
+    public function findUsersByGroupId($groupId)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.username', 'u.email', 'u.authData', 'g.name', 'g.style')
+            ->join('u.groupId', 'g', 'WITH', 'u.groupId = g.id')
+            ->where('g.id = :id')
+            ->setParameter('id', $groupId)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

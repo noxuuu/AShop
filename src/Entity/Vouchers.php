@@ -30,10 +30,10 @@ class Vouchers
      * @ORM\ManyToOne(targetEntity="Prices")
      * @ORM\JoinColumn(name="price", referencedColumnName="id", nullable=true)
      */
-    private $priceId; // klucz obcy dla ashop_prices.id
+    private $priceId;
 
     /**
-     * @ORM\Column(type="string", length=6)
+     * @ORM\Column(type="string", length=12)
      */
     private $code;
 

@@ -14,6 +14,18 @@ use Doctrine\ORM\EntityRepository;
 class GroupsRepository extends EntityRepository
 {
     /**
+     * Retrieves number of rows
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countEm()
+    {
+        $qb = $this->createQueryBuilder('g');
+        $qb->select('count(g.id) AS counter');
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+    /**
      * @return array
      */
     public function getGroupsNamesAndId(){

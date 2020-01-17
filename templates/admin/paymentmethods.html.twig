@@ -80,7 +80,8 @@
                     </div>
                 {% endfor %}
 
-                {% include('frontend/common/widgets/pagination.html.twig') %}
+                <!-- paginate -->
+                {{ knp_pagination_render(pagination, 'frontend/common/widgets/pagination.html.twig') }}
             {% else %}
                 <div class="card flex-row mb-3 active">
                     <div class="pl-2 d-flex flex-grow-1 min-width-zero">

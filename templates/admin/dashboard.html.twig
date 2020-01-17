@@ -47,16 +47,15 @@
         </div>
     </div>
 
-
     <div class="row">
         <div class="col-lg-12 col-xl-12">
             <div class="row">
                 <div class="col-md-12 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Wykres sprzedaży miesięcznej</h5>
+                            <h5 class="card-title" id="salesTitle">Wykres sprzedaży miesięcznej<span></span></h5>
                             <div class="dashboard-line-chart"><div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
-                                <canvas id="salesChart" width="646" height="283" class="chartjs-render-monitor" style="display: block; width: 646px; height: 283px;"></canvas>
+                                <canvas id="_salesChart" width="646" height="283" class="chartjs-render-monitor" style="display: block; width: 646px; height: 283px;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -220,10 +219,36 @@
 
 
     <script>
+        window.onload = function(){
+            const monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+            ];
+            const d = new Date();
+
+            $('#salesTitle span').text(" ~ " + monthNames[d.getMonth()] + " " + d.getFullYear());
+        }
+
         $(document).ready(function(){
 
             if (typeof Chart !== "undefined") {
                 Chart.defaults.global.defaultFontFamily = "'Nunito', sans-serif";
+
+                Chart.defaults.LineWithShadow = Chart.defaults.line;
+                Chart.controllers.LineWithShadow = Chart.controllers.line.extend({
+                    draw: function(ease) {
+                        Chart.controllers.line.prototype.draw.call(this, ease);
+                        var ctx = this.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.15)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        ctx.stroke();
+                        Chart.controllers.line.prototype.draw.apply(this, arguments);
+                        ctx.restore();
+                    }
+                });
 
                 Chart.defaults.PolarWithShadow = Chart.defaults.polarArea;
                 Chart.controllers.PolarWithShadow = Chart.controllers.polarArea.extend({
@@ -241,25 +266,6 @@
                     }
                 });
 
-
-
-                /*
-                --theme-color-1: #145388;
-                --theme-color-2: #2a93d5;
-                --theme-color-3: #6c90a1;
-                --theme-color-4: #365573;
-                --theme-color-5: #47799a;
-                --theme-color-6: #8e9599;
-                --theme-color-1-10: rgba(20, 83, 136, 0.1);
-                --theme-color-2-10: rgba(42, 147, 213, 0.1);
-                --theme-color-3-10: rgba(108, 144, 161, 0.1);
-                --theme-color-4-10: rgba(54, 85, 115, 0.1);
-                --theme-color-5-10: rgba(71, 121, 154, 0.1);
-                --theme-color-6-10: rgba(142, 149, 153, 0.1);
-                --primary-color: #212121;
-                --foreground-color: white;
-                --separator-color: #d7d7d7; }*/
-
                 var chartTooltip = {
                     backgroundColor: 'white',
                     titleFontColor: '#212121',
@@ -272,6 +278,87 @@
                     cornerRadius: 0.15,
                     displayColors: false
                 };
+
+                if (document.getElementById("_salesChart")) {
+                    var salesChart = document.getElementById("_salesChart").getContext("2d");
+
+                    // date for month names
+                    const monthNames = ["sty.", "lut.", "mar.", "kwi.", "maj", "cze.",
+                        "lip.", "sie.", "wrz.", "paz.", "lis.", "gru."
+                    ];
+                    const d = new Date();
+
+                    var myChart = new Chart(salesChart, {
+                        type: "LineWithShadow",
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    display: false
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                yAxes: [
+                                    {
+                                        gridLines: {
+                                            display: true,
+                                            lineWidth: 1,
+                                            color: "rgba(0,0,0,0.1)",
+                                            drawBorder: false
+                                        },
+                                        ticks: {
+                                            beginAtZero: true,
+                                            stepSize: 5,
+                                            padding: 20
+                                        }
+                                    }
+                                ],
+                                xAxes: [
+                                    {
+                                        gridLines: {
+                                            display: false
+                                        }
+                                    }
+                                ]
+                            },
+                            legend: {
+                                display: false
+                            },
+                            tooltips: chartTooltip
+                        },
+                        data: {
+                            labels: [
+                                {% for i in range(1, days) %}
+                                    {% if i < 10 %}
+                                       "0{{ i }}" + monthNames[d.getMonth()],
+                                    {% else %}
+                                        "{{ i }}" + monthNames[d.getMonth()],
+                                    {% endif %}
+                                {% endfor %}
+                            ],
+                            datasets: [
+                                {
+                                    label: "",
+                                    data: [
+                                        {% for i in stats['salesMonthly'] %}
+                                            "{{ i }}",
+                                        {% endfor %}
+                                    ],
+                                    borderColor: "#145388",
+                                    pointBackgroundColor: "white",
+                                    pointBorderColor: "#145388",
+                                    pointHoverBackgroundColor: "#145388",
+                                    pointHoverBorderColor: "white",
+                                    pointRadius: 6,
+                                    pointBorderWidth: 2,
+                                    pointHoverRadius: 8,
+                                    fill: false
+                                }
+                            ]
+                        }
+                    });
+                }
 
                 if (document.getElementById("servicesChart")) {
                     var polarChart2 = document.getElementById("servicesChart").getContext("2d");
@@ -320,7 +407,7 @@
                                     ],
                                     data: [
                                         {% for service in chart_services %}
-                                        "{{ service['name']|bs_countEm }}",
+                                        "{{ service['name']|bs_countEmByService }}",
                                         {% endfor %}
                                     ]
                                 }

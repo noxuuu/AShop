@@ -37,7 +37,8 @@ class boughtServicesExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('bs_countEm', [$this, 'returnCount']),
+            new TwigFilter('bs_countEmByService', [$this, 'returnCountByService']),
+            new TwigFilter('bs_countEmByServer', [$this, 'returnCountByServer']),
             new TwigFilter('getRandomRGB', [$this, 'getRandomRGB']),
         ];
     }
@@ -59,13 +60,23 @@ class boughtServicesExtension extends AbstractExtension
             default: return $this->GetRgbColorByNumber($number-4);
         }
     }
+
     /**
      * @param $service
      * @return mixed
      */
-    public function returnCount($service)
+    public function returnCountByService($service)
     {
-        return $this->repository->countEmDistinct($service);
+        return $this->repository->countEmDistinctByService($service);
+    }
+
+    /**
+     * @param $service
+     * @return mixed
+     */
+    public function returnCountByServer($server)
+    {
+        return $this->repository->countEmDistinctByServer($server);
     }
 
     /**

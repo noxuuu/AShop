@@ -125,4 +125,18 @@ class PricesRepository extends EntityRepository
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }
+
+    /**
+     * Retrieves price info and equal id
+     * @param $id
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getPricesInfoAndId(){
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('p.id', 'p.server', 'p.value', 's.name AS service', 's.sufix')
+            ->join('p.service', 's', 'WITH', 'p.service = s.id');
+        $query = $qb->getQuery();
+        return $query->getArrayResult();
+    }
 }

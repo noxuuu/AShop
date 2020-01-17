@@ -8,9 +8,10 @@
 
 namespace App\Controller\admin;
 
+use App\Entity\Servers;
+use App\Entity\Services;
 use App\Entity\Settings;
-use App\Entity\Task;
-use App\Form\Type\TaskType;
+use App\Form\admin\SettingsType;
 use App\Service\publicFunctions;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,49 +46,52 @@ class settingsController extends AbstractController
         // deny access for non-admin users
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // declare settingsArray
-        $definedSettings = $this->publicFunctions->getSettingsNames();
+        // === Get repo for query ===
+        $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
+        $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
 
         // Get settings
-        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $settings = $settingsRepo->findAll();
-        $settings_temp = json_decode($this->container->get('serializer')->serialize($settings, 'json'), true);
+        $settingsArr = array();
 
-        // reset
-        $settings = array();
-
-        for($i = 0; $i < count($settings_temp); $i++)
-            $settings[$settings_temp[$i]['name']] = $settings_temp[$i]['value'];
-
-        // form
-        $task = new Task();
-
-        for($i = 0; $i < count($definedSettings); $i++) {
-            $setting = new Settings();
-            $setting->setName($definedSettings[$i]);
-            $task->getSettings()->add($setting);
+        foreach($settings as $item) {
+            $settingsArr[$item->getName()] = $item->getValue();
         }
 
-        $form = $this->createForm(TaskType::class, $task);
+        // create and handle form
+        $form = $this->createForm(SettingsType::class, []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $data = $request->request->all();
+            // get some data
+            $formData = $form->getData();
 
-            for($i = 0; $i < count($definedSettings); $i++)
-            {
-                $setting_update = $settingsRepo->findByName($definedSettings[$i]);
-                $setting_update->setValue($data['task']['settings'][$i]['name']);
+            // loop form data
+            foreach($formData as $key => $value) {
+                // get entity manager and update settings
+                $entityManager = $this->getDoctrine()->getManager();
+                $setting_update = $settingsRepo->findByName($key);
+                $setting_update->setValue($value);
                 $entityManager->flush();
             }
+
             return $this->redirectToRoute('admin_settings');
         }
 
-        return $this->render(
-            'admin/settings.html.twig', [
+        return $this->render('admin/settings.html.twig', [
+                'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
+                'title' => 'Ustawienia',
+                'breadcrumbs' => [
+                    ['Panel Administracyjny', $this->generateUrl('admin')],
+                    ['Sklep', '#'],
+                    ['Zarządzanie', '#'],
+                    ['Ustawienia', $this->generateUrl('admin_settings')]
+                ],
+                'services' => $servicesRepo->findAll(),
+                'servers' => $serversRepo->findAll(),
                 'form' => $form->createView(),
-                'settings' => $settings
+                'settings' => $settingsArr
             ]
         );
     }

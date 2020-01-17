@@ -5,105 +5,108 @@
 {% block body %}
     <div class="row">
         <div class="col-12 list">
-
+            {% set break = false %}
             {% for user in pagination %}
-                <div class="card flex-row mb-3 active" id="user-{{ user.getUsername() }}">
-                    <div class="pl-2 d-flex flex-grow-1 min-width-zero">
-                        <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
-                            <div class="w-20 w-sm-50 text-center">
-                                <span class="badge badge-pill badge-light" style="font-size: 14px;">{{ user.getUsername() }}</span>
-                            </div>
-                            <div class="w-10 w-sm-50">
-                                <span style="{{ user.getGroupId().getStyle() }}">{{ user.getGroupId().getName() }}</span>
-                            </div>
-                            <div class="w-15 w-sm-50">
-                                {{ user.getAuthData() }}
-                            </div>
-                            <div class="w-20 w-sm-100">
-                                <button type="button" data-toggle="modal" data-target="#money-{{ user.getAuthData()|replace({':': "-"}) }}" class="btn btn-primary btn-sm mr-1">Portfel</button>
-                                <button type="button" data-toggle="modal" data-target="#edit-{{ user.getAuthData()|replace({':': "-"}) }}" class="btn btn-primary btn-sm mr-1">Edytuj</button>
-                                <button type="button" onclick="confirmDelete('{{ user.getUsername() }}')" class="btn btn-primary btn-sm mr-1">Usuń</button>
+                {% if user.getUsername() != "SYSTEM" %}
+                    <div class="card flex-row mb-3 active" id="user-{{ user.getUsername() }}">
+                        <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                            <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                                <div class="w-20 w-sm-50 text-center">
+                                    <span class="badge badge-pill badge-light" style="font-size: 14px;">{{ user.getUsername() }}</span>
+                                </div>
+                                <div class="w-10 w-sm-50">
+                                    <span style="{{ user.getGroupId().getStyle() }}">{{ user.getGroupId().getName() }}</span>
+                                </div>
+                                <div class="w-15 w-sm-50">
+                                    {{ user.getAuthData() }}
+                                </div>
+                                <div class="w-20 w-sm-100">
+                                    <button type="button" data-toggle="modal" data-target="#money-{{ user.getAuthData()|replace({':': "-"}) }}" class="btn btn-primary btn-sm mr-1">Portfel</button>
+                                    <button type="button" data-toggle="modal" data-target="#edit-{{ user.getAuthData()|replace({':': "-"}) }}" class="btn btn-primary btn-sm mr-1">Edytuj</button>
+                                    <button type="button" onclick="confirmDelete('{{ user.getUsername() }}')" class="btn btn-primary btn-sm mr-1">Usuń</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="modal fade" id="money-{{ user.getAuthData()|replace({':': "-"}) }}" tabindex="-1" role="dialog" aria-labelledby="money-{{ user.getAuthData()|replace({':': "-"}) }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edycja portfela użytkownika <b>{{ user.getUsername() }}</b></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            </div>
-                            {% set wallet_from = form_wallet.createView %}
-                            {{ form_start(wallet_from, { 'method' : 'post', 'action': path('edit_wallet', { 'username' :  user.getUsername() })}) }}
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label>Portfel:</label>
-                                        {{ form_widget(wallet_from.value, {'value' : user.getWallet()}) }}
+                    <div class="modal fade" id="money-{{ user.getAuthData()|replace({':': "-"}) }}" tabindex="-1" role="dialog" aria-labelledby="money-{{ user.getAuthData()|replace({':': "-"}) }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edycja portfela użytkownika <b>{{ user.getUsername() }}</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                {% set wallet_from = form_wallet.createView %}
+                                {{ form_start(wallet_from, { 'method' : 'post', 'action': path('edit_wallet', { 'username' :  user.getUsername() })}) }}
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>Portfel:</label>
+                                            {{ form_widget(wallet_from.value, {'value' : user.getWallet()}) }}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Zapisz</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                </div>
-                            {{ form_end(wallet_from) }}
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Zapisz</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                    </div>
+                                {{ form_end(wallet_from) }}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="modal fade modal-right" id="edit-{{ user.getAuthData()|replace({':': "-"}) }}" tabindex="-1" role="dialog" aria-labelledby="money-{{ user.getAuthData()|replace({':': "-"}) }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edycja użytkownika <b>{{ user.getUsername() }}</b></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <div class="modal fade modal-right" id="edit-{{ user.getAuthData()|replace({':': "-"}) }}" tabindex="-1" role="dialog" aria-labelledby="money-{{ user.getAuthData()|replace({':': "-"}) }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edycja użytkownika <b>{{ user.getUsername() }}</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                {% set edit_form = form_edit.createView %}
+                                {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_user', { 'user' :  user.getUsername() })}) }}
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>Login:</label>
+                                            {{ form_widget(edit_form.username, {'value' : user.getUsername()}) }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email:</label>
+                                            {{ form_widget(edit_form.email, {'value' : user.getEmail()}) }}
+                                        </div>
+                                        <div class="form-group {% if form_errors(form_add.plainPassword.first) %}has-error{% endif %}">
+                                            <label class="control-label mb-10">Hasło:</label>
+                                            {{ form_widget(edit_form.plainPassword.first) }}
+                                            {% if form_errors(edit_form.plainPassword.first) %}
+                                                <span class="help-block">Hasła muszą być identyczne!</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group {% if form_errors(form_add.plainPassword.first) %}has-error{% endif %}">
+                                            <label class="control-label mb-10">Powtórz Hasło:</label>
+                                            {{ form_widget(edit_form.plainPassword.second) }}
+                                            {% if form_errors(edit_form.plainPassword.first) %}
+                                                <span class="help-block">Hasła muszą być identyczne!</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Grupa</label>
+                                            {{ form_widget(edit_form.groupId, {'value' : user.getGroupId()}) }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label>SteamID:</label>
+                                            {{ form_widget(edit_form.authData, {'value' : user.getAuthData()}) }}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Zapisz</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                                    </div>
+                                {{ form_end(edit_form) }}
                             </div>
-                            {% set edit_form = form_edit.createView %}
-                            {{ form_start(edit_form, { 'method' : 'post', 'action': path('edit_user', { 'user' :  user.getUsername() })}) }}
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label>Login:</label>
-                                        {{ form_widget(edit_form.username, {'value' : user.getUsername()}) }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Email:</label>
-                                        {{ form_widget(edit_form.email, {'value' : user.getEmail()}) }}
-                                    </div>
-                                    <div class="form-group {% if form_errors(form_add.plainPassword.first) %}has-error{% endif %}">
-                                        <label class="control-label mb-10">Hasło:</label>
-                                        {{ form_widget(edit_form.plainPassword.first) }}
-                                        {% if form_errors(edit_form.plainPassword.first) %}
-                                            <span class="help-block">Hasła muszą być identyczne!</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="form-group {% if form_errors(form_add.plainPassword.first) %}has-error{% endif %}">
-                                        <label class="control-label mb-10">Powtórz Hasło:</label>
-                                        {{ form_widget(edit_form.plainPassword.second) }}
-                                        {% if form_errors(edit_form.plainPassword.first) %}
-                                            <span class="help-block">Hasła muszą być identyczne!</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Grupa</label>
-                                        {{ form_widget(edit_form.groupId, {'value' : user.getGroupId()}) }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label>SteamID:</label>
-                                        {{ form_widget(edit_form.authData, {'value' : user.getAuthData()}) }}
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Zapisz</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-                                </div>
-                            {{ form_end(edit_form) }}
                         </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
 
-            {% include('frontend/common/widgets/pagination.html.twig') %}
+            <!-- paginate -->
+            {{ knp_pagination_render(pagination, 'frontend/common/widgets/pagination.html.twig') }}
         </div>
     </div>
 {% endblock %}

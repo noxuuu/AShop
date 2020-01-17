@@ -13,6 +13,7 @@ use App\Entity\PaymentMethod;
 use App\Entity\Prices;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Entity\Tariffs;
 use App\Entity\UserServices;
 use App\Service\shop\payments\oneShotOneKillService;
@@ -60,6 +61,7 @@ class userController extends AbstractController
     {
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $uServicesRepo = $this->getDoctrine()->getRepository(UserServices::class);
 
         $services = $servicesRepo->findAll();
@@ -68,6 +70,7 @@ class userController extends AbstractController
         $breadcrumbs = [];
 
         return $this->render('frontend/pages/user/services.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'services' => $services,
             'servers' => $servers,
             'user_services' => $user_services,

@@ -1,170 +1,91 @@
-{% extends 'admin/base.html.twig' %}
- 
-{% block title %}Ustawienia{% endblock %}
+{% extends 'frontend/common/index.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-
-        <!-- Title -->
-        <div class="row heading-bg  bg-blue">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                <h5 class="txt-light">Ustawienia</h5>
-            </div>
-        </div>
-
-        <!-- Row -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default card-view">
-                    <div class="panel-wrapper collapse in">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-sm-12 col-xs-12">
-                                    <div class="form-wrap">
-                                        {{ form_start(form) }}
-                                            <div class="form-body">
-                                                <h6 class="txt-dark capitalize-font"><i class="icon-screen-desktop mr-10"></i>Ustawienia ogólne</h6>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="fa fa-edit"></i></div>
-                                                                <div class="input-group-addon">Tytuł Strony </div>
-                                                                {{ form_row(form.settings[0].name, {'value' : settings['shop_title']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="icon-directions"></i></div>
-                                                                <div class="input-group-addon">Adres Strony </div>
-                                                                {{ form_row(form.settings[1].name, {'value' : settings['shop_address']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="fa fa-commenting-o"></i></div>
-                                                                <div class="input-group-addon">Komendy sklepu</div>
-                                                                {{ form_row(form.settings[2].name, {'value' : settings['shop_commands']}) }}
-                                                            </div>
-                                                            <span class="help-block"> Oddzielaj znakiem ';' </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="fa fa-money"></i></div>
-                                                                <div class="input-group-addon">Czas płatności PaySafeCard</div>
-                                                                {{ form_row(form.settings[3].name, {'value' : settings['payment_url_livetime']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="checkbox checkbox-success">
-                                                                <input type="checkbox" name="allow_psc_payment" id="allow_psc_payment" {% if settings['allow_psc_payment'] %}checked{% endif %}/>
-                                                                <label for="allow_psc_payment">Zezwól na płatności PSC</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="checkbox checkbox-success">
-                                                                <input type="checkbox" name="debug" id="debug" {% if settings['debug'] %}checked{% endif %}/>
-                                                                <label for="debug">Włącz DEBUG</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="seprator-block"></div>
-
-                                                <h6 class="txt-dark capitalize-font"><i class="fa fa-steam fa-lg"></i> Steam Bot</h6>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="icon-user-following"></i></div>
-                                                                <div class="input-group-addon">Login </div>
-                                                                {{ form_row(form.settings[4].name, {'value' : settings['steam_bot_login']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="icon-lock"></i></div>
-                                                                <div class="input-group-addon">Hasło</div>
-                                                                {{ form_row(form.settings[5].name, {'value' : settings['steam_bot_password']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <div class="checkbox checkbox-success">
-                                                                <input type="checkbox" name="allow_steam_bot_info" id="allow_steam_bot_info" {% if settings['allow_steam_bot_info'] %}checked{% endif %}/>
-                                                                <label for="allow_steam_bot_info">Zezwól na informowanie poprzez steam</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="seprator-block"></div>
-
-                                                <h6 class="txt-dark capitalize-font"><i class="fa fa-line-chart fa-lg"></i> Cele statystyk</h6>
-                                                <hr>
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="fa fa-cart-arrow-down"></i></div>
-                                                                <div class="input-group-addon">Przychód </div>
-                                                                {{ form_row(form.settings[6].name, {'value' : settings['stats_target_income']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="fa fa-gift"></i></div>
-                                                                <div class="input-group-addon">Sprzedane usługi</div>
-                                                                {{ form_row(form.settings[7].name, {'value' : settings['stats_target_sold_services']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <div class="input-group-addon"><i class="fa fa-paper-plane"></i></div>
-                                                                <div class="input-group-addon">Wysłane SMS</div>
-                                                                {{ form_row(form.settings[8].name, {'value' : settings['stats_target_send_sms']}) }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="seprator-block"></div>
-                                            </div>
-                                            <div class="col-md-5"></div>
-                                            <div class="col-md-7">
-                                                <div class="form-actions mt-10">
-                                                    <button type="submit" name="save_settings" class="btn btn-success  mr-10"> Zapisz ustawienia</button>
-                                                </div>
-                                            </div>
-                                        {{ form_end(form) }}
-                                    </div>
-                                </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <h5 class="mb-4"><i class="simple-icon-screen-desktop"></i> Ustawienia ogólne</h5>
+                        <div class="separator mb-5"></div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Tytuł strony</label>
+                                {{ form_row(form.shop_title, {'value' : settings['shop_title']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Adres strony</label>
+                                {{ form_row(form.shop_address, {'value' : settings['shop_address']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Adres E-Mail sklepu</label>
+                                {{ form_row(form.shop_email, {'value' : settings['shop_email']}) }}
                             </div>
                         </div>
-                    </div>
+                        <div class="form-row mt-4 mb-5">
+                            <div class="form-group col-md-4">
+                                <label>Komendy sklepu</label>
+                                {{ form_row(form.shop_commands, {'value' : settings['shop_commands']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Czas płatności PaySafeCard (w sekundach)</label>
+                                {{ form_row(form.payment_url_livetime, {'value' : settings['payment_url_livetime']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Debug</label>
+                                {{ form_row(form.debug, {'value' : settings['debug']}) }}
+                            </div>
+                        </div>
+                        <div class="form-row mt-4 mb-5">
+                            <div class="form-group col-md-4"></div>
+                            <div class="form-group col-md-4">
+                                <label>Grupa w zakładce Kontakt</label>
+                                {{ form_row(form.contact_group, {'value' : settings['contact_group']}) }}
+                            </div>
+                        </div>
+
+                        <h5 class="mb-4 mt-5"><i class="simple-icon-social-steam"></i> Steam Bot</h5>
+                        <div class="separator mb-5"></div>
+                        <div class="form-row mb-5">
+                            <div class="form-group col-md-4">
+                                <label>Czy bot ma być włączony?</label>
+                                {{ form_row(form.allow_steam_bot_info, {'value' : settings['allow_steam_bot_info']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Login</label>
+                                {{ form_row(form.steam_bot_login, {'value' : settings['steam_bot_login']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Hasło</label>
+                                {{ form_row(form.steam_bot_password, {'value' : settings['steam_bot_password']}) }}
+                            </div>
+                        </div>
+
+                        <h5 class="mb-4 mt-5"><i class="simple-icon-chart"></i> Cele statystyk</h5>
+                        <div class="separator mb-5"></div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Przychód (zł)</label>
+                                {{ form_row(form.stats_target_income, {'value' : settings['stats_target_income']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Sprzedane usługi</label>
+                                {{ form_row(form.stats_target_sold_services, {'value' : settings['stats_target_sold_services']}) }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Wysłane SMS</label>
+                                {{ form_row(form.stats_target_send_sms, {'value' : settings['stats_target_send_sms']}) }}
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-5">
+                            <button class="btn btn-primary" type="submit">Zapisz</button>
+                        </div>
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
-
-{% block javascript %}{% endblock %}

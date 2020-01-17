@@ -1,9 +1,118 @@
-{% extends 'admin/base.html.twig' %}
- 
-{% block title %}{% endblock %}
+{% extends 'frontend/common/index.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col-12 list">
 
+            {% for voucher in pagination %}
+                <div class="card flex-row mb-3 active" id="voucher-{{ voucher.GetId() }}">
+                    <div class="pl-2 d-flex flex-grow-1 min-width-zero">
+                        <div class="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
+                            <div class="w-15">
+                                <span class="badge badge-pill badge-primary mb-1">#{{ voucher.getId() }}</span>
+                            </div>
+                            <div class="w-50 w-sm-50">
+                                {% for server in voucher.getPriceId().getServerId()|split('-') %}
+                                    <span class="badge badge-pill badge-outline-primary" style="font-size: 12px;">{{ server|get_server.getName() }}</span>
+                                {% endfor %}
+                            </div>
+                            <p class="mb-1 w-15 w-sm-50">
+                                <span class="badge badge-pill badge-secondary">
+                                    {{ voucher.getPriceId.getServiceId().GetName() }}
+                                </span>
+                            </p>
+                            <div class="w-15 w-sm-50 mb-1">
+                                {{ voucher.getCode() }}
+                            </div>
+                            <div class="w-15 w-sm-100">
+                                <button type="button" onclick="confirmDelete({{ voucher.GetId() }})" class="btn btn-primary btn-sm mr-1">Usuń</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!-- paginate -->
+            {{ knp_pagination_render(pagination, 'frontend/common/widgets/pagination.html.twig') }}
+        </div>
+    </div>
 {% endblock %}
 
-{% block javascript %}{% endblock %}
+{% block modal_add %}
+    <div class="modal-header">
+        <h5 class="modal-title">Dodaj nowy voucher</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    {{ form_start(form_add) }}
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Cena:</label>
+                {{ form_widget(form_add.priceId) }}
+            </div>
+            <div class="form-group">
+                <label>Kod: </label>
+                {{ form_widget(form_add.code) }}
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-secondary" onclick="GenerateKey();">Generuj</button>
+            <button type="submit" class="btn btn-primary">Dodaj</button>
+        </div>
+    {{ form_end(form_add) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.onload = function(){
+            GenerateKey();
+        }
+
+        function GenerateKey() {
+            var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ";
+            var randomstring = '';
+            for (var i=0; i<5; i++) {
+                var rnum = Math.floor(Math.random() * chars.length);
+                randomstring += chars.substring(rnum,rnum+1);
+            }
+            document.getElementById('vouchers_code').value = randomstring;
+        }
+
+        function confirmDelete(id) {
+            swal({
+                    title: "Jesteś pewien?",
+                    text: "Tej operacji nie będzie można cofnąć!",
+                    type: "warning",
+                    showCancelButton: true,
+                    showLoaderOnConfirm: true,
+                    confirmButtonClass: "btn-primary",
+                    cancelButtonClass: "btn-outline-primary",
+                    confirmButtonText: "Tak, usuń!",
+                    cancelButtonText: "Anuluj",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        url:        '/admin/vouchers/delete/' + id + '/',
+                        type:       'GET',
+                        dataType:   'json',
+                        async:      true,
+
+                        success: function(data, status) {
+                            if(data[1]) {
+                                swal("Usunięto!", "Voucher został usunięty poprawnie.", "success");
+                                $('#voucher-' + id).hide();
+                            }
+                        },
+                        error : function(xhr, textStatus, errorThrown) {
+                            swal("Błąd", "Wystąpił niespodziewany błąd, skontaktuj się z administratorem.", "error");
+                        }
+                    });
+                });
+        }
+    </script>
+{% endblock %}

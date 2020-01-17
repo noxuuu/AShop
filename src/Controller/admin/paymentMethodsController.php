@@ -11,6 +11,7 @@ namespace App\Controller\admin;
 use App\Entity\PaymentMethod;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Form\admin\payment_methods\pmAddType_1s1k;
 use App\Form\admin\payment_methods\pmAddType_cssetti;
 use App\Form\admin\payment_methods\pmAddType_gosetti;
@@ -53,6 +54,7 @@ class paymentMethodsController extends AbstractController
         // === Get repo for query ===
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $pmRepo = $this->getDoctrine()->getRepository(PaymentMethod::class);
 
         // === Create Forms ===
@@ -243,6 +245,7 @@ class paymentMethodsController extends AbstractController
         $editForm = $this->createForm(pmEditType::class, $method);
 
         return $this->render('admin/paymentmethods.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Metody Płatności',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

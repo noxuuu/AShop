@@ -44,13 +44,29 @@ class BoughtServicesRepository extends EntityRepository
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function countEmDistinct($service)
+    public function countEmDistinctByService($service)
     {
         $qb = $this->createQueryBuilder('b');
         $qb->select('count(b.id) AS counter')
             ->join('b.service', 's', 'WITH', 'b.service = s.id')
             ->where('s.name = :service')
             ->setParameter('service', $service);
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    /**
+     * Retrieves number of rows
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countEmDistinctByServer($server)
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('count(b.id) AS counter')
+            ->join('b.server', 's', 'WITH', 'b.server = s.id')
+            ->where('s.name = :server')
+            ->setParameter('server', $server);
         $query = $qb->getQuery();
         return $query->getSingleScalarResult();
     }
@@ -123,11 +139,25 @@ class BoughtServicesRepository extends EntityRepository
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findAllDistinct()
+    public function findDistinctByService()
     {
         $qb = $this->createQueryBuilder('b');
         $qb->select('DISTINCT s.name')
             ->join('b.service', 's', 'WITH', 'b.service = s.id');
+        $query = $qb->getQuery();
+        return $query->getArrayResult();
+    }
+
+    /**
+     * Retrieves distinct services
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findDistinctByServer()
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->select('DISTINCT s.name')
+            ->join('b.server', 's', 'WITH', 'b.server = s.id');
         $query = $qb->getQuery();
         return $query->getArrayResult();
     }

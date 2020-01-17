@@ -6,6 +6,7 @@ use App\Entity\BoughtServicesLogs;
 use App\Entity\Prices;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Service\steamAuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,6 +40,7 @@ class serviceInfoController extends AbstractController
     {
         // Get Bought services logs repository
         $bsRepo = $this->getDoctrine()->getRepository(BoughtServicesLogs::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $pricesRepo = $this->getDoctrine()->getRepository(Prices::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
@@ -53,11 +55,7 @@ class serviceInfoController extends AbstractController
         $lastBuyerName = "Brak"; // Set default value
         if ($bought) {
             $lastBuyer = $bsRepo->getLastRecordByService($service->GetId());
-            $request = file_get_contents('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=52A66B13219F645834149F1A1180770A&steamids=' . $this->steamAuth->toCommunityID($lastBuyer[0]['authData']) . '');
-            $result = json_decode($request);
-
-            foreach ($result->response->players as $player)
-                $lastBuyerName = $player->personaname;
+            $lastBuyerName = $this->steamAuth->getUserName($this->steamAuth->toCommunityID($lastBuyer[0]['authData']));
         }
 
         // get service's avaible servers
@@ -78,6 +76,7 @@ class serviceInfoController extends AbstractController
 
         // render this
         return $this->render('frontend/services/index.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Informacje o usłudze '.$service->getName(),
             'breadcrumbs' => array(),
             'services' => $services,

@@ -11,6 +11,7 @@ namespace App\Controller\admin;
 use App\Entity\Groups;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use App\Entity\UsersEntity;
 use App\Form\admin\adminUsersType;
 use App\Form\admin\userWalletType;
@@ -46,6 +47,7 @@ class usersController extends AbstractController
         // === Get repo for query ===
         $usersRepo = $this->getDoctrine()->getRepository(UsersEntity::class);
         $groupsRepo = $this->getDoctrine()->getRepository(Groups::class);
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
@@ -79,6 +81,7 @@ class usersController extends AbstractController
         }
 
         return $this->render('admin/users.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Użytkownicy',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

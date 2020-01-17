@@ -13,6 +13,7 @@ use App\Entity\PaymentsPSC;
 use App\Entity\PaymentsTransfer;
 use App\Entity\Servers;
 use App\Entity\Services;
+use App\Entity\Settings;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,13 +31,13 @@ class paymentLogsController extends AbstractController
     {
         // === Get repo for query ===
         $logsRepo = $this->getDoctrine()->getRepository(PaymentsSMS::class);
-
-        // === Get repo for query ===
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
 
         return $this->render('admin/logs/smslogs.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Logi: Płatności SMS',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],
@@ -58,13 +59,13 @@ class paymentLogsController extends AbstractController
     {
         // === Get repo for query ===
         $logsRepo = $this->getDoctrine()->getRepository(PaymentsPSC::class);
-
-        // === Get repo for query ===
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
 
         return $this->render('admin/logs/psclogs.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Logi: Płatności PaySafeCard',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],
@@ -89,13 +90,13 @@ class paymentLogsController extends AbstractController
 
         // === Get repo for query ===
         $logsRepo = $this->getDoctrine()->getRepository(PaymentsTransfer::class);
-
-        // === Get repo for query ===
+        $settingsRepo = $this->getDoctrine()->getRepository(Settings::class);
         $servicesRepo = $this->getDoctrine()->getRepository(Services::class);
         $serversRepo = $this->getDoctrine()->getRepository(Servers::class);
 
 
         return $this->render('admin/logs/transferlogs.html.twig', [
+            'mainTitle' => $settingsRepo->findOneBy(['name' => 'shop_title'])->getValue(),
             'title' => 'Logi: Płatności Przelewem',
             'breadcrumbs' => [
                 ['Panel Administracyjny', $this->generateUrl('admin')],

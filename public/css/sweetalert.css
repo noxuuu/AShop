@@ -148,6 +148,7 @@
 .sa-icon.sa-success.animate::after {
   animation: rotatePlaceholder 4.25s ease-in;
 }
+
 @keyframes animateErrorIcon {
   0% {
     transform: rotateX(100deg);

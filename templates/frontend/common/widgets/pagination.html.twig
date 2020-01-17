@@ -1,43 +1,49 @@
-<nav class="mt-4 mb-3">
-    <ul class="pagination justify-content-center mb-0">
-        {{ knp_pagination_render(pagination) }}
-    </ul>
-</nav>
+{% if pageCount > 1 %}
+    <nav class="mt-4 mb-3">
+        <ul class="pagination justify-content-center mb-0">
+            {% if first is defined and current != first %}
+                <li class="page-item">
+                    <a class="page-link first" href="{{ path(route, query|merge({(pageParameterName): first})) }}">
+                        <i class="simple-icon-control-start"></i>
+                    </a>
+                </li>
+            {% endif %}
 
-<!--
-<nav class="mt-4 mb-3">
-    <ul class="pagination justify-content-center mb-0">
+            {% if previous is defined %}
+                <li class="page-item">
+                    <a class="page-link prev" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">
+                        <i class="simple-icon-arrow-left"></i>
+                    </a>
+                </li>
+            {% endif %}
 
-        <li class="page-item ">
-            <a class="page-link first" href="#">
-                <i class="simple-icon-control-start"></i>
-            </a>
-        </li>
-        <li class="page-item ">
-            <a class="page-link prev" href="#">
-                <i class="simple-icon-arrow-left"></i>
-            </a>
-        </li>
-        <li class="page-item active">
-            <a class="page-link" href="#">1</a>
-        </li>
-        <li class="page-item ">
-            <a class="page-link" href="#">2</a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" href="#">3</a>
-        </li>
-        <li class="page-item ">
-            <a class="page-link next" href="#" aria-label="Next">
-                <i class="simple-icon-arrow-right"></i>
-            </a>
-        </li>
-        <li class="page-item ">
-            <a class="page-link last" href="#">
-                <i class="simple-icon-control-end"></i>
-            </a>
-        </li>
-        {{ knp_pagination_render(pagination) }}
-    </ul>
-</nav>
--->
+            {% for page in pagesInRange %}
+                {% if page != current %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#!">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if next is defined %}
+                <li class="page-item">
+                    <a class="page-link next" href="{{ path(route, query|merge({(pageParameterName): next})) }}">
+                        <i class="simple-icon-arrow-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if last is defined and current != last %}
+                <li class="page-item">
+                    <a class="page-link last" href="{{ path(route, query|merge({(pageParameterName): last})) }}">
+                        <i class="simple-icon-control-end"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
